@@ -7,11 +7,8 @@
 //
 
 import UIKit
-<<<<<<< HEAD
 import CloudKit
-=======
 import UserNotifications
->>>>>>> 49e57c37aea361661de78a44166959cefa10dc25
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
