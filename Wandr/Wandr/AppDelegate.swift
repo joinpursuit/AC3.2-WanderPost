@@ -21,14 +21,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let tabController = UITabBarController()
         
         let notificationViewController = NotificationViewController()
+        let mapViewController = MapViewController()
         
-        let notificationIcon = UITabBarItem(title: nil, image: UIImage(named: "gallery_icon")?.withRenderingMode(.alwaysTemplate), tag: 0)
+        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
+        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
+        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
+        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
+        
         
         notificationViewController.tabBarItem = notificationIcon
+        mapViewController.tabBarItem = mapIcon
         
         let rootVCForNotificationVC = UINavigationController(rootViewController: notificationViewController)
+        let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
         
-        tabController.viewControllers = [rootVCForNotificationVC]
+        tabController.viewControllers = [rootVCForMapVC, rootVCForNotificationVC]
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
