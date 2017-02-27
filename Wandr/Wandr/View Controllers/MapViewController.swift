@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import CoreLocation
 import SnapKit
+import TwicketSegmentedControl
 
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
@@ -17,9 +18,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let locMan: CLLocationManager = CLLocationManager()
         locMan.desiredAccuracy = kCLLocationAccuracyBest
         locMan.requestWhenInUseAuthorization()
-        locMan.distanceFilter = 25.0
+        locMan.distanceFilter = 1.0
         return locMan
     }()
+    
+    let segmentTitles = ["Internal", "Private", "Public"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +30,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // Do any additional setup after loading the view.
         setupViewHierarchy()
         configureConstraints()
+
     }
     
     // MARK: - Hierarchy
@@ -37,12 +41,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         //Drag Up Container View
         self.view.addSubview(self.dragUpContainerView)
+        self.dragUpContainerView.addSubview(segmentedControlContainerView)
+        self.dragUpContainerView.addSubview(postContainerView)
+        self.segmentedControlContainerView.addSubview(segmentedControl)
+        self.dragUpContainerView.addSubview(cheveronButton)
         
         locationManager.delegate = self
     }
     
     // MARK: - Layout
     private func configureConstraints() {
+        //Map Container
         mapContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.equalToSuperview()
@@ -52,6 +61,37 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.snp.makeConstraints { (view) in
             view.top.leading.trailing.bottom.equalToSuperview()
         }
+        
+        
+        //Drag Up Container View
+        dragUpContainerView.snp.makeConstraints { (view) in
+            view.leading.equalToSuperview()
+            view.trailing.equalToSuperview()
+            view.height.equalToSuperview()
+            view.width.equalToSuperview()
+        }
+        
+        cheveronButton.snp.makeConstraints { (button) in
+            button.top.equalToSuperview()
+            button.trailing.equalToSuperview().inset(16)
+        }
+
+        segmentedControlContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.cheveronButton.snp.centerY)
+            view.leading.trailing.equalToSuperview()
+            view.height.equalToSuperview().multipliedBy(0.1)
+            view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+        }
+        
+        segmentedControl.snp.makeConstraints { (control) in
+            control.top.leading.bottom.trailing.equalToSuperview()
+        }
+        
+        postContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(segmentedControlContainerView.snp.bottom)
+            view.leading.trailing.bottom.equalToSuperview()
+        }
+        
     }
 
     /*
@@ -100,5 +140,46 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return view
     }()
     
+    lazy var cheveronButton: UIButton = {
+       let button = UIButton()
+        button.setTitle("Up", for: .normal)
+        button.tintColor = UIColor.yellow
+        button.backgroundColor = UIColor.orange
+        return button
+    }()
     
+    lazy var segmentedControlContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.lightGray
+        return view
+    }()
+    
+    lazy var segmentedControl: UIControl = {
+        //let frame = CGRect(x: 5, y: 75, width: view.frame.width - 10, height: 40)
+        let control = TwicketSegmentedControl(frame: CGRect.zero)
+        control.delegate = self
+        return control
+    }()
+    
+    lazy var postContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.red
+        return view
+    }()
+    
+}
+
+extension MapViewController: TwicketSegmentedControlDelegate {
+    func didSelect(_ segmentIndex: Int) {
+        switch segmentIndex {
+        case 0:
+            print("Internal")
+        case 1:
+            print("Private")
+        case 2:
+            print("Public")
+        default:
+            print("Can not make a decision")
+        }
+    }
 }
