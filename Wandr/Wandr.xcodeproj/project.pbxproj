@@ -10,6 +10,7 @@
 		8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8129528B1E60D08A0048199B /* AppDelegate.swift */; };
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
+		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 /* End PBXBuildFile section */
@@ -21,6 +22,7 @@
 		812952921E60D08A0048199B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		812952951E60D08A0048199B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
 		81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wandr.entitlements; sourceTree = "<group>"; };
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +110,7 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
