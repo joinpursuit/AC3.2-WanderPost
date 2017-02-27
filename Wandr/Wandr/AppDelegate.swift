@@ -7,15 +7,82 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        let tabController = UITabBarController()
+        
+        let notificationViewController = NotificationViewController()
+        let mapViewController = MapViewController()
+        
+        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
+        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
+        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
+        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
+        
+        
+        notificationViewController.tabBarItem = notificationIcon
+        mapViewController.tabBarItem = mapIcon
+        
+        let rootVCForNotificationVC = UINavigationController(rootViewController: notificationViewController)
+        let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
+        
+        tabController.viewControllers = [rootVCForMapVC, rootVCForNotificationVC]
+        
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        
+        self.window?.rootViewController = tabController
+        self.window?.makeKeyAndVisible()
+        
+        //https://developer.apple.com/reference/foundation/nsusernotificationcenter
+        //https://www.appcoda.com/push-notification-ios/
+        
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { (granted, error) in
+            if error != nil {
+                 // Enable or disable features based on authorization.
+                print(error)
+            }
+        }
+        application.registerForRemoteNotifications()
+        
+//        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
+//        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
+//            // Enable or disable features based on authorization.
+//        }
+//        
+//        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
+//            
+//            switch settings.soundSetting{
+//            case .enabled:
+//                
+//                print("enabled sound setting")
+//                
+//            case .disabled:
+//                
+//                print("setting has been disabled")
+//                
+//            case .notSupported:
+//                print("something vital went wrong here")
+//            }
+//        }
+//        application.registerForRemoteNotifications()
+        
+        
+        //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
+        
+        //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
+        
+        //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
+        
         return true
     }
 
@@ -41,6 +108,44 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+    
+    //MARK: - App Delegate Methods for Notifications
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        dump("device token \(deviceToken)")
+        //let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        //let deviceTokenString = deviceToken.base64EncodedString()
+        //print(deviceTokenString)
+        var token = ""
+        for i in 0..<deviceToken.count {
+            token = token + String(format: "%02.2hhx", arguments: [deviceToken[i]])
+        }
+        print(token)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("There's an \(error), usually of not able to register for remote notification because of the use of a simulator.")
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("user info \(userInfo)")
+    }
+    
+    //MARK: - User Notification Delegate Method
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        //        switch response.actionIdentifier {
+        //        case NotificationActions.NotifyBefore.rawValue:
+        //            print("notify")
+        //            break
+        //        case NotificationActions.callNow.rawValue:
+        //            print("callNow")
+        //            break
+        //        case NotificationActions.clear.rawValue:
+        //            print("clear")
+        //        default: 
+        //            break
+        //        }
+    }
 
 }
 
