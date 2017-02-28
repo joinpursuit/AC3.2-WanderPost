@@ -8,26 +8,11 @@
 
 import UIKit
 
-class ColorManager {
+class StyleManager {
     
-    static let shared = ColorManager()
+    static let shared = StyleManager()
     private init() {}
     
-//    private let _50: UIColor = UIColor(hexString: "#E0F2F1")
-//    private let _100: UIColor = UIColor(hexString: "#B2DFDB")
-//    private let _200: UIColor = UIColor(hexString: "#80CBC4")
-//    private let _300: UIColor = UIColor(hexString: "#4DB6AC")
-//    private let _400: UIColor = UIColor(hexString: "#26A69A")
-//    private let _500: UIColor = UIColor(hexString: "#009688")
-//    private let _600: UIColor = UIColor(hexString: "#00897B")
-//    private let _700: UIColor = UIColor(hexString: "#00796B")
-//    private let _800: UIColor = UIColor(hexString: "#00695C")
-//    private let _900: UIColor = UIColor(hexString: "#004D40")
-//    private let a200: UIColor = UIColor(hexString: "#FFC400")
-//    
-//    var colorArray: [UIColor] {
-//        return [_300, _400, _500, _600, _700, _800, _900, _800, _700, _600, _500, _400, _300, _200]
-//    }
     var primary: UIColor {
         return UIColor(hexString: "#4C669D")
     }
@@ -46,6 +31,9 @@ class ColorManager {
     var secondaryText: UIColor {
         return UIColor(hexString: "#727272")
     }
+    
+    
+    
 }
 
 extension UIColor {
@@ -67,4 +55,26 @@ extension UIColor {
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
     }
 }
+
+extension UIFont {
+    /// Roboto can be referenced via extension in the following manner:
+    ///let font = UIFont.Roboto.light(size: 18.0)
+    
+    struct Comfortaa {
+        //MARK: - Methods
+        static func light(size: CGFloat) -> UIFont? {
+            return UIFont(name: "Comfortaa-Light", size: size)
+        }
+        
+        static func regular(size: CGFloat) -> UIFont? {
+            return UIFont(name: "Comfortaa", size: size)
+        }
+        
+        static func bold(size: CGFloat) -> UIFont? {
+            return UIFont(name: "Comfortaa-Bold", size: size)
+        }
+        
+    }
+}
+
 

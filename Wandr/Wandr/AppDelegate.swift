@@ -55,6 +55,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         application.registerForRemoteNotifications()
         
+        
+        setNavigationTheme()
+        
 //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
 //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
 //            // Enable or disable features based on authorization.
@@ -85,6 +88,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
         
         return true
+    }
+    
+    func setNavigationTheme() {
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.backgroundColor = StyleManager.shared.primaryDark
+        navigationBarAppearace.barTintColor = StyleManager.shared.primaryDark
+        navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
+                                                      NSFontAttributeName: UIFont.Comfortaa.regular(size: 18)!]
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        let tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.backgroundColor = StyleManager.shared.primary
+        tabBarAppearance.barTintColor = StyleManager.shared.primary
+        
+        
     }
     
 

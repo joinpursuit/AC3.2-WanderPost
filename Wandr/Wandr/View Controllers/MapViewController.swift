@@ -25,6 +25,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.red
         // Do any additional setup after loading the view.
+        
+        self.navigationItem.title = "wanderpost"
+        
         setupViewHierarchy()
         configureConstraints()
     }
