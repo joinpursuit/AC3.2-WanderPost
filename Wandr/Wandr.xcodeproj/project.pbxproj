@@ -14,6 +14,9 @@
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
+		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
+		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
+		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
@@ -33,6 +36,9 @@
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
+		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
+		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
+		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -116,8 +122,11 @@
 		8171C3D91E60DF5B000C6DC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
+				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
+				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
+				A7686F811E66017800402053 /* PostViewController.swift */,
+				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -297,8 +306,11 @@
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
+				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
+				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
+				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
