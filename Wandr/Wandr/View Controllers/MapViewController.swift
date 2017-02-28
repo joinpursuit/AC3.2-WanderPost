@@ -40,24 +40,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 
         setupViewHierarchy()
         configureConstraints()
-//        setupGestures()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // TODO: remove this kind of implementation and add it to the FoaasNavigationController
-        guard let window = UIApplication.shared.keyWindow else { return }
-        window.addSubview(addPostButton)
-        
-        configureAddPostButtonConstraints()
     }
     
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
         self.navigationController?.present(PostViewController(), animated: true, completion: nil)
     }
-    
     
 //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
 //        switch sender.direction {
@@ -161,16 +149,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container View
         self.view.addSubview(self.mapContainerView)
         self.mapContainerView.addSubview(mapView)
+        self.mapContainerView.addSubview(addPostButton)
         
         self.view.addSubview(addPostButton)
         self.view.addSubview(segmentedControl)
-        
-        //Drag Up Container View
-//        self.view.addSubview(self.dragUpOrDownContainerView)
-//        self.dragUpOrDownContainerView.addSubview(segmentedControlContainerView)
-//        self.segmentedControlContainerView.addSubview(segmentedControl)
-//        self.dragUpOrDownContainerView.addSubview(postContainerView)
-//        self.dragUpOrDownContainerView.addSubview(cheveronButton)
         
         locationManager.delegate = self
     }
@@ -184,42 +166,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             view.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
+        
         mapView.snp.makeConstraints { (view) in
             view.top.leading.trailing.bottom.equalToSuperview()
         }
         
-//        segmentedControl.snp.makeConstraints { (control) in
-//            control.top.equalTo(self.topLayoutGuide.snp.bottom).offset(8)
-//        }
-//        
-//        //Drag Up Container View
-//        dragUpOrDownContainerView.snp.makeConstraints { (view) in
-//            view.leading.equalToSuperview()
-//            view.trailing.equalToSuperview()
-//            view.height.equalToSuperview().multipliedBy(0.5)
-//            view.width.equalToSuperview()
-//        }
-//        
-//        cheveronButton.snp.makeConstraints { (button) in
-//            button.top.equalToSuperview()
-//            button.trailing.equalToSuperview().inset(16)
-//        }
-//
-//        segmentedControlContainerView.snp.makeConstraints { (view) in
-//            view.top.equalTo(self.cheveronButton.snp.centerY)
-//            view.leading.trailing.equalToSuperview()
-//            view.height.equalToSuperview().multipliedBy(0.175)
-//            view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-//        }
-//        
-//        segmentedControl.snp.makeConstraints { (control) in
-//            control.top.leading.bottom.trailing.equalToSuperview()
-//        }
-//        
-//        postContainerView.snp.makeConstraints { (view) in
-//            view.top.equalTo(segmentedControlContainerView.snp.bottom)
-//            view.leading.trailing.bottom.equalToSuperview()
-//        }
+        addPostButton.snp.makeConstraints { (button) in
+            button.trailing.equalToSuperview().inset(48.0)
+            button.bottom.equalToSuperview().inset(54.0)
+            button.width.equalTo(54.0)
+            button.height.equalTo(54.0)
+        }
+
     }
     
     func configureAddPostButtonConstraints() {
@@ -231,16 +189,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             button.height.equalTo(54.0)
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
     
     // MARK: - CLLocationManagerDelegate Methods
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -286,35 +234,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return button
     }()
     
-    lazy var dragUpOrDownContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    lazy var cheveronButton: UIButton = {
-       let button = UIButton()
-        button.setTitle("Up", for: .normal)
-        button.tintColor = UIColor.yellow
-        button.backgroundColor = UIColor.orange
-//        button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
-        return button
-    }()
-    
-    lazy var segmentedControlContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.lightGray
-        return view
-    }()
-    
     lazy var segmentedControl: TwicketSegmentedControl = {
         let control = TwicketSegmentedControl()
         return control
-    }()
-    
-    lazy var postContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        return view
     }()
     
 }
