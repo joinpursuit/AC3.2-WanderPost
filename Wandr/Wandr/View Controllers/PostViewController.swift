@@ -9,110 +9,148 @@
 import UIKit
 import TwicketSegmentedControl
 
-class PostViewController: UIViewController {
+class PostViewController: UIViewController, UITextFieldDelegate {
 
+    let segmentTitles = ["Internal", "Private", "Public"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.yellow
-
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-    
-    private func setupViewHierarchy() {
-        self.view.addSubview(segmentedControl)
+        setupViewHierarchy()
+        configureConstraints()
         
-        //Drag Up Container View
-        //        self.view.addSubview(self.dragUpOrDownContainerView)
-        //        self.dragUpOrDownContainerView.addSubview(segmentedControlContainerView)
-        //        self.segmentedControlContainerView.addSubview(segmentedControl)
-        //        self.dragUpOrDownContainerView.addSubview(postContainerView)
-        //        self.dragUpOrDownContainerView.addSubview(cheveronButton)
+        textField.becomeFirstResponder()
+        
+        self.segmentedControl.backgroundColor = UIColor.clear
+        self.segmentedControl.setSegmentItems(segmentTitles)
+        self.segmentedControl.delegate = self
+        
+    }
+    
+    // MARK: - Actions
+    func dismissButtonPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func postButtonPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func imageTapped() {
         
     }
     
     // MARK: - Layout
+    private func setupViewHierarchy() {
+        self.view.addSubview(postContainerView)
+        self.postContainerView.addSubview(profileImageView)
+        self.postContainerView.addSubview(segmentedControl)
+        self.postContainerView.addSubview(textField)
+        self.postContainerView.addSubview(postButton)
+        self.postContainerView.addSubview(dismissButton)
+    }
+    
     private func configureConstraints() {
+        postContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.topLayoutGuide.snp.bottom)
+            view.leading.trailing.equalToSuperview()
+        }
         
-        //        segmentedControl.snp.makeConstraints { (control) in
-        //            control.top.equalTo(self.topLayoutGuide.snp.bottom).offset(8)
-        //        }
-        //
-        //        //Drag Up Container View
-        //        dragUpOrDownContainerView.snp.makeConstraints { (view) in
-        //            view.leading.equalToSuperview()
-        //            view.trailing.equalToSuperview()
-        //            view.height.equalToSuperview().multipliedBy(0.5)
-        //            view.width.equalToSuperview()
-        //        }
-        //
-        //        cheveronButton.snp.makeConstraints { (button) in
-        //            button.top.equalToSuperview()
-        //            button.trailing.equalToSuperview().inset(16)
-        //        }
-        //
-        //        segmentedControlContainerView.snp.makeConstraints { (view) in
-        //            view.top.equalTo(self.cheveronButton.snp.centerY)
-        //            view.leading.trailing.equalToSuperview()
-        //            view.height.equalToSuperview().multipliedBy(0.175)
-        //            view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-        //        }
-        //
-        //        segmentedControl.snp.makeConstraints { (control) in
-        //            control.top.leading.bottom.trailing.equalToSuperview()
-        //        }
-        //        
-        //        postContainerView.snp.makeConstraints { (view) in
-        //            view.top.equalTo(segmentedControlContainerView.snp.bottom)
-        //            view.leading.trailing.bottom.equalToSuperview()
-        //        }
+        dismissButton.snp.makeConstraints { (button) in
+            button.top.equalToSuperview().offset(16)
+            button.leading.equalToSuperview().offset(16)
+            button.height.equalTo(50.0)
+            button.width.equalTo(50.0)
+        }
+        
+        profileImageView.snp.makeConstraints { (view) in
+            view.top.equalToSuperview().offset(16)
+            view.trailing.equalToSuperview().inset(16)
+            view.height.equalTo(50.0)
+            view.width.equalTo(50.0)
+        }
+        
+        segmentedControl.snp.makeConstraints { (control) in
+            control.top.equalTo(profileImageView.snp.bottom).offset(8)
+            control.leading.equalToSuperview().offset(8.0)
+            control.trailing.equalToSuperview().inset(8.0)
+            control.height.equalTo(40)
+        }
+        
+        textField.snp.makeConstraints { (textField) in
+            textField.top.equalTo(segmentedControl.snp.bottom).offset(8)
+            textField.leading.equalToSuperview().offset(16.0)
+            textField.trailing.equalToSuperview().inset(16.0)
+            textField.height.equalTo(150)
+        }
+        
+        postButton.snp.makeConstraints { (button) in
+            button.top.equalTo(textField.snp.bottom).offset(8)
+            button.trailing.equalToSuperview().inset(16)
+            button.bottom.equalToSuperview().inset(8)
+        }
     }
 
-    
-    lazy var dragUpOrDownContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    lazy var cheveronButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Up", for: .normal)
-        button.tintColor = UIColor.yellow
-        button.backgroundColor = UIColor.orange
-        //        button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
-        return button
-    }()
-    
-    lazy var segmentedControlContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.lightGray
-        return view
-    }()
-    
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
-        return control
-    }()
-    
     lazy var postContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.red
         return view
     }()
     
+    lazy var profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "default-placeholder")
+        imageView.layer.borderWidth = 2.0
+        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.contentMode = .scaleAspectFill
+        imageView.frame.size = CGSize(width: 50.0, height: 50.0)
+        let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
+        imageView.addGestureRecognizer(tapImageGesture)
+        imageView.isUserInteractionEnabled = true
+        imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.frame.height / 2
+        return imageView
+    }()
+
+    lazy var segmentedControl: TwicketSegmentedControl = {
+        let control = TwicketSegmentedControl()
+        return control
+    }()
+    
+    lazy var textField: UITextField = {
+       let textField = UITextField()
+        textField.backgroundColor = UIColor.blue
+        return textField
+    }()
+    
+    lazy var postButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("post", for: .normal)
+        return button
+    }()
+    
+    lazy var dismissButton: UIButton = {
+       let button = UIButton()
+        button.setTitle("X", for: .normal)
+        button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
+        return button
+    }()
+    
 }
+
+extension PostViewController: TwicketSegmentedControlDelegate {
+    func didSelect(_ segmentIndex: Int) {
+        switch segmentIndex {
+        case 0:
+            print("Internal")
+        case 1:
+            print("Private")
+        case 2:
+            print("Public")
+        default:
+            print("Can not make a decision")
+        }
+    }
+}
+

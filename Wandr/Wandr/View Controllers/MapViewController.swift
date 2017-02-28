@@ -59,6 +59,18 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.navigationController?.present(PostViewController(), animated: true, completion: nil)
     }
     
+//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
+//        switch sender.direction {
+//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        default:
+//            print("Not a recognized gesture")
+//        }
+//    }
     
     //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
     //        switch sender.direction {
@@ -162,6 +174,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container View
         self.view.addSubview(self.mapContainerView)
         self.mapContainerView.addSubview(mapView)
+        self.mapContainerView.addSubview(addPostButton)
         
         self.view.addSubview(addPostButton)
         self.view.addSubview(segmentedControl)
@@ -185,8 +198,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             view.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
+        
         mapView.snp.makeConstraints { (view) in
             view.top.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        addPostButton.snp.makeConstraints { (button) in
+            button.trailing.equalToSuperview().inset(48.0)
+            button.bottom.equalToSuperview().inset(54.0)
+            button.width.equalTo(54.0)
+            button.height.equalTo(54.0)
         }
     }
     
@@ -233,16 +254,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             button.height.equalTo(54.0)
         }
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
     // MARK: - CLLocationManagerDelegate Methods
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -311,12 +322,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     lazy var segmentedControl: TwicketSegmentedControl = {
         let control = TwicketSegmentedControl()
         return control
-    }()
-    
-    lazy var postContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.red
-        return view
     }()
     
 }
