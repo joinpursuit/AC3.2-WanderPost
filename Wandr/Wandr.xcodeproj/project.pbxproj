@@ -15,6 +15,7 @@
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
+		DE8BF0BE1E64CE0F007D2486 /* ColorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* ColorManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE8BF0BD1E64CE0F007D2486 /* ColorManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorManager.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -116,6 +118,7 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				DE8BF0BD1E64CE0F007D2486 /* ColorManager.swift */,
 				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
 			name = Managers;
@@ -272,6 +275,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
+				DE8BF0BE1E64CE0F007D2486 /* ColorManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
