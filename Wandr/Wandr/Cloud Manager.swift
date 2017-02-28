@@ -16,6 +16,7 @@ enum PrivacyLevel: NSString {
     case message, friends, everyone
 }
 
+
 class CloudManager {
     static let shared = CloudManager()
     private init () {}
@@ -27,12 +28,10 @@ class CloudManager {
     
     func createPost (post: WanderPost, completion: @escaping (CKRecord?, Error?) -> Void) {
         
-        
-        
         //Update user at the same time
-        
+        let recordType = "post"
         //init set the information of the record
-        let postRecord = CKRecord(recordType: "post")
+        let postRecord = CKRecord(recordType: recordType)
         
         switch post.contentType {
         case .text:
@@ -60,62 +59,48 @@ class CloudManager {
         postRecord.setObject(post.location, forKey: "location")
         postRecord.setObject(NSString(string: post.user!.recordName), forKey: "userID")
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
-        /*
-         publicDatabase.fetch(withRecordID: post.user!) { (record, error) in
-         if error != nil {
-         print(error!.localizedDescription)
-         }
-         if let validRecord = record {
-         
-         }
-         
-         }
-         publicDatabase.save(<#T##record: CKRecord##CKRecord#>) { (record, error) in
-         if error != nil {
-         print(error!.localizedDescription)
-         }
-         
-         }
-         
-         publicDatabase.save(postRecord) { (record, error) in
-         if error == nil {
-         completion(nil, error)
-         } else {
-         completion(record, nil)
-         self.checkUsername()
-         }
-         }
-         */
-        //Init the userFetch
+
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
-        let userSave = CKModifyRecordsOperation()
-        
+        let postSave = CKModifyRecordsOperation()
+
         userFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
-                print(error!.localizedDescription)
-                
+                if let ckError = error as? CKError  {
+                    ckError.userInfo[CKErrorRetryAfterKey]
+                } else {
+                    print(error!.localizedDescription)
+                }
             }
             if let validRecord = record?.first {
+                
+                //Update the posts array
                 let userRecord = validRecord.value
                 var posts = userRecord["posts"] as? [NSString] ?? []
                 posts.append(postRecord.recordID.recordName as NSString)
+                userRecord["posts"] = posts as CKRecordValue?
                 
                 //Save and post the record
-                userSave.recordsToSave = 
-                
-                
+                postSave.recordsToSave = [userRecord, postRecord]
             }
         }
         
         //Init the userSave (to save the post)
+        postSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
+            //add completion passer to 
+            if errors == nil, records?.count == 2 {
+                _ = records?.map {
+                    if $0.recordType == recordType {
+                        completion($0, nil)
+                    }
+                }
+            } else {
+                completion(nil, errors)
+            }
+        }
         
-        
-        
-        let postSave = CKModifyRecordsOperation()
-        
-        
-        
+        postSave.addDependency(userFetch)
         let queue = OperationQueue()
+        queue.addOperations([userFetch, postSave], waitUntilFinished: false)
     }
     //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
     func createUser (userName: String, completion: @escaping (Error?) -> Void) {
@@ -161,5 +146,5 @@ class CloudManager {
                 dump(record)
             }
         }
-    }
+    }    
 }

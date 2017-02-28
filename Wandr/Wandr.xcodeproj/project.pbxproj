@@ -16,7 +16,14 @@
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
+		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
+		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
+		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
+		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
+		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
+		DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */; };
+		DE8BF0C41E65FB5F007D2486 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +40,14 @@
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
+		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
+		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
+		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
+		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
+		DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
+		DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Regular.ttf"; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -93,6 +107,7 @@
 		8171C3D71E60DF37000C6DC5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DE8BF0C51E65FB70007D2486 /* Fonts */,
 				81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */,
 				8129528B1E60D08A0048199B /* AppDelegate.swift */,
 				812952921E60D08A0048199B /* Assets.xcassets */,
@@ -113,8 +128,11 @@
 		8171C3D91E60DF5B000C6DC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
+				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
+				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
+				A7686F811E66017800402053 /* PostViewController.swift */,
+				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -122,6 +140,7 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */,
 				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
 			name = Managers;
@@ -141,6 +160,16 @@
 				FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		DE8BF0C51E65FB70007D2486 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */,
+				DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */,
+				DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */,
+			);
+			name = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -217,8 +246,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */,
 				812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */,
 				812952931E60D08A0048199B /* Assets.xcassets in Resources */,
+				DE8BF0C41E65FB5F007D2486 /* Comfortaa-Regular.ttf in Resources */,
+				DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,11 +310,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
+				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
+				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
+				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
+				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
