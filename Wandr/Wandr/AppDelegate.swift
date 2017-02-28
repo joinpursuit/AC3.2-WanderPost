@@ -18,7 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        CloudManager.shared.getCurrentUser()
+
+        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
+        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
+        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
+        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
         
+        
+//        notificationViewController.tabBarItem = notificationIcon
+//        mapViewController.tabBarItem = mapIcon
+//        
+//        let rootVCForNotificationVC = UINavigationController(rootViewController: notificationViewController)
+//        let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
+//        
         setNavigationTheme()
 
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
@@ -53,8 +66,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
-        
-        
         
 //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
 //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
