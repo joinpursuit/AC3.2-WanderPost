@@ -27,6 +27,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         // Do any additional setup after loading the view.
         setupViewHierarchy()
         configureConstraints()
+        locationManager.startUpdatingLocation()
     }
     
     // MARK: - Hierarchy
@@ -34,6 +35,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container View
         self.view.addSubview(self.mapContainerView)
         self.mapContainerView.addSubview(mapView)
+        self.view.addSubview(postButton)
         
         //Drag Up Container View
         self.view.addSubview(self.dragUpContainerView)
@@ -52,6 +54,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.snp.makeConstraints { (view) in
             view.top.leading.trailing.bottom.equalToSuperview()
         }
+        postButton.snp.makeConstraints { (view) in
+            view.centerX.centerY.equalToSuperview()
+        }
+        postButton.addTarget(self, action: #selector(postButtonPressed), for: .touchUpInside)
+    }
+    
+    func postButtonPressed() {
+        
+        //Fix this
+        let post = WanderPost(location: locationManager.location!, content: "HI ANA!" as AnyObject, contentType: .text, privacyLevel: .everyone, reactions: [], time: NSDate() as Date)
+        CloudManager.shared.createPost(post: post) { (record, error) in
+            print("hi")
+        }
+        
     }
 
     /*
@@ -100,5 +116,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return view
     }()
     
-    
+    lazy var postButton: UIButton = {
+        let view = UIButton(type: .system)
+        view.setTitle("post", for: .normal)
+        return view
+    }()
 }

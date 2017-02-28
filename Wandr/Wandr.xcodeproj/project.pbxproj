@@ -11,6 +11,8 @@
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
 		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
+		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
+		8164460E1E65FB0800477FBD /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* Reaction.swift */; };
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
@@ -25,6 +27,8 @@
 		812952951E60D08A0048199B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
+		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
+		8164460D1E65FB0800477FBD /* Reaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
 		81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wandr.entitlements; sourceTree = "<group>"; };
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 		8171C3D81E60DF54000C6DC5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8164460B1E65FA2600477FBD /* WanderPost.swift */,
+				8164460D1E65FB0800477FBD /* Reaction.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -273,7 +279,9 @@
 			files = (
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
+				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
+				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
