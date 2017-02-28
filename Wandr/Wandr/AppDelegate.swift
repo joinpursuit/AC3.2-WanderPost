@@ -21,22 +21,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let tabController = UITabBarController()
         
-        let notificationViewController = NotificationViewController()
+        let profileViewController = ProfileViewController()
         let mapViewController = MapViewController()
+        let cameraViewController = CameraViewController()
         
-        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
+        let profileIcon = UITabBarItem(title: "Profile", image: nil, tag: 0)
         let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
         let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
-        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
         
-        
-        notificationViewController.tabBarItem = notificationIcon
+        profileViewController.tabBarItem = profileIcon
         mapViewController.tabBarItem = mapIcon
+        cameraViewController.tabBarItem = cameraIcon
         
-        let rootVCForNotificationVC = UINavigationController(rootViewController: notificationViewController)
+        let rootVCForProfileVC = UINavigationController(rootViewController: profileViewController)
         let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
+        let rootVCForCameraVC = UINavigationController(rootViewController: cameraViewController)
         
-        tabController.viewControllers = [rootVCForMapVC, rootVCForNotificationVC]
+        tabController.viewControllers = [rootVCForProfileVC, rootVCForMapVC, rootVCForCameraVC]
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
@@ -50,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { (granted, error) in
             if error != nil {
                  // Enable or disable features based on authorization.
-                print(error)
+                print(error!)
             }
         }
         application.registerForRemoteNotifications()
