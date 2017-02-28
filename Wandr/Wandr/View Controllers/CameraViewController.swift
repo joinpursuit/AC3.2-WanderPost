@@ -12,7 +12,7 @@ class CameraViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Camera"
+        self.navigationItem.title = "wanderpost"
         // Do any additional setup after loading the view.
     }
 

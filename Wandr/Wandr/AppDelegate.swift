@@ -19,28 +19,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        setNavigationTheme()
+
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let mapViewController = UINavigationController(rootViewController: MapViewController())
+        let cameraViewController = UINavigationController(rootViewController: CameraViewController())
+
+        let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let map = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let camera = UITabBarItem(title: "camera", image: nil, selectedImage: nil)
+        
+        profileViewController.tabBarItem = profile
+        mapViewController.tabBarItem = map
+        cameraViewController.tabBarItem = camera
+        
         let tabController = UITabBarController()
-        
-        let profileViewController = ProfileViewController()
-        let mapViewController = MapViewController()
-        let cameraViewController = CameraViewController()
-        
-        let profileIcon = UITabBarItem(title: "Profile", image: nil, tag: 0)
-        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
-        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
-        
-        profileViewController.tabBarItem = profileIcon
-        mapViewController.tabBarItem = mapIcon
-        cameraViewController.tabBarItem = cameraIcon
-        
-        let rootVCForProfileVC = UINavigationController(rootViewController: profileViewController)
-        let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
-        let rootVCForCameraVC = UINavigationController(rootViewController: cameraViewController)
-        
-        tabController.viewControllers = [rootVCForProfileVC, rootVCForMapVC, rootVCForCameraVC]
-        
+        tabController.viewControllers = [profileViewController, mapViewController, cameraViewController]
+        tabController.tabBar.tintColor = StyleManager.shared.accent
+        tabController.selectedIndex = 1
+
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        
         self.window?.rootViewController = tabController
         self.window?.makeKeyAndVisible()
         
@@ -55,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
+        
+        
         
 //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
 //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
@@ -86,6 +86,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
         
         return true
+    }
+    
+    func setNavigationTheme() {
+        let navigationBarAppearace = UINavigationBar.appearance()
+        navigationBarAppearace.backgroundColor = StyleManager.shared.primaryDark
+        navigationBarAppearace.barTintColor = StyleManager.shared.primaryDark
+        navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
+                                                      NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        let tabBarAppearance = UITabBar.appearance()
+        tabBarAppearance.barTintColor = StyleManager.shared.primary
+        
+        let tabBarItemAppearance  = UITabBarItem.appearance()
+        let normalAttributes = [NSForegroundColorAttributeName: UIColor.white,
+                          NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+        let selectedAttributes = [NSForegroundColorAttributeName: StyleManager.shared.accent,
+                                    NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+        tabBarItemAppearance.setTitleTextAttributes(normalAttributes, for: .normal)
+        tabBarItemAppearance.setTitleTextAttributes(selectedAttributes, for: .selected)
+        tabBarAppearance.tintColor = StyleManager.shared.accent
     }
     
 

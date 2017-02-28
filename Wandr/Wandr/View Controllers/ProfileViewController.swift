@@ -12,7 +12,7 @@ class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Profile"
+        self.navigationItem.title = "wanderpost"
 
         // Do any additional setup after loading the view.
     }
