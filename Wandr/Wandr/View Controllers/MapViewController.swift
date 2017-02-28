@@ -28,7 +28,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "Map"
+
+        self.navigationItem.title = "wanderpost"
         
         self.view.backgroundColor = UIColor.yellow
         
