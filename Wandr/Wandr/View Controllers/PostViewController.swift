@@ -12,7 +12,7 @@ import CloudKit
 
 class PostViewController: UIViewController, UITextFieldDelegate {
 
-    let segmentTitles = ["Internal", "Private", "Public"]
+    let segmentTitles: [PrivacyLevel] = [.everyone, .friends, .message]
     var location: CLLocation!
     
     override func viewDidLoad() {
@@ -25,7 +25,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         textField.becomeFirstResponder()
         
         self.segmentedControl.backgroundColor = UIColor.clear
-        self.segmentedControl.setSegmentItems(segmentTitles)
+        self.segmentedControl.setSegmentItems(segmentTitles.map{ ($0.rawValue as String) })
         self.segmentedControl.delegate = self
         
     }
@@ -37,12 +37,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     
     func postButtonPressed(_ sender: UIButton) {
         //init post, this is going to be a rough sketch of doing it
-        let post = WanderPost(location: self.location, content: self.textField.text as AnyObject, contentType: .text, privacyLevel: .everyone, reactions: [], time: Date())
+        let content = self.textField.text as AnyObject
+        let privacy = segmentTitles[segmentedControl.selectedSegmentIndex]
+        
+        let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, reactions: [], time: Date())
         
         CloudManager.shared.createPost(post: post) { (record, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+                //TODO Add in error handling.
+            }
             dump(record)
         }
-        //self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func imageTapped() {
