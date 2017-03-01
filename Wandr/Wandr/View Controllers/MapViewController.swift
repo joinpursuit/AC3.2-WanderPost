@@ -56,7 +56,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
-        self.navigationController?.present(PostViewController(), animated: true, completion: nil)
+        let postVC = PostViewController()
+        postVC.location = locationManager.location
+        self.navigationController?.present(postVC, animated: true, completion: nil)
     }
     
 //    func togglePostView(_ sender: UISwipeGestureRecognizer) {

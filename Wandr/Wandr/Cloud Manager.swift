@@ -23,6 +23,8 @@ class CloudManager {
     
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
+    private let container = CKContainer.default()
+
     
     var currentUser: CKRecordID?
     
@@ -31,8 +33,8 @@ class CloudManager {
         //Update user at the same time
         let recordType = "post"
         //init set the information of the record
-        let postRecord = CKRecord(recordType: recordType)
         
+        let postRecord = CKRecord(recordType: recordType)
         switch post.contentType {
         case .text:
             guard let text = post.content as? NSString else {
@@ -61,18 +63,21 @@ class CloudManager {
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
 
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
-        let postSave = CKModifyRecordsOperation()
+        let userSave = CKModifyRecordsOperation()
+        //userFetch = CKFetchRecordsOperation(
 
         userFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
                 if let ckError = error as? CKError  {
-                    ckError.userInfo[CKErrorRetryAfterKey]
+                    //TODO Add retry logic
                 } else {
                     print(error!.localizedDescription)
                 }
             }
             if let validRecord = record?.first {
                 
+                
+                //Fix this.
                 //Update the posts array
                 let userRecord = validRecord.value
                 var posts = userRecord["posts"] as? [NSString] ?? []
@@ -80,16 +85,16 @@ class CloudManager {
                 userRecord["posts"] = posts as CKRecordValue?
                 
                 //Save and post the record
-                postSave.recordsToSave = [userRecord, postRecord]
+                userSave.recordsToSave = [userRecord]
             }
         }
         
         //Init the userSave (to save the post)
-        postSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-            //add completion passer to 
+        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
             if errors == nil, records?.count == 2 {
                 _ = records?.map {
                     if $0.recordType == recordType {
+                        print("working")
                         completion($0, nil)
                     }
                 }
@@ -97,10 +102,19 @@ class CloudManager {
                 completion(nil, errors)
             }
         }
+        let savePost = CKDatabaseOperation()
+        savePost.container = self.container
+        savePost.container?.publicCloudDatabase.save(postRecord) { (record, error) in
+            completion(record, error)
+        }
+
+        userSave.addDependency(userFetch)
+        userSave.addDependency(savePost)
+        savePost.addDependency(userFetch)
+        savePost.addDependency(userSave)
         
-        postSave.addDependency(userFetch)
         let queue = OperationQueue()
-        queue.addOperations([userFetch, postSave], waitUntilFinished: false)
+        queue.addOperations([userFetch, userSave, savePost], waitUntilFinished: false)
     }
     //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
     func createUser (userName: String, completion: @escaping (Error?) -> Void) {
@@ -117,8 +131,7 @@ class CloudManager {
     }
     
     func getCurrentUser() {
-        let container = CKContainer.default()
-        container.fetchUserRecordID() { recordID, error in
+        self.container.fetchUserRecordID() { recordID, error in
             switch error {
             case .some:
                 print(error!.localizedDescription)
