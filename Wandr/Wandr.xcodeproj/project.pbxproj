@@ -20,6 +20,7 @@
 		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
 		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
 		A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */; };
+		A7686F861E67626E00402053 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F851E67626E00402053 /* ProfileView.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
@@ -45,6 +46,7 @@
 		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
 		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
 		A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailPostTableViewCell.swift; path = Views/ProfileViewViewControllerDetailPostTableViewCell.swift; sourceTree = "<group>"; };
+		A7686F851E67626E00402053 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			isa = PBXGroup;
 			children = (
 				A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */,
+				A7686F851E67626E00402053 /* ProfileView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -316,6 +319,7 @@
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
+				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
