@@ -8,16 +8,19 @@
 
 import UIKit
 import TwicketSegmentedControl
+import CloudKit
 
 class PostViewController: UIViewController, UITextFieldDelegate {
 
     let segmentTitles = ["Internal", "Private", "Public"]
+    var location: CLLocation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.yellow
         setupViewHierarchy()
         configureConstraints()
+        configureTargets()
         
         textField.becomeFirstResponder()
         
@@ -33,7 +36,13 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     }
     
     func postButtonPressed(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
+        //init post, this is going to be a rough sketch of doing it
+        let post = WanderPost(location: self.location, content: self.textField.text as AnyObject, contentType: .text, privacyLevel: .everyone, reactions: [], time: Date())
+        
+        CloudManager.shared.createPost(post: post) { (record, error) in
+            dump(record)
+        }
+        //self.dismiss(animated: true, completion: nil)
     }
     
     func imageTapped() {
@@ -90,6 +99,13 @@ class PostViewController: UIViewController, UITextFieldDelegate {
             button.bottom.equalToSuperview().inset(8)
         }
     }
+    
+    func configureTargets () {
+        postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
+    }
+    
+    //MARK: - Views
 
     lazy var postContainerView: UIView = {
         let view = UIView()
