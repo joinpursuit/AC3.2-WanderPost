@@ -169,5 +169,9 @@ class CloudManager {
                 dump(record)
             }
         }
-    }    
+    }
+    
+    func getWanderpostsForMap (location: CL) {
+        
+    }
 }
