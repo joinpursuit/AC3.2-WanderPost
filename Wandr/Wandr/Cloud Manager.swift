@@ -13,7 +13,9 @@ enum PostContentType: NSString {
 }
 
 enum PrivacyLevel: NSString {
-    case message, friends, everyone
+    case message = "Message"
+    case friends = "Friends"
+    case everyone = "Everyone"
 }
 
 
@@ -24,7 +26,7 @@ class CloudManager {
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
     private let container = CKContainer.default()
-
+    
     
     var currentUser: CKRecordID?
     
@@ -65,7 +67,7 @@ class CloudManager {
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
         let userSave = CKModifyRecordsOperation()
         //userFetch = CKFetchRecordsOperation(
-
+        
         userFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
                 if let ckError = error as? CKError  {
@@ -107,7 +109,7 @@ class CloudManager {
         savePost.container?.publicCloudDatabase.save(postRecord) { (record, error) in
             completion(record, error)
         }
-
+        
         userSave.addDependency(userFetch)
         userSave.addDependency(savePost)
         savePost.addDependency(userFetch)
@@ -117,16 +119,24 @@ class CloudManager {
         queue.addOperations([userFetch, userSave, savePost], waitUntilFinished: false)
     }
     //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
-    func createUser (userName: String, completion: @escaping (Error?) -> Void) {
+    func createUsername (userName: String, completion: @escaping (Error?) -> Void) {
         
         let validUsername = userName as NSString
         let id = CKRecordID(recordName: currentUser!.recordName)
-        let userRecord = CKRecord(recordType: "Users", recordID: id)
         
-        userRecord.setObject(validUsername, forKey: "username")
-        
-        publicDatabase.save(userRecord) { (record, error) in
-            completion(error)
+        publicDatabase.fetch(withRecordID: id) { (userRecord, error) in
+            if error != nil {
+                print(error!.localizedDescription)
+            } else if let validUserRecord = userRecord
+            {
+                validUserRecord["username"] = validUsername
+                
+                self.publicDatabase.save(validUserRecord) { (record, error) in
+                    completion(error)
+                }
+                
+                
+            }
         }
     }
     
