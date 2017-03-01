@@ -10,27 +10,77 @@ import UIKit
 import SnapKit
 import TwicketSegmentedControl
 
-class ProfileViewController: UIViewController {
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     let segmentTitles = ["Internal", "Private", "Public"]
+
+    let dummyData = ["name": "Ana", "date": "3-1-17", "time": "3:00PM", "location": "Quuens", "message": "There's a nice view outside"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.navigationItem.title = "wanderpost"
-        
         self.view.backgroundColor = UIColor.white
 
-        // Do any additional setup after loading the view.
         setupViewHierarchy()
         configureConstraints()
         
+        //SegmentedControl
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
         self.segmentedControl.delegate = self
         
-        //profileImageView.layer.cornerRadius = profileImageView.frame.height / 2
+        //TabelViewCell
+        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
     }
+    
+    // MARK: - Actions
+    func imageTapped() {
+        //Able to change profile picture
+    }
+    
+    func togglePostTableView() {
+        
+    }
+    //Table header
+    //Section header
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 0:
+            return segmentedControlContainerView
+        default:
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 200.0
+    }
+    
+    
+    // MARK: - TableViewDelegate and TableViewDataSource Methods
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.none
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+    }
+    
     
     private func setupViewHierarchy() {
         self.view.addSubview(profileContainerView)
@@ -38,6 +88,7 @@ class ProfileViewController: UIViewController {
         self.profileContainerView.addSubview(userNameLabel)
         self.profileContainerView.addSubview(postNumberLabel)
         self.profileContainerView.addSubview(followersNumberLabel)
+        self.profileContainerView.addSubview(followingNumberLabel)
         self.profileContainerView.addSubview(segmentedControl)
         
         self.view.addSubview(postTableView)
@@ -75,15 +126,22 @@ class ProfileViewController: UIViewController {
             label.height.equalTo(30)
         }
         
-        postNumberLabel.snp.makeConstraints { (label) in
+        followersNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.centerX.equalToSuperview().inset( -(self.view.frame.width / 4))
+            label.centerX.equalToSuperview()
             label.height.equalTo(30)
         }
         
-        followersNumberLabel.snp.makeConstraints { (label) in
+        postNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.centerX.equalToSuperview().inset(self.view.frame.width / 4)
+            label.trailing.equalTo(self.followersNumberLabel.snp.leading).offset(-16.0)
+            label.height.equalTo(30)
+        }
+        
+        
+        followingNumberLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
+            label.leading.equalTo(self.followersNumberLabel.snp.trailing).offset(16.0)
             label.height.equalTo(30)
         }
         
@@ -93,27 +151,9 @@ class ProfileViewController: UIViewController {
             control.leading.trailing.equalToSuperview()
             control.height.equalTo(40)
         }
-        
     }
-
-
-    // MARK: - Actions
-    func imageTapped() {
-        //Able to change profile picture
-    }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
     
     //MARK: - Views
-    
     lazy var profileContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.red
@@ -154,10 +194,15 @@ class ProfileViewController: UIViewController {
         return label
     }()
     
-    lazy var FollowingNumberLaber: UILabel = {
+    lazy var followingNumberLabel: UILabel = {
         let label = UILabel()
         label.text = "#Following"
         return label
+    }()
+    
+    lazy var segmentedControlContainerView = {
+        let view = UIView()
+        return view
     }()
     
     lazy var segmentedControl: TwicketSegmentedControl = {
@@ -167,6 +212,10 @@ class ProfileViewController: UIViewController {
     
     lazy var postTableView: UITableView = {
        let tableView = UITableView()
+        tableView.delegate = self
+        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostTableView))
+        swipeUpGesture.direction = .up
+        tableView.addGestureRecognizer(swipeUpGesture)
         return tableView
     }()
 

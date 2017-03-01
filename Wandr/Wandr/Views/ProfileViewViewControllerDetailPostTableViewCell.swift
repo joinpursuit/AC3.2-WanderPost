@@ -41,7 +41,29 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
     }
     
     private func configureConstraints() {
+        nameLabel.snp.makeConstraints { (label) in
+            label.top.leading.equalToSuperview().offset(8.0)
+            label.trailing.equalTo(self.dateAndTimeLabel.snp.leading)
+            label.height.equalTo(30)
+        }
         
+        dateAndTimeLabel.snp.makeConstraints { (label) in
+            label.top.equalToSuperview().offset(8.0)
+            label.trailing.equalToSuperview().inset(8.0)
+            label.height.equalTo(30)
+        }
+        
+        locationLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(4.0)
+            label.trailing.equalToSuperview().inset(8.0)
+            label.height.equalTo(30)
+        }
+        
+        messageLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(8.0)
+            label.leading.equalToSuperview().offset(8.0)
+            label.trailing.bottom.equalToSuperview().inset(8.0)
+        }
     }
     
     lazy var nameLabel: UILabel = {
