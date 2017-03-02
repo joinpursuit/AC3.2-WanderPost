@@ -28,7 +28,7 @@ class ProfileView: UIView {
     private func configureConstraints() {
         // Subviews of profileContainerView
         profileImageView.snp.makeConstraints { (view) in
-            view.top.equalToSuperview().offset(8)
+            view.top.equalToSuperview().offset(16)
             view.centerX.equalToSuperview()
             view.height.equalTo(150)
             view.width.equalTo(150)
@@ -64,7 +64,7 @@ class ProfileView: UIView {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "default-placeholder")
         imageView.layer.borderWidth = 2.0
-        imageView.layer.borderColor = UIColor.blue.cgColor
+        imageView.layer.borderColor = StyleManager.shared.accent.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.frame.size = CGSize(width: 150.0, height: 150.0)
         //let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
@@ -79,24 +79,28 @@ class ProfileView: UIView {
     lazy var userNameLabel: UILabel = {
         let label = UILabel()
         label.text = "User Name"
+        label.font = StyleManager.shared.comfortaaFont18
         return label
     }()
     
     lazy var postNumberLabel: UILabel = {
         let label = UILabel()
         label.text = "#Posts"
+        label.font = StyleManager.shared.comfortaaFont14
         return label
     }()
     
     lazy var followersNumberLabel: UILabel = {
         let label = UILabel()
         label.text = "#Followers"
+        label.font = StyleManager.shared.comfortaaFont14
         return label
     }()
     
     lazy var followingNumberLabel: UILabel = {
         let label = UILabel()
         label.text = "#Following"
+        label.font = StyleManager.shared.comfortaaFont14
         return label
     }()
 }
@@ -104,13 +108,15 @@ class ProfileView: UIView {
 class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     static let identifier = "segmentedControlHeaderFooterViewIdentifier"
     
-    let segmentTitles = ["Internal", "Private", "Public"]
+    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func draw(_ rect: CGRect) {
         setupViewHierarchy()
         configureConstraints()
+        //let frame = CGRect(x: 5, y: 5, width: self.frame.width - 10, height: 40)
+        //self.segmentedControl = TwicketSegmentedControl(frame: frame)
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
     }
@@ -121,7 +127,10 @@ class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     
     private func configureConstraints() {
         segmentedControl.snp.makeConstraints { (control) in
-            control.top.leading.trailing.bottom.equalToSuperview()
+            control.top.equalToSuperview()
+            control.leading.equalToSuperview().offset(16)
+            control.trailing.equalToSuperview().inset(16)
+            control.bottom.equalToSuperview()
             control.height.equalTo(40.0)
         }
     }

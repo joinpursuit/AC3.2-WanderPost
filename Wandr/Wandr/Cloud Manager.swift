@@ -18,6 +18,17 @@ enum PrivacyLevel: NSString {
     case everyone = "Everyone"
 }
 
+class PrivacyLevelManager {
+    static let shared = PrivacyLevelManager()
+    let privacyLevelArray: [PrivacyLevel] = {
+        return [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+    }()
+    
+    let privacyLevelStringArray: [String] = {
+        let privacyLevel =  [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+        return privacyLevel.map{ ($0.rawValue as String) }
+    }()
+}
 
 class CloudManager {
     static let shared = CloudManager()
