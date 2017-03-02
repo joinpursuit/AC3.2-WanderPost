@@ -9,8 +9,8 @@
 import Foundation
 import CloudKit
 
-class WanderPost {
-    let location: CLLocation
+class WanderPost: ARAnnotation {
+//    let location: CLLocation
     let content: AnyObject
     let user: CKRecordID? = CloudManager.shared.currentUser
     let contentType: PostContentType
@@ -20,11 +20,14 @@ class WanderPost {
     let time: Date
     
     init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date) {
-        self.location = location
         self.content = content
         self.contentType = contentType
         self.privacyLevel = privacyLevel
         self.reactions = reactions
         self.time = time
+        
+        super.init()
+                self.location = location
+        
     }
 }
