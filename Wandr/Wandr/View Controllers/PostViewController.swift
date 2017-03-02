@@ -8,16 +8,21 @@
 
 import UIKit
 import TwicketSegmentedControl
+import CloudKit
 
 class PostViewController: UIViewController, UITextFieldDelegate {
 
-    let segmentTitles = ["Internal", "Private", "Public"]
+    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
+    
+    var location: CLLocation!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.yellow
+        self.view.backgroundColor = StyleManager.shared.primaryDark
         setupViewHierarchy()
         configureConstraints()
+        configureTargets()
         
         textField.becomeFirstResponder()
         
@@ -33,6 +38,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     }
     
     func postButtonPressed(_ sender: UIButton) {
+        //init post, this is going to be a rough sketch of doing it
+        let content = self.textField.text as AnyObject
+        let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
+        
+        let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, reactions: [], time: Date())
+        
+        CloudManager.shared.createPost(post: post) { (record, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+                //TODO Add in error handling.
+            }
+            dump(record)
+        }
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -44,16 +62,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     private func setupViewHierarchy() {
         self.view.addSubview(postContainerView)
         self.postContainerView.addSubview(profileImageView)
-        self.postContainerView.addSubview(segmentedControl)
+        self.postContainerView.addSubview(segmentedControlContainerView)
         self.postContainerView.addSubview(textField)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
+        
+        self.segmentedControlContainerView.addSubview(segmentedControl)
     }
     
     private func configureConstraints() {
         postContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.trailing.equalToSuperview()
+            view.bottom.equalToSuperview()
         }
         
         dismissButton.snp.makeConstraints { (button) in
@@ -70,15 +91,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
             view.width.equalTo(50.0)
         }
         
+        segmentedControlContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(profileImageView.snp.bottom).offset(8)
+            view.leading.equalToSuperview().offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(30)
+        }
+        
         segmentedControl.snp.makeConstraints { (control) in
-            control.top.equalTo(profileImageView.snp.bottom).offset(8)
-            control.leading.equalToSuperview().offset(8.0)
-            control.trailing.equalToSuperview().inset(8.0)
-            control.height.equalTo(40)
+            control.top.trailing.leading.bottom.equalToSuperview()
         }
         
         textField.snp.makeConstraints { (textField) in
-            textField.top.equalTo(segmentedControl.snp.bottom).offset(8)
+            textField.top.equalTo(segmentedControlContainerView.snp.bottom).offset(16.0)
             textField.leading.equalToSuperview().offset(16.0)
             textField.trailing.equalToSuperview().inset(16.0)
             textField.height.equalTo(150)
@@ -87,13 +112,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         postButton.snp.makeConstraints { (button) in
             button.top.equalTo(textField.snp.bottom).offset(8)
             button.trailing.equalToSuperview().inset(16)
-            button.bottom.equalToSuperview().inset(8)
         }
     }
+    
+    func configureTargets () {
+        postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
+    }
+    
+    //MARK: - Views
 
     lazy var postContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.red
+        view.backgroundColor = StyleManager.shared.primaryLight
         return view
     }()
     
@@ -101,7 +132,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "default-placeholder")
         imageView.layer.borderWidth = 2.0
-        imageView.layer.borderColor = UIColor.white.cgColor
+        imageView.layer.borderColor = StyleManager.shared.accent.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.frame.size = CGSize(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
@@ -112,6 +143,11 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         imageView.layer.cornerRadius = imageView.frame.height / 2
         return imageView
     }()
+    
+    lazy var segmentedControlContainerView: UIView = {
+       let view = UIView()
+        return view
+    }()
 
     lazy var segmentedControl: TwicketSegmentedControl = {
         let control = TwicketSegmentedControl()
@@ -120,18 +156,23 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     
     lazy var textField: UITextField = {
        let textField = UITextField()
-        textField.backgroundColor = UIColor.blue
+        textField.font = StyleManager.shared.comfortaaFont18
+        textField.textAlignment = NSTextAlignment.left
+        textField.tintColor = StyleManager.shared.accent
+        textField.backgroundColor = UIColor.white
         return textField
     }()
     
     lazy var postButton: UIButton = {
         let button = UIButton()
+        button.backgroundColor = StyleManager.shared.primary
         button.setTitle("post", for: .normal)
         return button
     }()
     
     lazy var dismissButton: UIButton = {
        let button = UIButton()
+        button.tintColor = StyleManager.shared.primaryDark
         button.setTitle("X", for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button

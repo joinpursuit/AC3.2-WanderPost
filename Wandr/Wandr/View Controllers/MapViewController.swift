@@ -24,7 +24,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var addPostViewShown = false
     
-    let segmentTitles = ["Internal", "Private", "Public"]
+    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         self.view.backgroundColor = UIColor.yellow
         
-        let frame = CGRect(x: 5, y: 75, width: view.frame.width - 10, height: 40)
+        let frame = CGRect(x: 5, y: 75, width: view.frame.width - 10, height: 30)
         self.segmentedControl = TwicketSegmentedControl(frame: frame)
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
@@ -44,33 +44,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //        setupGestures()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-        // TODO: remove this kind of implementation and add it to the FoaasNavigationController
-        guard let window = UIApplication.shared.keyWindow else { return }
-        window.addSubview(addPostButton)
-        
-        configureAddPostButtonConstraints()
-    }
-    
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
-        self.navigationController?.present(PostViewController(), animated: true, completion: nil)
+        let postVC = PostViewController()
+        postVC.location = locationManager.location
+        self.navigationController?.present(postVC, animated: true, completion: nil)
     }
     
-//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
-//        switch sender.direction {
-//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        default:
-//            print("Not a recognized gesture")
-//        }
-//    }
+    //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
+    //        switch sender.direction {
+    //        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
+    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+    //             self.addPostViewShown = !addPostViewShown
+    //        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
+    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+    //             self.addPostViewShown = !addPostViewShown
+    //        default:
+    //            print("Not a recognized gesture")
+    //        }
+    //    }
     
     //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
     //        switch sender.direction {
@@ -179,13 +171,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.view.addSubview(addPostButton)
         self.view.addSubview(segmentedControl)
         
-        //Drag Up Container View
-        //        self.view.addSubview(self.dragUpOrDownContainerView)
-        //        self.dragUpOrDownContainerView.addSubview(segmentedControlContainerView)
-        //        self.segmentedControlContainerView.addSubview(segmentedControl)
-        //        self.dragUpOrDownContainerView.addSubview(postContainerView)
-        //        self.dragUpOrDownContainerView.addSubview(cheveronButton)
-        
         locationManager.delegate = self
     }
     
@@ -206,50 +191,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         addPostButton.snp.makeConstraints { (button) in
             button.trailing.equalToSuperview().inset(48.0)
             button.bottom.equalToSuperview().inset(54.0)
-            button.width.equalTo(54.0)
-            button.height.equalTo(54.0)
-        }
-    }
-    
-    //        segmentedControl.snp.makeConstraints { (control) in
-    //            control.top.equalTo(self.topLayoutGuide.snp.bottom).offset(8)
-    //        }
-    //
-    //        //Drag Up Container View
-    //        dragUpOrDownContainerView.snp.makeConstraints { (view) in
-    //            view.leading.equalToSuperview()
-    //            view.trailing.equalToSuperview()
-    //            view.height.equalToSuperview().multipliedBy(0.5)
-    //            view.width.equalToSuperview()
-    //        }
-    //
-    //        cheveronButton.snp.makeConstraints { (button) in
-    //            button.top.equalToSuperview()
-    //            button.trailing.equalToSuperview().inset(16)
-    //        }
-    //
-    //        segmentedControlContainerView.snp.makeConstraints { (view) in
-    //            view.top.equalTo(self.cheveronButton.snp.centerY)
-    //            view.leading.trailing.equalToSuperview()
-    //            view.height.equalToSuperview().multipliedBy(0.175)
-    //            view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-    //        }
-    //
-    //        segmentedControl.snp.makeConstraints { (control) in
-    //            control.top.leading.bottom.trailing.equalToSuperview()
-    //        }
-    //
-    //        postContainerView.snp.makeConstraints { (view) in
-    //            view.top.equalTo(segmentedControlContainerView.snp.bottom)
-    //            view.leading.trailing.bottom.equalToSuperview()
-    //        }
-    
-    
-    func configureAddPostButtonConstraints() {
-        guard let window = UIApplication.shared.keyWindow else { return }
-        addPostButton.snp.makeConstraints { (button) in
-            button.trailing.equalTo(window.snp.trailing).inset(48.0)
-            button.bottom.equalTo(window.snp.bottom).inset(54.0)
             button.width.equalTo(54.0)
             button.height.equalTo(54.0)
         }
@@ -309,7 +250,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         button.setTitle("Up", for: .normal)
         button.tintColor = UIColor.yellow
         button.backgroundColor = UIColor.orange
-        //        button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
+        //button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
         return button
     }()
     
