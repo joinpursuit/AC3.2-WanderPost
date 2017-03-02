@@ -36,6 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
+        let mapCameraViewController = UINavigationController(rootViewController: MapCameraViewController())
         let cameraViewController = UINavigationController(rootViewController: CameraViewController())
 
         let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
@@ -44,6 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         profileViewController.tabBarItem = profile
         mapViewController.tabBarItem = map
+        mapCameraViewController.tabBarItem = map
         cameraViewController.tabBarItem = camera
         
         let tabController = UITabBarController()
