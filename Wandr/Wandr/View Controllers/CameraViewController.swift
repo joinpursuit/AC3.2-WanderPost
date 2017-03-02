@@ -10,10 +10,12 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class CameraViewController: UIViewController {
+class CameraViewController: UIViewController, ARPostDelegate {
     
     let myWanderPost = WanderPost(location: CLLocation(latitude: 40.7470, longitude: -73.9529), content: "I was in LIC Bar with the bucket brigade!" as AnyObject, contentType: .text, privacyLevel: .everyone)
 
+    var posts: [WanderPost] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "wanderpost"
@@ -26,7 +28,7 @@ class CameraViewController: UIViewController {
         arViewController.maxVisibleAnnotations = 30
         arViewController.headingSmoothingFactor = 0.05
         //3
-        arViewController.setAnnotations([myWanderPost])
+        arViewController.setAnnotations(posts)
         
         self.present(arViewController, animated: true, completion: nil)
     }
