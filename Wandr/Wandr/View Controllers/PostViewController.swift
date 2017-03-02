@@ -42,7 +42,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         let content = self.textField.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
-        let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, reactions: [], time: Date())
+        let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy)
         
         CloudManager.shared.createPost(post: post) { (record, error) in
             if error != nil {
