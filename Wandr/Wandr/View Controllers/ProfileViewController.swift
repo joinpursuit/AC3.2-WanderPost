@@ -12,8 +12,8 @@ import TwicketSegmentedControl
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    let segmentTitles = ["Internal", "Private", "Public"]
-
+    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    
     let dummyData = ["name": "Ana", "date": "3-1-17", "time": "3:00PM", "location": "Quuens", "message": "There's a nice view outside"]
     
     let dummyData2 = [1,2,3,4,5,6,7,8,9,10,11,12,13]
@@ -33,10 +33,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
         
         //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 300.0)
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
         let headerView = ProfileView(frame: profileViewFrame)
-        headerView.backgroundColor = UIColor.white
-        
+        headerView.backgroundColor = StyleManager.shared.primaryLight
         postTableView.tableHeaderView = headerView
     }
     
@@ -55,7 +54,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40.0
+        return 30.0
     }
     
     // MARK: - TableViewDelegate and TableViewDataSource Methods
@@ -70,7 +69,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
         cell.nameLabel.text = "\(self.dummyData2[indexPath.row])"
-        cell.backgroundColor = UIColor.brown
         //cell.nameLabel.text = self.dummyData["name"]
         //cell.dateAndTimeLabel.text = "\(self.dummyData["date"]) \(self.dummyData["time"])"
         //cell.locationLabel.text = self.dummyData["location"]
@@ -101,6 +99,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
        let tableView = UITableView()
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.rowHeight = 100
+        tableView.estimatedRowHeight = 100
         return tableView
     }()
 }

@@ -69,24 +69,32 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
     lazy var nameLabel: UILabel = {
        let label = UILabel()
         label.text = "Name"
+        label.font = StyleManager.shared.comfortaaFont14
+        label.tintColor = StyleManager.shared.secondaryText
         return label
     }()
     
     lazy var dateAndTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "Date & Time"
+        label.font = StyleManager.shared.comfortaaFont14
+        label.tintColor = StyleManager.shared.secondaryText
         return label
     }()
     
     lazy var locationLabel: UILabel = {
         let label = UILabel()
         label.text = "Location"
+        label.font = StyleManager.shared.comfortaaFont14
+        label.tintColor = StyleManager.shared.secondaryText
         return label
     }()
 
     lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Message"
+        label.font = StyleManager.shared.comfortaaFont14
+        label.tintColor = StyleManager.shared.secondaryText
         label.numberOfLines = 0
         return label
     }()

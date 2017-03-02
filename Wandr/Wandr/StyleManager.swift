@@ -32,7 +32,21 @@ class StyleManager {
         return UIColor(hexString: "#727272")
     }
     
+    var comfortaaFont12: UIFont {
+        return UIFont.Comfortaa.regular(size: 12)!
+    }
     
+    var comfortaaFont14: UIFont {
+        return UIFont.Comfortaa.regular(size: 14)!
+    }
+    
+    var comfortaaFont16: UIFont {
+        return UIFont.Comfortaa.regular(size: 16)!
+    }
+    
+    var comfortaaFont18: UIFont {
+        return UIFont.Comfortaa.regular(size: 18)!
+    }
     
 }
 
