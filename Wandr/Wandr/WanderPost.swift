@@ -19,6 +19,7 @@ class WanderPost: ARAnnotation {
     //Confirm that time is coming in as an (NS)Date
     let time: Date
     
+    
     init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date) {
         self.content = content
         self.contentType = contentType
