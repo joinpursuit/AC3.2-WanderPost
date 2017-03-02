@@ -33,6 +33,7 @@ class WanderPost: ARAnnotation {
     }
     
     convenience init(location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel) {
+        
         self.init(location: location, content: content, contentType: contentType, privacyLevel: privacyLevel, reactions: [], time: Date(), user: CloudManager.shared.currentUser!)
     }
     

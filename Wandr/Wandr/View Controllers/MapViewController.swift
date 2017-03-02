@@ -38,7 +38,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
         self.segmentedControl.delegate = self
-        
         setupViewHierarchy()
         configureConstraints()
         //        setupGestures()
