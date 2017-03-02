@@ -63,6 +63,7 @@ class CloudManager {
         postRecord.setObject(post.location, forKey: "location")
         postRecord.setObject(NSString(string: post.user!.recordName), forKey: "userID")
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
+        postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
 
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
         let userSave = CKModifyRecordsOperation()
@@ -171,7 +172,23 @@ class CloudManager {
         }
     }
     
-    func getWanderpostsForMap (location: CL) {
+    func getWanderpostsForMap (_ currentLocation: CLLocation, privacyLevel: PrivacyLevel) {
+        
+        let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
+        
+        let radius = 1000
+        
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < %f", currentLocation, radius)
+        let query = CKQuery(recordType: "post", predicate: locationPredicate)
+        query.sortDescriptors = [locationSorter]
+        let fetchInLocation = CKQueryOperation(query: query)
+        
+        fetchInLocation.queryCompletionBlock = {(query, error) in
+            
+        }
+        
+        let queue = OperationQueue()
+        queue.addOperation(fetchInLocation)
         
     }
 }
