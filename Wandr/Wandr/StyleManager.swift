@@ -8,6 +8,19 @@
 
 import UIKit
 
+//I think we could we factor this into a global variable/static property on one of the classes. Thoughts?
+class PrivacyLevelManager {
+    static let shared = PrivacyLevelManager()
+    let privacyLevelArray: [PrivacyLevel] = {
+        return [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+    }()
+    
+    let privacyLevelStringArray: [String] = {
+        let privacyLevel =  [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+        return privacyLevel.map{ ($0.rawValue as String) }
+    }()
+}
+
 class StyleManager {
     
     static let shared = StyleManager()

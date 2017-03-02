@@ -42,6 +42,7 @@
 		DEA80B3C1E686F58001E0747 /* hdar_close.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B381E686F58001E0747 /* hdar_close.png */; };
 		DEA80B3D1E686F58001E0747 /* hdar_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B391E686F58001E0747 /* hdar_close@2x.png */; };
 		DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */; };
+		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +85,7 @@
 		DEA80B381E686F58001E0747 /* hdar_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hdar_close.png; sourceTree = "<group>"; };
 		DEA80B391E686F58001E0747 /* hdar_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@2x.png"; sourceTree = "<group>"; };
 		DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@3x.png"; sourceTree = "<group>"; };
+		DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostAnnotation.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -161,6 +163,7 @@
 			children = (
 				8164460B1E65FA2600477FBD /* WanderPost.swift */,
 				8164460D1E65FB0800477FBD /* Reaction.swift */,
+				DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -389,6 +392,7 @@
 			files = (
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
+				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
 				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
 				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
