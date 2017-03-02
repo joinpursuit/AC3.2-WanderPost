@@ -13,6 +13,7 @@ class OnBoardViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.title = "wanderpost"
 
         // Do any additional setup after loading the view.
     }

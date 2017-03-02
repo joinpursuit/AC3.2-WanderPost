@@ -25,31 +25,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
         let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
         
-        
-//        notificationViewController.tabBarItem = notificationIcon
-//        mapViewController.tabBarItem = mapIcon
-//        
-//        let rootVCForNotificationVC = UINavigationController(rootViewController: notificationViewController)
-//        let rootVCForMapVC = UINavigationController(rootViewController: mapViewController)
-//        
         setNavigationTheme()
 
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let mapCameraViewController = UINavigationController(rootViewController: MapCameraViewController())
         let cameraViewController = UINavigationController(rootViewController: CameraViewController())
+        let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
 
         let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
         let map = UITabBarItem(title: "map", image: nil, selectedImage: nil)
         let camera = UITabBarItem(title: "camera", image: nil, selectedImage: nil)
+        let onBoard = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
         
         profileViewController.tabBarItem = profile
         mapViewController.tabBarItem = map
-        mapCameraViewController.tabBarItem = map
         cameraViewController.tabBarItem = camera
+        onBoardViewController.tabBarItem = onBoard
         
         let tabController = UITabBarController()
-        tabController.viewControllers = [profileViewController, mapViewController, cameraViewController]
+        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, cameraViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
 
