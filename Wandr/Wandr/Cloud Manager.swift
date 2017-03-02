@@ -187,16 +187,14 @@ class CloudManager {
         
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
         
-        let radius = 1000
+        let radius: Float = 10000
         
         let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < %f", currentLocation, radius)
+        //let locationPredicate =
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
-        query.sortDescriptors = [locationSorter]
+        //query.sortDescriptors = [locationSorter]
         let fetchInLocation = CKQueryOperation(query: query)
         
-        fetchInLocation.queryCompletionBlock = {(query, error) in
-            
-        }
         
         let queue = OperationQueue()
         queue.addOperation(fetchInLocation)
