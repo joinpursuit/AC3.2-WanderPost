@@ -205,9 +205,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.first else { return }
-        let span = MKCoordinateSpanMake(0.05, 0.05)
+        let span = MKCoordinateSpanMake(0.01, 0.01)
         let region = MKCoordinateRegion(center: location.coordinate, span: span)
-        mapView.setRegion(region, animated: true)
+        let location2D = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
+        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
+        mapCamera.altitude = 500 // example altitude
+        mapCamera.pitch = 5
+        mapView.camera = mapCamera
+        mapView.setRegion(region, animated: false)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -222,8 +227,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     lazy var mapView: MKMapView = {
         let mapView = MKMapView()
+        mapView.mapType = .standard
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
+        mapView.showsBuildings = false
         return mapView
     }()
     
