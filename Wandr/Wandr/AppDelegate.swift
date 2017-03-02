@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let cameraViewController = UINavigationController(rootViewController: CameraViewController())
+        let cameraViewController = CameraViewController()//UINavigationController(rootViewController: CameraViewController())
         let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
 
         let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
