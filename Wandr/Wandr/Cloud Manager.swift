@@ -7,6 +7,7 @@
 //
 import Foundation
 import CloudKit
+import UIKit
 
 enum PostContentType: NSString {
     case audio, text, video
@@ -183,21 +184,16 @@ class CloudManager {
         }
     }
     
-    func getWanderpostsForMap (_ currentLocation: CLLocation, privacyLevel: PrivacyLevel) {
+    func getWanderpostsForMap (_ currentLocation: CLLocation, privacyLevel: PrivacyLevel) {//-> [WanderPost] {
         
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        
-        let radius: Float = 10000
-        
-        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < %f", currentLocation, radius)
-        //let locationPredicate =
+        let locationPredicate = NSPredicate(format: "privacyLevel == %@ AND distanceToLocation:fromLocation:(location, %@) < 10000", privacyLevel.rawValue, currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
-        //query.sortDescriptors = [locationSorter]
-        let fetchInLocation = CKQueryOperation(query: query)
+        query.sortDescriptors = [locationSorter]
         
-        
-        let queue = OperationQueue()
-        queue.addOperation(fetchInLocation)
-        
+        publicDatabase.perform(query, inZoneWith: nil) { (record, error) in
+            print(record?.count)
+            //Make the array of Wanderposts.
+        }
     }
 }
