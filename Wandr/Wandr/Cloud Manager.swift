@@ -7,6 +7,7 @@
 //
 import Foundation
 import CloudKit
+import UIKit
 
 enum PostContentType: NSString {
     case audio, text, video
@@ -74,6 +75,7 @@ class CloudManager {
         postRecord.setObject(post.location, forKey: "location")
         postRecord.setObject(NSString(string: post.user!.recordName), forKey: "userID")
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
+        postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
 
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
         let userSave = CKModifyRecordsOperation()
@@ -180,5 +182,18 @@ class CloudManager {
                 dump(record)
             }
         }
-    }    
+    }
+    
+    func getWanderpostsForMap (_ currentLocation: CLLocation, privacyLevel: PrivacyLevel) {//-> [WanderPost] {
+        
+        let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
+        let locationPredicate = NSPredicate(format: "privacyLevel == %@ AND distanceToLocation:fromLocation:(location, %@) < 10000", privacyLevel.rawValue, currentLocation)
+        let query = CKQuery(recordType: "post", predicate: locationPredicate)
+        query.sortDescriptors = [locationSorter]
+        
+        publicDatabase.perform(query, inZoneWith: nil) { (record, error) in
+            print(record?.count)
+            //Make the array of Wanderposts.
+        }
+    }
 }

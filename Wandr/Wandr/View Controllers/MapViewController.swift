@@ -41,6 +41,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         setupViewHierarchy()
         configureConstraints()
+        CloudManager.shared.getWanderpostsForMap(locationManager.location!, privacyLevel: .everyone)
         //        setupGestures()
     }
     
