@@ -12,7 +12,7 @@ import CoreLocation
 
 class CameraViewController: UIViewController {
     
-    let myWanderPost = WanderPost(location: CLLocation(latitude: 40.7470, longitude: -73.9529), content: "I was in LIC Bar with the bucket brigade!" as AnyObject, contentType: .text, privacyLevel: .everyone, reactions: [], time: Date())
+    let myWanderPost = WanderPost(location: CLLocation(latitude: 40.7470, longitude: -73.9529), content: "I was in LIC Bar with the bucket brigade!" as AnyObject, contentType: .text, privacyLevel: .everyone)
 
     override func viewDidLoad() {
         super.viewDidLoad()

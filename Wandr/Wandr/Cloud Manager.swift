@@ -19,6 +19,7 @@ enum PrivacyLevel: NSString {
     case everyone = "Everyone"
 }
 
+
 class PrivacyLevelManager {
     static let shared = PrivacyLevelManager()
     let privacyLevelArray: [PrivacyLevel] = {
@@ -73,11 +74,11 @@ class CloudManager {
         }
         
         postRecord.setObject(post.location, forKey: "location")
-        postRecord.setObject(NSString(string: post.user!.recordName), forKey: "userID")
+        postRecord.setObject(NSString(string: post.user.recordName), forKey: "userID")
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
         postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
 
-        let userFetch = CKFetchRecordsOperation(recordIDs: [post.user!])
+        let userFetch = CKFetchRecordsOperation(recordIDs: [post.user])
         let userSave = CKModifyRecordsOperation()
         //userFetch = CKFetchRecordsOperation(
         
@@ -98,6 +99,7 @@ class CloudManager {
                 var posts = userRecord["posts"] as? [NSString] ?? []
                 posts.append(postRecord.recordID.recordName as NSString)
                 userRecord["posts"] = posts as CKRecordValue?
+                print(posts )
                 
                 //Save and post the record
                 userSave.recordsToSave = [userRecord]
@@ -184,15 +186,23 @@ class CloudManager {
         }
     }
     
-    func getWanderpostsForMap (_ currentLocation: CLLocation, privacyLevel: PrivacyLevel) {//-> [WanderPost] {
+    func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        let locationPredicate = NSPredicate(format: "privacyLevel == %@ AND distanceToLocation:fromLocation:(location, %@) < 10000", privacyLevel.rawValue, currentLocation)
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 1000", currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
         query.sortDescriptors = [locationSorter]
         
-        publicDatabase.perform(query, inZoneWith: nil) { (record, error) in
-            print(record?.count)
+        publicDatabase.perform(query, inZoneWith: nil) { (records, error) in
+            
+            if error != nil {
+                completion(nil, error)
+            }
+            
+            if let validLocalRecords = records {
+                completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
+
+            }
             //Make the array of Wanderposts.
         }
     }
