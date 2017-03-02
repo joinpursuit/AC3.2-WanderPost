@@ -21,6 +21,9 @@
 		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
 		A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */; };
 		A7686F861E67626E00402053 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F851E67626E00402053 /* ProfileView.swift */; };
+		A7686F881E6876E100402053 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7686F871E6876E000402053 /* MapKit.framework */; };
+		A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */; };
+		A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86001E68B11D0046487F /* OnBoardViewController.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
@@ -37,6 +40,7 @@
 		DEA80B3C1E686F58001E0747 /* hdar_close.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B381E686F58001E0747 /* hdar_close.png */; };
 		DEA80B3D1E686F58001E0747 /* hdar_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B391E686F58001E0747 /* hdar_close@2x.png */; };
 		DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */; };
+		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +62,9 @@
 		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
 		A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailPostTableViewCell.swift; path = Views/ProfileViewViewControllerDetailPostTableViewCell.swift; sourceTree = "<group>"; };
 		A7686F851E67626E00402053 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
+		A7686F871E6876E000402053 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapCameraViewController.swift; path = "View Controllers/MapCameraViewController.swift"; sourceTree = "<group>"; };
+		A7AF86001E68B11D0046487F /* OnBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnBoardViewController.swift; path = "View Controllers/OnBoardViewController.swift"; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -74,6 +81,7 @@
 		DEA80B381E686F58001E0747 /* hdar_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hdar_close.png; sourceTree = "<group>"; };
 		DEA80B391E686F58001E0747 /* hdar_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@2x.png"; sourceTree = "<group>"; };
 		DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@3x.png"; sourceTree = "<group>"; };
+		DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostAnnotation.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -83,6 +91,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */,
+				A7686F881E6876E100402053 /* MapKit.framework in Frameworks */,
 				B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -125,6 +134,7 @@
 		8129529E1E60D0CF0048199B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A7686F871E6876E000402053 /* MapKit.framework */,
 				81C2A0D31E60D5F800F43791 /* CloudKit.framework */,
 				BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */,
 			);
@@ -149,6 +159,7 @@
 			children = (
 				8164460B1E65FA2600477FBD /* WanderPost.swift */,
 				8164460D1E65FB0800477FBD /* Reaction.swift */,
+				DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -157,7 +168,9 @@
 			isa = PBXGroup;
 			children = (
 				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
+				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
+				A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */,
 				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
 				A7686F811E66017800402053 /* PostViewController.swift */,
 				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
@@ -268,6 +281,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -370,16 +386,19 @@
 			files = (
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
+				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
 				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
 				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
+				A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */,
 				DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
 				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
+				A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
