@@ -22,10 +22,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We'd like to know your location to give you the right notification.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We'd like to know your location to give you the right notification.</string>
+	<string>We&apos;d like to know your location to give you the right notification.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -49,13 +47,13 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We&apos;d like to know your location to give you the right notification.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Comfortaa-Bold.ttf</string>
 		<string>Comfortaa-Light.ttf</string>
 		<string>Comfortaa-Regular.ttf</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Wanderpost needs to access the camera to display AR.</string>
 </dict>
 </plist>

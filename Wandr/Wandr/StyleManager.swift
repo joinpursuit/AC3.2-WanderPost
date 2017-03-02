@@ -71,9 +71,7 @@ extension UIColor {
 }
 
 extension UIFont {
-    /// Roboto can be referenced via extension in the following manner:
-    ///let font = UIFont.Roboto.light(size: 18.0)
-    
+      
     struct Comfortaa {
         //MARK: - Methods
         static func light(size: CGFloat) -> UIFont? {
