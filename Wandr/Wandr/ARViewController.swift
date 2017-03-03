@@ -26,8 +26,15 @@ import CoreLocation
  *      https://github.com/DanijelHuis/HDAugmentedReality.git
  *
  */
-open class ARViewController: UIViewController, ARTrackingManagerDelegate
+open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPostDelegate
 {
+    
+    var posts: [WanderPost] = [] {
+        didSet {
+            self.setAnnotations(posts)
+        }
+    }
+
     /// Data source
     open weak var dataSource: ARDataSource?
     /// Orientation mask for view controller. Make sure orientations are enabled in project settings also.
