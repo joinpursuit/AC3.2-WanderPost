@@ -154,19 +154,18 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         return control
     }()
     
-    lazy var textField: UITextField = {
-       let textField = UITextField()
+    lazy var textField: WanderTextField = {
+       let textField = WanderTextField()
+        //textField.tintColor = StyleManager.shared.accent
+        //textField.backgroundColor = UIColor.white
+        textField.border(placeHolder: "message")
         textField.font = StyleManager.shared.comfortaaFont18
         textField.textAlignment = NSTextAlignment.left
-        textField.tintColor = StyleManager.shared.accent
-        textField.backgroundColor = UIColor.white
         return textField
     }()
     
-    lazy var postButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = StyleManager.shared.primary
-        button.setTitle("post", for: .normal)
+    lazy var postButton: WanderButton = {
+        let button = WanderButton(title: "post")
         return button
     }()
     
