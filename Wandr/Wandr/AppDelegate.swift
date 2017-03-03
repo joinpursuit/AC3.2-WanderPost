@@ -20,30 +20,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
 
-        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
-        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
-        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
-        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
-        
         setNavigationTheme()
 
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let cameraViewController = CameraViewController()//UINavigationController(rootViewController: CameraViewController())
         let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
+        let arViewController = ARViewController()
 
-        let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
-        let map = UITabBarItem(title: "map", image: nil, selectedImage: nil)
-        let camera = UITabBarItem(title: "camera", image: nil, selectedImage: nil)
-        let onBoard = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
+        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let onBoardIcon = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
+        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
-        profileViewController.tabBarItem = profile
-        mapViewController.tabBarItem = map
-        cameraViewController.tabBarItem = camera
-        onBoardViewController.tabBarItem = onBoard
+        
+        //1
+        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
+        //2
+        arViewController.maxVisibleAnnotations = 30
+        arViewController.headingSmoothingFactor = 0.05
+        //3
+        arViewController.setAnnotations([])
+
+        
+        
+        profileViewController.tabBarItem = profileIcon
+        mapViewController.tabBarItem = mapIcon
+        onBoardViewController.tabBarItem = onBoardIcon
+        arViewController.tabBarItem = arIcon
         
         let tabController = UITabBarController()
-        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, cameraViewController]
+        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
 
