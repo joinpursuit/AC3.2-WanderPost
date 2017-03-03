@@ -10,6 +10,13 @@ import UIKit
 import MapKit
 import CoreLocation
 
+
+/*
+ 
+ THIS VIEW CONTROLLER IS NO LONGER BEING USED. DO NOT USE.
+ 
+ */
+
 class CameraViewController: UIViewController, ARPostDelegate {
     
     let myWanderPost = WanderPost(location: CLLocation(latitude: 40.7470, longitude: -73.9529), content: "I was in LIC Bar with the bucket brigade!" as AnyObject, contentType: .text, privacyLevel: .everyone)
@@ -32,6 +39,10 @@ class CameraViewController: UIViewController, ARPostDelegate {
         
         self.present(arViewController, animated: true, completion: nil)
     }
+    
+    
+   
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
