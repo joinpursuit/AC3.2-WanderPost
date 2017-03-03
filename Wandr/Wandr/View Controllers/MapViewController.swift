@@ -151,7 +151,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     // MARK: - Actions
-    
     func addPostButtonPressed(_ sender: UIButton) {
         let postVC = PostViewController()
         postVC.location = locationManager.location
@@ -159,7 +158,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     //MARK: - Lazy Vars
-    
     lazy var mapContainerView: UIView = {
         let view = UIView()
         return view
