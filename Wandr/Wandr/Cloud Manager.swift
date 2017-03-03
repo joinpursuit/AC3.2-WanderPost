@@ -122,7 +122,7 @@ class CloudManager {
     }
     
     //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
-    func createUsername (userName: String, completion: @escaping (Error?) -> Void) {
+    func createUsername (userName: String, imageURL: URL, completion: @escaping (Error?) -> Void) {
         
         let validUsername = userName as NSString
         let id = CKRecordID(recordName: currentUser!.recordName)
@@ -172,9 +172,8 @@ class CloudManager {
     }
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 1000", currentLocation)
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
         query.sortDescriptors = [locationSorter]
         
