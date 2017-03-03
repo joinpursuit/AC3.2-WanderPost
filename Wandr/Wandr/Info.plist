@@ -55,5 +55,9 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Wanderpost needs to access the camera to display AR.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>to take photos and video</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>to save photos and videos</string>
 </dict>
 </plist>

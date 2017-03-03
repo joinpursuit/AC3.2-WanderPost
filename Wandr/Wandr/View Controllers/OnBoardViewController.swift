@@ -8,8 +8,11 @@
 
 import UIKit
 import SnapKit
+import AVKit
 
-class OnBoardViewController: UIViewController {
+class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var imagePickerController: UIImagePickerController!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,11 +29,32 @@ class OnBoardViewController: UIViewController {
         configureConstraints()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    // MARK: - Actions
+    func imageViewTapped() {
+        //Able to add profile picture
+        self.showImagePickerForSourceType(sourceType: .photoLibrary)
     }
     
+    // MARK: - PhotoPicker Methods
+    private func showImagePickerForSourceType(sourceType: UIImagePickerControllerSourceType) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.modalPresentationStyle = .currentContext
+        imagePickerController.sourceType = sourceType
+        imagePickerController.delegate = self
+        imagePickerController.modalPresentationStyle = (sourceType == .camera) ? .fullScreen : .popover
+        self.imagePickerController = imagePickerController
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    // MARK: - UIImagePickerControllerDelegate
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            self.profileImageView.image = image
+        }
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    // MARK: - Layout
     private func setupViewHierarchy() {
         self.view.addSubview(profileImageView)
         self.view.addSubview(userNameTextField)
@@ -70,7 +94,6 @@ class OnBoardViewController: UIViewController {
             label.top.equalTo(self.logoImageView.snp.bottom).offset(8)
             label.leading.equalToSuperview().offset(16)
             label.trailing.equalToSuperview().inset(16)
-            //label.bottom.equalTo(self.bottomLayoutGuide.snp.top).inset(8)
         }
     }
     
@@ -81,8 +104,8 @@ class OnBoardViewController: UIViewController {
         imageView.layer.borderColor = StyleManager.shared.accent.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.frame.size = CGSize(width: 150.0, height: 150.0)
-        //let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        //imageView.addGestureRecognizer(tapImageGesture)
+        let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
+        imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
         imageView.layer.masksToBounds = true
         imageView.clipsToBounds = true

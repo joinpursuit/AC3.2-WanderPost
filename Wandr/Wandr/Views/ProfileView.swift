@@ -10,12 +10,18 @@ import UIKit
 import SnapKit
 import TwicketSegmentedControl
 
+protocol ProfileViewDelegate {
+    func imageViewTapped()
+}
+
 class ProfileView: UIView {
     override func draw(_ rect: CGRect) {
         // Drawing code
         setupViewHierarchy()
         configureConstraints()
     }
+    
+    var delegate : ProfileViewDelegate?
     
     private func setupViewHierarchy() {
         self.addSubview(profileImageView)
@@ -60,6 +66,12 @@ class ProfileView: UIView {
         }
     }
     
+    // Mark:- Action 
+    func imageViewTapped() {
+        self.delegate?.imageViewTapped()
+        //print("ImageViewTapped")
+    }
+    
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "default-placeholder")
@@ -67,8 +79,8 @@ class ProfileView: UIView {
         imageView.layer.borderColor = StyleManager.shared.accent.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.frame.size = CGSize(width: 150.0, height: 150.0)
-        //let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        //imageView.addGestureRecognizer(tapImageGesture)
+        let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
+        imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
         imageView.layer.masksToBounds = true
         imageView.clipsToBounds = true
