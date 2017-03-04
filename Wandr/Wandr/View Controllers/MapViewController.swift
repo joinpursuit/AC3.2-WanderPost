@@ -43,6 +43,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         configureTwicketSegmentControl()
         setupLocationManager()
         //        setupGestures()
+        mapView.delegate = self
     }
     
     
@@ -127,8 +128,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 self.wanderposts = posts
                 print("Post count..... \(self.wanderposts!.count)")
                 self.reloadMapView()
-                
-                // Need to get these posts to the arVC
             }
         }
     }
@@ -138,16 +137,36 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     
-    // MARK: - Mapkit
+    
+    // MARK: - MKMapView
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let annotationIdentifier = "AnnotationIdentifier"
+        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+        
+        APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
+            if let data = data {
+                DispatchQueue.main.async {
+                    annotationView.profileImageView.image = UIImage(data: data)
+                }
+            }
+        }
+        return annotationView
+    }
     
     func reloadMapView() {
         if let posts = self.wanderposts {
+            var annotations: [MKAnnotation] = []
             for post in posts {
                 let annotaton = PostAnnotation()
                 guard let postLocation = post.location else { return }
                 annotaton.coordinate = postLocation.coordinate
                 annotaton.title = post.content as? String
-                mapView.addAnnotation(annotaton)
+                annotations.append(annotaton)
+            }
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(annotations)
             }
         }
     }
