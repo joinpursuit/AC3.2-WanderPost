@@ -43,6 +43,8 @@
 		DEA80B3D1E686F58001E0747 /* hdar_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B391E686F58001E0747 /* hdar_close@2x.png */; };
 		DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */; };
 		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
+		DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */; };
+		DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B431E6A0E58001E0747 /* APIManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +88,8 @@
 		DEA80B391E686F58001E0747 /* hdar_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@2x.png"; sourceTree = "<group>"; };
 		DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@3x.png"; sourceTree = "<group>"; };
 		DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostAnnotation.swift; sourceTree = "<group>"; };
+		DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderMapAnnotationView.swift; path = Views/WanderMapAnnotationView.swift; sourceTree = "<group>"; };
+		DEA80B431E6A0E58001E0747 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -185,6 +189,7 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				DEA80B431E6A0E58001E0747 /* APIManager.swift */,
 				DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */,
 				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
@@ -198,6 +203,7 @@
 				A7AF86021E68CFA70046487F /* Extension UITextField.swift */,
 				A7AF86041E68D6B80046487F /* WanderButton.swift */,
 				A7686F851E67626E00402053 /* ProfileView.swift */,
+				DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -390,6 +396,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */,
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
 				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
@@ -405,6 +412,7 @@
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
+				DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */,
 				A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
