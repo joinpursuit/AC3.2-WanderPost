@@ -183,6 +183,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //            break
         //        }
     }
+    
+//    func fixPostCount() {
+//        let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
+//        let userSave = CKModifyRecordsOperation()
+//        
+//        userFetch.fetchRecordsCompletionBlock = { (record, error) in
+//            if error != nil {
+//                if let ckError = error as? CKError  {
+//                    //TODO Add retry logic
+//                } else {
+//                    print(error!.localizedDescription)
+//                }
+//            }
+//            if let validRecord = record?.first {
+//                
+//                
+//                //Fix this.
+//                //Update the posts array
+//                let userRecord = validRecord.value
+//                var posts: [NSString] =  []
+//                userRecord["posts"] = posts as CKRecordValue?
+//                
+//                //Save and post the record
+//                userSave.recordsToSave = [userRecord]
+//            }
+//        }
+//        
+//        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
+//        }
+//        
+//        let queue = OperationQueue()
+//        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
+//    }
 
 }
 
