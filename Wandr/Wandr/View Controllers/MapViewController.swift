@@ -154,23 +154,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return annotationView
     }
     
-    func reloadMapView() {
-        if let posts = self.wanderposts {
-            var annotations: [MKAnnotation] = []
-            for post in posts {
-                let annotaton = PostAnnotation()
-                guard let postLocation = post.location else { return }
-                annotaton.coordinate = postLocation.coordinate
-                annotaton.title = post.content as? String
-                annotations.append(annotaton)
-            }
-            DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.mapView.annotations)
-                self.mapView.addAnnotations(annotations)
-            }
-        }
-    }
-    
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
         let postVC = PostViewController()
@@ -250,17 +233,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func reloadMapView() {
         if let posts = self.wanderposts {
+            var annotations: [MKAnnotation] = []
             for post in posts {
                 let annotaton = PostAnnotation()
                 guard let postLocation = post.location else { return }
                 annotaton.coordinate = postLocation.coordinate
                 annotaton.title = post.content as? String
-                mapView.addAnnotation(annotaton)
+                annotations.append(annotaton)
+            }
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(annotations)
             }
         }
     }
-    
-    
     //MARK: - Notification Delegate Methods
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
