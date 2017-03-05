@@ -141,17 +141,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let annotationIdentifier = "AnnotationIdentifier"
-        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
         
-        APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
-            if let data = data {
-                DispatchQueue.main.async {
-                    annotationView.profileImageView.image = UIImage(data: data)
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            
+            APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        annotationView.profileImageView.image = UIImage(data: data)
+                    }
                 }
             }
+            return annotationView
+            
         }
-        return annotationView
+        
     }
     
     func reloadMapView() {
@@ -192,6 +200,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         mapView.showsBuildings = false
+        mapView.showsUserLocation = true
+        mapView.tintColor = StyleManager.shared.accent
         return mapView
     }()
     
