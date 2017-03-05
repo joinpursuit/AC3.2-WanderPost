@@ -9,14 +9,17 @@
 import UIKit
 import SnapKit
 import TwicketSegmentedControl
+import AVKit
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
     let dummyData = ["name": "Ana", "date": "3-1-17", "time": "3:00PM", "location": "Quuens", "message": "There's a nice view outside"]
     
     let dummyData2 = [1,2,3,4,5,6,7,8,9,10,11,12,13]
+    
+    var imagePickerController: UIImagePickerController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,14 +37,38 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         //TableViewSectionHeader
         let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
-        let headerView = ProfileView(frame: profileViewFrame)
-        headerView.backgroundColor = StyleManager.shared.primaryLight
-        postTableView.tableHeaderView = headerView
+        self.profileHeaderView = ProfileView(frame: profileViewFrame)
+        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        postTableView.tableHeaderView = self.profileHeaderView
+        self.profileHeaderView.delegate = self
     }
     
     // MARK: - Actions
-    func imageTapped() {
+    func imageViewTapped() {
         //Able to change profile picture
+        print("self.profileHeaderView.profileImageView")
+        self.showImagePickerForSourceType(sourceType: .photoLibrary)
+    }
+    
+    // MARK: - PhotoPicker Methods
+    private func showImagePickerForSourceType(sourceType: UIImagePickerControllerSourceType) {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.modalPresentationStyle = .currentContext
+        imagePickerController.sourceType = sourceType
+        imagePickerController.delegate = self
+        imagePickerController.modalPresentationStyle = (sourceType == .camera) ? .fullScreen : .popover
+        self.imagePickerController = imagePickerController
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    // MARK: - UIImagePickerControllerDelegate
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            self.profileHeaderView.profileImageView.image = image
+        }
+        dump(info)
+        self.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - TableView Header And Footer Customizations
@@ -91,10 +118,14 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             view.leading.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
         }
-
     }
     
     //MARK: - Views
+    lazy var profileHeaderView: ProfileView = {
+        let view = ProfileView()
+        return view
+    }()
+    
     lazy var postTableView: UITableView = {
        let tableView = UITableView()
         tableView.delegate = self

@@ -20,31 +20,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
-        
-        let userInfo = UITabBarItem(title: "User", image: nil, tag: 0)
-        let mapIcon = UITabBarItem(title: "Map", image: nil, tag: 1)
-        let cameraIcon = UITabBarItem(title: "Camera", image: nil, tag: 2)
-        let notificationIcon = UITabBarItem(title: "Notification", image: nil, tag: 3)
-        
         setNavigationTheme()
         
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let cameraViewController = CameraViewController()//UINavigationController(rootViewController: CameraViewController())
         let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
+        let arViewController = ARViewController()
+
+        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let onBoardIcon = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
+        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
-        let profile = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
-        let map = UITabBarItem(title: "map", image: nil, selectedImage: nil)
-        let camera = UITabBarItem(title: "camera", image: nil, selectedImage: nil)
-        let onBoard = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
         
-        profileViewController.tabBarItem = profile
-        mapViewController.tabBarItem = map
-        cameraViewController.tabBarItem = camera
-        onBoardViewController.tabBarItem = onBoard
+        //1
+        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
+        //2
+        arViewController.maxVisibleAnnotations = 30
+        arViewController.headingSmoothingFactor = 0.05
+        //3
+        arViewController.setAnnotations([])
+
+        
+        profileViewController.tabBarItem = profileIcon
+        mapViewController.tabBarItem = mapIcon
+        onBoardViewController.tabBarItem = onBoardIcon
+        arViewController.tabBarItem = arIcon
         
         let tabController = UITabBarController()
-        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, cameraViewController]
+        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
         
@@ -63,42 +67,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
-        
-//        let locationTrigger = UNLocationNotificationTrigger(region: <#T##CLRegion#>, repeats: <#T##Bool#>)
-//        
-//        let notificationRequest = UNNotificationRequest.init(identifier: "newPosts", content: <#T##UNNotificationContent#>, trigger: <#T##UNNotificationTrigger?#>)
-//        
-//        UNUserNotificationCenter.current().add(<#T##request: UNNotificationRequest##UNNotificationRequest#>, withCompletionHandler: <#T##((Error?) -> Void)?##((Error?) -> Void)?##(Error?) -> Void#>)
-        
-        //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
-        //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
-        //            // Enable or disable features based on authorization.
-        //        }
-        //
-        //        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
-        //
-        //            switch settings.soundSetting{
-        //            case .enabled:
-        //
-        //                print("enabled sound setting")
-        //
-        //            case .disabled:
-        //
-        //                print("setting has been disabled")
-        //
-        //            case .notSupported:
-        //                print("something vital went wrong here")
-        //            }
-        //        }
-        //        application.registerForRemoteNotifications()
-        
-        
-        //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
-        
-        //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
-        
-        //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
-        
         return true
     }
     
@@ -170,3 +138,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
 }
 
+/*
+ 
+ //        let locationTrigger = UNLocationNotificationTrigger(region: <#T##CLRegion#>, repeats: <#T##Bool#>)
+ //
+ //        let notificationRequest = UNNotificationRequest.init(identifier: "newPosts", content: <#T##UNNotificationContent#>, trigger: <#T##UNNotificationTrigger?#>)
+ //
+ //        UNUserNotificationCenter.current().add(<#T##request: UNNotificationRequest##UNNotificationRequest#>, withCompletionHandler: <#T##((Error?) -> Void)?##((Error?) -> Void)?##(Error?) -> Void#>)
+ 
+ //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
+ //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
+ //            // Enable or disable features based on authorization.
+ //        }
+ //
+ //        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
+ //
+ //            switch settings.soundSetting{
+ //            case .enabled:
+ //
+ //                print("enabled sound setting")
+ //
+ //            case .disabled:
+ //
+ //                print("setting has been disabled")
+ //
+ //            case .notSupported:
+ //                print("something vital went wrong here")
+ //            }
+ //        }
+ //        application.registerForRemoteNotifications()
+ 
+ 
+ //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
+ 
+ //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
+ 
+ //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
+ */

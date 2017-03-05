@@ -17,6 +17,7 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
+
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
@@ -38,8 +39,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         self.navigationItem.title = "wanderpost"
         //Make this more dynamic
-        self.arDelegate = tabBarController?.viewControllers?.last as! CameraViewController
         self.lastUpdatedLocation = locationManager.location!
+        self.arDelegate = tabBarController?.viewControllers?.last as! ARViewController
         setupViewHierarchy()
         configureConstraints()
         configureTwicketSegmentControl()
@@ -103,7 +104,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
-
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -127,30 +128,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if lastUpdatedLocation.distance(from: location) > 100 {
             lastUpdatedLocation = location
             getWanderPosts(location)
+            makeNotification(withBody: "hello")
             print("new location")
-            //Check for new data
-            //If new data have local notification happen
-//            UNNotificationRequest.init(identifier: <#T##String#>, content: <#T##UNNotificationContent#>, trigger: <#T##UNNotificationTrigger?#>)
-//            UNUserNotificationCenter.current().add(<#T##request: UNNotificationRequest##UNNotificationRequest#>, withCompletionHandler: <#T##((Error?) -> Void)?##((Error?) -> Void)?##(Error?) -> Void#>)
             
-            //Notification Testing
         }
         
-        
-        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let content = UNMutableNotificationContent()
-        content.title = "Testing"
-        content.body = "This is gonna be annoying"
-        content.categoryIdentifier = "newPost"
-        content.badge = 1
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: notificationTrigger)
-        userNotificationCenter.add(request) { (error) in
-            print(error)
-        }
-        let show = UNNotificationAction(identifier: "newData", title: "WOO", options: .foreground)
-        let category = UNNotificationCategory(identifier: "newPost", actions: [show], intentIdentifiers: [])
-        userNotificationCenter.setNotificationCategories([category])
         
     }
     
@@ -159,7 +141,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     // MARK: - Actions
-    
     func addPostButtonPressed(_ sender: UIButton) {
         let postVC = PostViewController()
         postVC.location = locationManager.location
@@ -167,7 +148,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     //MARK: - Lazy Vars
-    
     lazy var mapContainerView: UIView = {
         let view = UIView()
         return view
@@ -280,6 +260,45 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         completionHandler(.alert)
     }
+    
+    //MARK: - Helper Functions
+    
+    func makeNotification(withBody body: String) {
+        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let content = UNMutableNotificationContent()
+        content.title = "New Wanderposts"
+        content.body = body
+        content.categoryIdentifier = "newPost"
+        content.badge = 1
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: notificationTrigger)
+        userNotificationCenter.add(request) { (error) in
+            //Add in error handling
+            print(error)
+        }
+        let show = UNNotificationAction(identifier: "newData", title: "WOO", options: .foreground)
+        let category = UNNotificationCategory(identifier: "newPost", actions: [show], intentIdentifiers: [])
+        userNotificationCenter.setNotificationCategories([category])
+        
+    }
+    
+    func checkForNewWanderPosts(ofType type: PrivacyLevel) {
+        if let validWanderPosts = self.wanderposts {
+            //figure this out
+            var body: String
+            switch type {
+            case .friends:
+                body = ""
+            case .message:
+                body = ""
+            case .everyone:
+                break
+            }
+        //makeNotification(withBody: <#T##String#>)
+        }
+    }
+    
+    //HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo.
 }
 
 extension MapViewController: TwicketSegmentedControlDelegate {
@@ -297,11 +316,51 @@ extension MapViewController: TwicketSegmentedControlDelegate {
     }
 }
 
+extension MapViewController: ARDataSource {
+    func ar(_ arViewController: ARViewController, viewForAnnotation: ARAnnotation) -> ARAnnotationView {
+        let annotationView = AnnotationView()
+        annotationView.annotation = viewForAnnotation
+        annotationView.delegate = self
+        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 50)
+        
+        return annotationView
+    }
+}
 
 
 
 
-
+extension MapViewController: AnnotationViewDelegate {
+    func didTouch(annotationView: AnnotationView) {
+        print("Tapped view for POI: \(annotationView.titleLabel?.text)")
+        //1
+        //    if let annotation = annotationView.annotation as? WanderPost {
+        //      //2
+        //      let placesLoader = PlacesLoader()
+        //
+        //      // this load detail information make an api call to google places to get info.
+        //      placesLoader.loadDetailInformation(forPlace: annotation) { resultDict, error in
+        //
+        //        //3
+        //        if let infoDict = resultDict?.object(forKey: "result") as? NSDictionary {
+        //          annotation.phoneNumber = infoDict.object(forKey: "formatted_phone_number") as? String
+        //          annotation.website = infoDict.object(forKey: "website") as? String
+        //
+        //          //4
+        //          self.showInfoView(forPlace: annotation)
+        //        }
+        //      }
+        //    }
+    }
+    
+    //  func showInfoView(forPlace place: Place) {
+    //    //1
+    //    let alert = UIAlertController(title: place.placeName , message: place.infoText, preferredStyle: UIAlertControllerStyle.alert)
+    //    alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+    //    //2
+    //    arViewController.present(alert, animated: true, completion: nil)
+    //  }
+}
 
 //MARK: - Commented Out Code
 
@@ -414,4 +473,5 @@ extension MapViewController: TwicketSegmentedControlDelegate {
 //        swipeDownGesture.direction = .down
 //         self.dragUpOrDownContainerView.addGestureRecognizer(swipeDownGesture)
 //    }
-    
+
+

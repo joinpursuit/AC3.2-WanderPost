@@ -9,6 +9,14 @@ import Foundation
 import CloudKit
 import UIKit
 
+//TODO List
+
+/*
+ _friends
+ _user picture/user name/update posts locally -- i should've done this from the get go. That was poor thinking.
+ _
+ */
+
 enum PostContentType: NSString {
     case audio, text, video
 }
@@ -122,16 +130,18 @@ class CloudManager {
     }
     
     //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
-    func createUsername (userName: String, imageURL: URL, completion: @escaping (Error?) -> Void) {
+    func createUsername (userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
         
         let validUsername = userName as NSString
         let id = CKRecordID(recordName: currentUser!.recordName)
-        
+        let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
+            
         publicDatabase.fetch(withRecordID: id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
             } else if let validUserRecord = userRecord {
                 validUserRecord["username"] = validUsername
+                validUserRecord["profileImage"] = imageAsset
                 
                 self.publicDatabase.save(validUserRecord) { (record, error) in
                     completion(error)
