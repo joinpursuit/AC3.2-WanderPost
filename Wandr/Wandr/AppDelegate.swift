@@ -72,8 +72,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func setNavigationTheme() {
         let navigationBarAppearace = UINavigationBar.appearance()
-        navigationBarAppearace.backgroundColor = StyleManager.shared.primaryDark
-        navigationBarAppearace.barTintColor = StyleManager.shared.primaryDark
+        navigationBarAppearace.backgroundColor = StyleManager.shared.primary
+        navigationBarAppearace.barTintColor = StyleManager.shared.primary
         navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
                                                       NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
         UIApplication.shared.statusBarStyle = .lightContent
