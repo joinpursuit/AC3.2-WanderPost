@@ -127,7 +127,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapCamera.pitch = 5
         mapView.camera = mapCamera
         mapView.setRegion(region, animated: false)
-        
+
         if lastUpdatedLocation.distance(from: location) > 100 {
             lastUpdatedLocation = location
             getWanderPosts(location)
