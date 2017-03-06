@@ -28,7 +28,7 @@ class WanderPost: ARAnnotation {
         return formatter.string(from: time)
     }
 
-    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date, user: CKRecordID, locationDescription: String) {
+    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date, user: CKRecordID, locationDescription: String, read: Bool) {
         self.content = content
         self.contentType = contentType
         self.privacyLevel = privacyLevel
