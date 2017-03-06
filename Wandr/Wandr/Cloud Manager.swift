@@ -212,12 +212,13 @@ class CloudManager {
         }
     }
     
-    func checkUser () {
+    func checkUser (completion: @escaping (Bool, Error?) -> Void) {
         let userID = CKRecordID(recordName: self.currentUser!.recordName)
         publicDatabase.fetch(withRecordID: userID) { (record, error) in
             if let error = error {
                 guard let ckError = error as? CKError else {
                     print(error.localizedDescription)
+                    completion(false, error)
                     return
                 }
                 print("\n\n error info \n\n")
@@ -225,7 +226,7 @@ class CloudManager {
             }
             if let record = record {
                 print("\n\n record \n\n")
-                dump(record)
+                completion(true, nil)
             }
         }
     }
