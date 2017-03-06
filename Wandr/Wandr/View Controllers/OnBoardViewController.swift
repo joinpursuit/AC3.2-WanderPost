@@ -38,17 +38,22 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func registerButtonPressed() {
-        self.registerButton.isEnabled = false
-        if let userName = self.userNameTextField.text,
-            let imageURL = profileImageURL {
-            CloudManager.shared.createUsername(userName: userName, profileImageFilePathURL: imageURL) { (error) in
-                //ADD ERROR HANDLING
-                dump(error)
-                self.registerButton.isEnabled = true
-            }
-        } else {
-            //Present ALERT
-        }
+        self.present(AppDelegate.setUpAppNavigation(), animated: false, completion: nil)
+
+//        self.registerButton.isEnabled = false
+//        if let userName = self.userNameTextField.text,
+//            let imageURL = profileImageURL {
+//            CloudManager.shared.createUsername(userName: userName, profileImageFilePathURL: imageURL) { (error) in
+//                //ADD ERROR HANDLING
+//                dump(error)
+//                if error != nil {
+//                    // set up app tabbar and such
+//                    self.setUpAppNavigation()
+//                }
+//            }
+//        } else {
+//            //Present ALERT
+//        }
     }
     
     // MARK: - PhotoPicker Methods
@@ -126,6 +131,37 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
             label.trailing.equalToSuperview().inset(16)
         }
     }
+    
+    func setUpAppNavigation() {
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let mapViewController = UINavigationController(rootViewController: MapViewController())
+        let arViewController = ARViewController()
+        
+        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
+        
+        //1
+        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
+        //2
+        arViewController.maxVisibleAnnotations = 30
+        arViewController.headingSmoothingFactor = 0.05
+        //3
+        arViewController.setAnnotations([])
+        
+        
+        profileViewController.tabBarItem = profileIcon
+        mapViewController.tabBarItem = mapIcon
+        //onBoardViewController.tabBarItem = onBoardIcon
+        arViewController.tabBarItem = arIcon
+        
+        let tabController = UITabBarController()
+        tabController.viewControllers = [profileViewController, mapViewController, arViewController]
+        tabController.tabBar.tintColor = StyleManager.shared.accent
+        tabController.selectedIndex = 1
+        
+    }
+    
     
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()

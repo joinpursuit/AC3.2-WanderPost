@@ -361,7 +361,7 @@ extension MapViewController: ARDataSource {
         let annotationView = AnnotationView()
         annotationView.annotation = viewForAnnotation
         annotationView.delegate = self
-        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 50)
+        annotationView.frame = CGRect(x: 0, y: 0, width: 300, height: 100)
         
         return annotationView
     }
