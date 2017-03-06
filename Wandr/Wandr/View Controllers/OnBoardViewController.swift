@@ -38,11 +38,13 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func registerButtonPressed() {
+        self.registerButton.isEnabled = false
         if let userName = self.userNameTextField.text,
             let imageURL = profileImageURL {
             CloudManager.shared.createUsername(userName: userName, profileImageFilePathURL: imageURL) { (error) in
                 //ADD ERROR HANDLING
                 dump(error)
+                self.registerButton.isEnabled = true
             }
         } else {
             //Present ALERT
