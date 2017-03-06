@@ -52,6 +52,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         userNotificationCenter.delegate = self
         mapView.delegate = self
         self.segmentedControl.setSegmentItems(segmentTitles)
+        
+        CloudManager.shared.checkUser { (userExists, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            if !userExists {
+                self.present(OnBoardViewController(), animated: true, completion: nil)
+            }
+        }
     }
     
     

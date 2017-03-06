@@ -12,7 +12,6 @@ import UserNotifications
 import UserNotificationsUI
 
 
-let userHasOnboarded = true
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -27,23 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         CloudManager.shared.getUserPostActivity { (string, error) in
             dump(string)
         }
-        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
-        let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
-        let arViewController = ARViewController()
-
-        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
-        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
-        let onBoardIcon = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
-        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
-        let rootVC = userHasOnboarded ? AppDelegate.setUpAppNavigation() : setUpOnBoarding()
-        
+        let rootVC = AppDelegate.setUpAppNavigation()
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = rootVC
         self.window?.makeKeyAndVisible()
-
-        
         
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
@@ -161,6 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("user info \(userInfo)")
     }
+    
 }
 
 
