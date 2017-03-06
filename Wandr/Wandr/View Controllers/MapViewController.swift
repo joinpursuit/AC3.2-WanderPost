@@ -139,8 +139,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         print("error:: \(error)")
     }
     
-    
-    
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -354,26 +352,15 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         switch segmentIndex {
         case 0:
             print("Everyone")
-            self.wanderposts = filterWanderPost(privacyLevel: .everyone)
+            self.wanderposts = self.allWanderPosts
         case 1:
             print("Friends")
-            self.wanderposts = filterWanderPost(privacyLevel: .friends)
+            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .friends} + self.allWanderPosts.filter{$0.privacyLevel == .message}
         case 2:
             print("Message")
-            self.wanderposts = filterWanderPost(privacyLevel: .message)
+            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .message}
         default:
             print("Can not make a decision")
-        }
-    }
-    
-    func filterWanderPost(privacyLevel: PrivacyLevel) -> [WanderPost] {
-        switch privacyLevel {
-        case PrivacyLevel.everyone:
-            return (self.allWanderPosts.filter{$0.privacyLevel == .everyone})
-        case PrivacyLevel.friends:
-            return (self.allWanderPosts.filter{$0.privacyLevel == .friends})
-        case PrivacyLevel.message:
-            return (self.allWanderPosts.filter{$0.privacyLevel == .message})
         }
     }
 }
