@@ -57,8 +57,8 @@ class WanderPost: ARAnnotation {
     
     static func descriptionForPlaceMark(_ mark: CLPlacemark) -> String {
         var placeString = ""
-        if let name = mark.name {
-            placeString += "\(name), "
+        if let street = mark.thoroughfare {
+            placeString += "\(street), "
         }
         if let boro = mark.subLocality {
             placeString += "\(boro), "
