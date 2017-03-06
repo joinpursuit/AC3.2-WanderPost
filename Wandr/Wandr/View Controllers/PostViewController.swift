@@ -28,7 +28,6 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
-        self.segmentedControl.delegate = self
         
     }
     
@@ -149,8 +148,9 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
 
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
+        control.delegate = self
         return control
     }()
     
