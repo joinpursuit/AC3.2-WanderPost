@@ -74,11 +74,21 @@ class CloudManager {
         postRecord.setObject(NSString(string: post.user.recordName), forKey: "userID")
         postRecord.setObject(post.contentType.rawValue, forKey: "contentType")
         postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
+        postRecord.setObject(post.locationDescription as CKRecordValue?, forKey: "locationDescription")
+        postRecord.setObject(post.read as CKRecordValue?, forKey: "read")
         
-        let userFetch = CKFetchRecordsOperation(recordIDs: [post.user])
-        let userSave = CKModifyRecordsOperation()
+        let privateUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
+        let publicUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
+        let privateUserSave = CKModifyRecordsOperation()
+        let publicPostsToSave = CKModifyRecordsOperation()
         
-        userFetch.fetchRecordsCompletionBlock = { (record, error) in
+        privateUserFetch.database = privateDatabase
+        privateUserSave.database = privateDatabase
+        
+        publicUserFetch.database = self.publicDatabase
+        publicPostsToSave.database = self.publicDatabase
+        
+        privateUserFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
                 completionError?.append(error!)
                 if let ckError = error as? CKError  {
@@ -87,40 +97,68 @@ class CloudManager {
                     print(error!.localizedDescription)
                 }
             }
+            
             if let validRecord = record?.first {
                 //Fix this.
                 //Update the posts array
-                let userRecord = validRecord.value
-                var posts = userRecord["posts"] as? [NSString] ?? []
-                posts.append(postRecord.recordID.recordName as NSString)
-                userRecord["posts"] = posts as CKRecordValue?
-                
+                let userRecord = self.addPost(to: validRecord.value, value: postRecord.recordID.recordName)
                 //Save and post the record
-                userSave.recordsToSave = [userRecord, postRecord]
+                privateUserSave.recordsToSave = [userRecord]
             }
         }
         
-        //Init the userSave (to save the post)
-        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
-            
-            
-            if error == nil, let validRecords = records {
-                _ = validRecords.map {
-                    if $0.recordType == recordType {
-                        print("working")
-                        completionRecord = $0
-                    }
+        publicUserFetch.fetchRecordsCompletionBlock = { (record, error) in
+            if error != nil {
+                completionError?.append(error!)
+                if let ckError = error as? CKError  {
+                    //TODO Add retry logic
+                } else {
+                    print(error!.localizedDescription)
                 }
-            } else {
+            }
+            
+            if let validRecord = record?.first {
+                //Fix this.
+                //Update the posts array
+                let userRecord = self.addPost(to: validRecord.value, value: postRecord.recordID.recordName)
+                //Save and post the record
+                publicPostsToSave.recordsToSave = [userRecord, postRecord]
+            }
+        }
+
+        //Init the userSave (to save the post)
+        privateUserSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            if error != nil {
                 completionError?.append(error!)
             }
         }
+        publicPostsToSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            
+            
+            if error != nil {
+                completionError?.append(error!)
+            }
+            if let validRecords = records {
+                
+                _ = validRecords.map {
+                    if $0.recordType == recordType {
+                        completionRecord = $0
+                    }
+                }
+            }
+        }
+
         
-        userSave.addDependency(userFetch)
-        userFetch.queuePriority = .veryHigh
+        privateUserSave.addDependency(privateUserFetch)
+        privateUserSave.addDependency(publicUserFetch)
+        publicPostsToSave.addDependency(privateUserFetch)
+        publicPostsToSave.addDependency(publicUserFetch)
+        
+        privateUserFetch.queuePriority = .veryHigh
+        publicUserFetch.queuePriority = .veryHigh
         
         let queue = OperationQueue.main
-        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
+        queue.addOperations([privateUserFetch, publicUserFetch, privateUserSave, publicPostsToSave], waitUntilFinished: false)
         queue.addOperation { 
             completion(completionRecord, completionError)
         }
@@ -222,6 +260,15 @@ class CloudManager {
                 
             }
         }
+    }
+    
+    //MARK: Helper Functions
+    private func addPost(to record: CKRecord, value: String) -> CKRecord {
+        let userRecord = record
+        var posts = userRecord["posts"] as? [NSString] ?? []
+        posts.append(value as NSString)
+        userRecord["posts"] = posts as CKRecordValue?
+        return userRecord
     }
 }
 
