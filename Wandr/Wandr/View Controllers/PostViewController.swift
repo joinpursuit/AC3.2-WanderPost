@@ -44,11 +44,13 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
         let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy)
         
-        CloudManager.shared.createPost(post: post) { (record, error) in
-            if error != nil {
-                print(error?.localizedDescription)
+        CloudManager.shared.createPost(post: post) { (record, errors) in
+            if errors != nil {
+                print(errors)
                 //TODO Add in error handling.
             }
+            print("\n\ni think this works? \n\n")
+            //DO SOMETHING WITH THE RECORD?
             dump(record)
         }
         self.dismiss(animated: true, completion: nil)
