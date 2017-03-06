@@ -17,6 +17,7 @@
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
+		A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */; };
 		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
 		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
 		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
@@ -63,6 +64,7 @@
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
+		A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderSegmentedControl.swift; sourceTree = "<group>"; };
 		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
 		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
 		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				A7AF86041E68D6B80046487F /* WanderButton.swift */,
 				A7686F851E67626E00402053 /* ProfileView.swift */,
 				DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */,
+				A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -420,6 +423,7 @@
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
+				A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
 				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,

@@ -28,7 +28,6 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
-        self.segmentedControl.delegate = self
         
     }
     
@@ -41,10 +40,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         //init post, this is going to be a rough sketch of doing it
         let content = self.textField.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
-        
-        let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy)
-        
-        CloudManager.shared.createPost(post: post) { (record, errors) in
+                
+        self.dismiss(animated: true, completion: nil)
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location, completionHandler: {
+            placemarks, error in
+            if let error = error {
+                print("error with geocoder: \(error)")
+            }
+            if let marks = placemarks, let thisMark = marks.last {
+                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
+                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
+                
+                        CloudManager.shared.createPost(post: post) { (record, errors) in
             if errors != nil {
                 print(errors)
                 //TODO Add in error handling.
@@ -53,7 +61,10 @@ class PostViewController: UIViewController, UITextFieldDelegate {
             //DO SOMETHING WITH THE RECORD?
             dump(record)
         }
-        self.dismiss(animated: true, completion: nil)
+
+                self.dismiss(animated: true, completion: nil)
+            }
+        })
     }
     
     func imageTapped() {
@@ -151,8 +162,9 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
 
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
+        control.delegate = self
         return control
     }()
     
