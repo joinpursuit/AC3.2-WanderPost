@@ -141,19 +141,11 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
-    lazy var profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "default-placeholder")
-        imageView.layer.borderWidth = 2.0
-        imageView.layer.borderColor = StyleManager.shared.accent.cgColor
-        imageView.contentMode = .scaleAspectFill
-        imageView.frame.size = CGSize(width: 50.0, height: 50.0)
+    lazy var profileImageView: WanderProfileImageView = {
+        let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        imageView.addGestureRecognizer(tapImageGesture)
+                imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
-        imageView.layer.masksToBounds = true
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.height / 2
         return imageView
     }()
     
