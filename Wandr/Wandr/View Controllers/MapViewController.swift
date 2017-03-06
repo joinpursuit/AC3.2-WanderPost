@@ -22,6 +22,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
+    var allWanderPosts: [WanderPost] = []
+    
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
@@ -43,12 +45,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.arDelegate = tabBarController?.viewControllers?.last as! ARViewController
         setupViewHierarchy()
         configureConstraints()
-        configureTwicketSegmentControl()
+        //configureTwicketSegmentControl()
         setupLocationManager()
         getWanderPosts(lastUpdatedLocation)
-        //        setupGestures()
+        //setupGestures()
         userNotificationCenter.delegate = self
         mapView.delegate = self
+        self.segmentedControl.setSegmentItems(segmentTitles)
     }
     
     
@@ -61,7 +64,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.mapContainerView.addSubview(addPostButton)
         
         self.view.addSubview(addPostButton)
-        self.view.addSubview(segmentedControl)
+        self.view.addSubview(segmentedControlContainerView)
+        self.segmentedControlContainerView.addSubview(segmentedControl)
     }
     
     
@@ -86,17 +90,21 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             button.width.equalTo(54.0)
             button.height.equalTo(54.0)
         }
+        
+        segmentedControlContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.topLayoutGuide.snp.bottom)
+            view.leading.equalToSuperview().offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(30)
+        }
+        
+        segmentedControl.snp.makeConstraints { (control) in
+            control.top.leading.trailing.bottom.equalToSuperview()
+        }
+        
     }
     
     // MARK: - Setup
-    
-    func configureTwicketSegmentControl() {
-        let frame = CGRect(x: 5, y: 75, width: view.frame.width - 10, height: 30)
-        self.segmentedControl = TwicketSegmentedControl(frame: frame)
-        self.segmentedControl.backgroundColor = UIColor.clear
-        self.segmentedControl.setSegmentItems(segmentTitles)
-        self.segmentedControl.delegate = self
-    }
     
     func setupLocationManager() {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -125,12 +133,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapCamera.pitch = 5
         mapView.camera = mapCamera
         mapView.setRegion(region, animated: false)
-        
+
         if lastUpdatedLocation.distance(from: location) > 100 {
             lastUpdatedLocation = location
             getWanderPosts(location)
             makeNotification(withBody: "hello")
             print("new location")
+
         }
     }
     
@@ -168,6 +177,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         postVC.location = locationManager.location
         self.navigationController?.present(postVC, animated: true, completion: nil)
     }
+    
     
     //MARK: - Lazy Vars
     lazy var mapContainerView: UIView = {
@@ -219,8 +229,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         return view
     }()
     
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
+        //control.backgroundColor = StyleManager.shared.primary
+        //control.sliderBackgroundColor = StyleManager.shared.accent
+        //control.font = StyleManager.shared.comfortaaFont14
+        //control.segmentsBackgroundColor = StyleManager.shared.primary
+        control.delegate = self
         return control
     }()
     
@@ -233,7 +248,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
                 self.wanderposts = posts
-                
+                self.allWanderPosts = posts
                 DispatchQueue.main.async {
                     self.reloadMapView()
                 }
@@ -332,11 +347,14 @@ extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         switch segmentIndex {
         case 0:
-            print("Internal")
+            print("Everyone")
+            self.wanderposts = self.allWanderPosts
         case 1:
-            print("Private")
+            print("Friends")
+            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .friends} + self.allWanderPosts.filter{$0.privacyLevel == .message}
         case 2:
-            print("Public")
+            print("Message")
+            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .message}
         default:
             print("Can not make a decision")
         }

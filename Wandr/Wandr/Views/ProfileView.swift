@@ -158,8 +158,8 @@ class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
         }
     }
     
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
         return control
     }()
 
