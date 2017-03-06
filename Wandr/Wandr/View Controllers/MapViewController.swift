@@ -20,6 +20,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
+    var allWanderPosts: [WanderPost] = []
+    
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
@@ -126,6 +128,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
                 self.wanderposts = posts
+                self.allWanderPosts = posts
                 print("Post count..... \(self.wanderposts!.count)")
                 self.reloadMapView()
             }
@@ -177,6 +180,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         postVC.location = locationManager.location
         self.navigationController?.present(postVC, animated: true, completion: nil)
     }
+    
     
     //MARK: - Lazy Vars
     lazy var mapContainerView: UIView = {
@@ -349,13 +353,27 @@ extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         switch segmentIndex {
         case 0:
-            print("Internal")
+            print("Everyone")
+            self.wanderposts = filterWanderPost(privacyLevel: .everyone)
         case 1:
-            print("Private")
+            print("Friends")
+            self.wanderposts = filterWanderPost(privacyLevel: .friends)
         case 2:
-            print("Public")
+            print("Message")
+            self.wanderposts = filterWanderPost(privacyLevel: .message)
         default:
             print("Can not make a decision")
+        }
+    }
+    
+    func filterWanderPost(privacyLevel: PrivacyLevel) -> [WanderPost] {
+        switch privacyLevel {
+        case PrivacyLevel.everyone:
+            return (self.allWanderPosts.filter{$0.privacyLevel == .everyone})
+        case PrivacyLevel.friends:
+            return (self.allWanderPosts.filter{$0.privacyLevel == .friends})
+        case PrivacyLevel.message:
+            return (self.allWanderPosts.filter{$0.privacyLevel == .message})
         }
     }
 }
