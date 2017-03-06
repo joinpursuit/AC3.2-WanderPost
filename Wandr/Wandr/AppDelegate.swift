@@ -9,19 +9,19 @@
 import UIKit
 import CloudKit
 import UserNotifications
+import UserNotificationsUI
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-
+    
     var window: UIWindow?
-
-
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
-
         setNavigationTheme()
-
+        
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
         let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
@@ -42,7 +42,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         arViewController.setAnnotations([])
 
         
-        
         profileViewController.tabBarItem = profileIcon
         mapViewController.tabBarItem = mapIcon
         onBoardViewController.tabBarItem = onBoardIcon
@@ -52,7 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
-
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = tabController
         self.window?.makeKeyAndVisible()
@@ -63,41 +62,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { (granted, error) in
             if error != nil {
-                 // Enable or disable features based on authorization.
+                // Enable or disable features based on authorization.
                 print(error!)
             }
         }
         application.registerForRemoteNotifications()
-        
-//        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
-//        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
-//            // Enable or disable features based on authorization.
-//        }
-//        
-//        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
-//            
-//            switch settings.soundSetting{
-//            case .enabled:
-//                
-//                print("enabled sound setting")
-//                
-//            case .disabled:
-//                
-//                print("setting has been disabled")
-//                
-//            case .notSupported:
-//                print("something vital went wrong here")
-//            }
-//        }
-//        application.registerForRemoteNotifications()
-        
-        
-        //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
-        
-        //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
-        
-        //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
-        
         return true
     }
     
@@ -114,37 +83,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let tabBarItemAppearance  = UITabBarItem.appearance()
         let normalAttributes = [NSForegroundColorAttributeName: UIColor.white,
-                          NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+                                NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
         let selectedAttributes = [NSForegroundColorAttributeName: StyleManager.shared.accent,
-                                    NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+                                  NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
         tabBarItemAppearance.setTitleTextAttributes(normalAttributes, for: .normal)
         tabBarItemAppearance.setTitleTextAttributes(selectedAttributes, for: .selected)
         tabBarAppearance.tintColor = StyleManager.shared.accent
     }
     
-
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
-
+    
     func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
-
+    
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
     }
-
+    
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     }
-
+    
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    
     
     //MARK: - App Delegate Methods for Notifications
     
@@ -167,55 +136,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("user info \(userInfo)")
     }
-    
-    //MARK: - User Notification Delegate Method
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        //        switch response.actionIdentifier {
-        //        case NotificationActions.NotifyBefore.rawValue:
-        //            print("notify")
-        //            break
-        //        case NotificationActions.callNow.rawValue:
-        //            print("callNow")
-        //            break
-        //        case NotificationActions.clear.rawValue:
-        //            print("clear")
-        //        default: 
-        //            break
-        //        }
-    }
-    
-//    func fixPostCount() {
-//        let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
-//        let userSave = CKModifyRecordsOperation()
-//        
-//        userFetch.fetchRecordsCompletionBlock = { (record, error) in
-//            if error != nil {
-//                if let ckError = error as? CKError  {
-//                    //TODO Add retry logic
-//                } else {
-//                    print(error!.localizedDescription)
-//                }
-//            }
-//            if let validRecord = record?.first {
-//                
-//                
-//                //Fix this.
-//                //Update the posts array
-//                let userRecord = validRecord.value
-//                var posts: [NSString] =  []
-//                userRecord["posts"] = posts as CKRecordValue?
-//                
-//                //Save and post the record
-//                userSave.recordsToSave = [userRecord]
-//            }
-//        }
-//        
-//        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-//        }
-//        
-//        let queue = OperationQueue()
-//        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
-//    }
-
 }
 
+/*
+ 
+ //        let locationTrigger = UNLocationNotificationTrigger(region: <#T##CLRegion#>, repeats: <#T##Bool#>)
+ //
+ //        let notificationRequest = UNNotificationRequest.init(identifier: "newPosts", content: <#T##UNNotificationContent#>, trigger: <#T##UNNotificationTrigger?#>)
+ //
+ //        UNUserNotificationCenter.current().add(<#T##request: UNNotificationRequest##UNNotificationRequest#>, withCompletionHandler: <#T##((Error?) -> Void)?##((Error?) -> Void)?##(Error?) -> Void#>)
+ 
+ //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
+ //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
+ //            // Enable or disable features based on authorization.
+ //        }
+ //
+ //        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
+ //
+ //            switch settings.soundSetting{
+ //            case .enabled:
+ //
+ //                print("enabled sound setting")
+ //
+ //            case .disabled:
+ //
+ //                print("setting has been disabled")
+ //
+ //            case .notSupported:
+ //                print("something vital went wrong here")
+ //            }
+ //        }
+ //        application.registerForRemoteNotifications()
+ 
+ 
+ //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
+ 
+ //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
+ 
+ //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
+ */
