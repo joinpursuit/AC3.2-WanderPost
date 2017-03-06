@@ -7,23 +7,93 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */; };
 		8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8129528B1E60D08A0048199B /* AppDelegate.swift */; };
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
+		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
+		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
+		8164460E1E65FB0800477FBD /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* Reaction.swift */; };
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
+		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
+		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
+		A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */; };
+		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
+		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
+		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
+		A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */; };
+		A7686F861E67626E00402053 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F851E67626E00402053 /* ProfileView.swift */; };
+		A7686F881E6876E100402053 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7686F871E6876E000402053 /* MapKit.framework */; };
+		A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */; };
+		A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86001E68B11D0046487F /* OnBoardViewController.swift */; };
+		A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86021E68CFA70046487F /* Extension UITextField.swift */; };
+		A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86041E68D6B80046487F /* WanderButton.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
+		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
+		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
+		DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */; };
+		DE8BF0C41E65FB5F007D2486 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */; };
+		DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B281E685D1D001E0747 /* AnnotationView.swift */; };
+		DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B291E685D1D001E0747 /* ARAnnotation.swift */; };
+		DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */; };
+		DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B2B1E685D1D001E0747 /* ARConfiguration.swift */; };
+		DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B2C1E685D1D001E0747 /* ARTrackingManager.swift */; };
+		DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B2D1E685D1D001E0747 /* ARViewController.swift */; };
+		DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B341E6863C0001E0747 /* DebugMapViewController.swift */; };
+		DEA80B3B1E686F58001E0747 /* DebugMapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B371E686F58001E0747 /* DebugMapViewController.xib */; };
+		DEA80B3C1E686F58001E0747 /* hdar_close.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B381E686F58001E0747 /* hdar_close.png */; };
+		DEA80B3D1E686F58001E0747 /* hdar_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B391E686F58001E0747 /* hdar_close@2x.png */; };
+		DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */; };
+		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
+		DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */; };
+		DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B431E6A0E58001E0747 /* APIManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.debug.xcconfig"; sourceTree = "<group>"; };
+		8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKAsset+UIImage+Extension.swift"; sourceTree = "<group>"; };
 		812952881E60D08A0048199B /* Wandr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wandr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8129528B1E60D08A0048199B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		812952921E60D08A0048199B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		812952951E60D08A0048199B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
+		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
+		8164460D1E65FB0800477FBD /* Reaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
 		81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wandr.entitlements; sourceTree = "<group>"; };
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
+		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
+		A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderSegmentedControl.swift; sourceTree = "<group>"; };
+		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
+		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
+		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
+		A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailPostTableViewCell.swift; path = Views/ProfileViewViewControllerDetailPostTableViewCell.swift; sourceTree = "<group>"; };
+		A7686F851E67626E00402053 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
+		A7686F871E6876E000402053 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapCameraViewController.swift; path = "View Controllers/MapCameraViewController.swift"; sourceTree = "<group>"; };
+		A7AF86001E68B11D0046487F /* OnBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnBoardViewController.swift; path = "View Controllers/OnBoardViewController.swift"; sourceTree = "<group>"; };
+		A7AF86021E68CFA70046487F /* Extension UITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UITextField.swift"; path = "Views/Extension UITextField.swift"; sourceTree = "<group>"; };
+		A7AF86041E68D6B80046487F /* WanderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderButton.swift; path = Views/WanderButton.swift; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
+		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
+		DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
+		DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Regular.ttf"; sourceTree = "<group>"; };
+		DEA80B281E685D1D001E0747 /* AnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
+		DEA80B291E685D1D001E0747 /* ARAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARAnnotation.swift; sourceTree = "<group>"; };
+		DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARAnnotationView.swift; sourceTree = "<group>"; };
+		DEA80B2B1E685D1D001E0747 /* ARConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARConfiguration.swift; sourceTree = "<group>"; };
+		DEA80B2C1E685D1D001E0747 /* ARTrackingManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARTrackingManager.swift; sourceTree = "<group>"; };
+		DEA80B2D1E685D1D001E0747 /* ARViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		DEA80B341E6863C0001E0747 /* DebugMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugMapViewController.swift; sourceTree = "<group>"; };
+		DEA80B371E686F58001E0747 /* DebugMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DebugMapViewController.xib; sourceTree = "<group>"; };
+		DEA80B381E686F58001E0747 /* hdar_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hdar_close.png; sourceTree = "<group>"; };
+		DEA80B391E686F58001E0747 /* hdar_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@2x.png"; sourceTree = "<group>"; };
+		DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@3x.png"; sourceTree = "<group>"; };
+		DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostAnnotation.swift; sourceTree = "<group>"; };
+		DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderMapAnnotationView.swift; path = Views/WanderMapAnnotationView.swift; sourceTree = "<group>"; };
+		DEA80B431E6A0E58001E0747 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,6 +103,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */,
+				A7686F881E6876E100402053 /* MapKit.framework in Frameworks */,
 				B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -61,6 +132,7 @@
 		8129528A1E60D08A0048199B /* Wandr */ = {
 			isa = PBXGroup;
 			children = (
+				DEA80B271E685CDD001E0747 /* Augmented Reality */,
 				8171C3DB1E60DF68000C6DC5 /* Views */,
 				8171C3DA1E60DF61000C6DC5 /* Managers */,
 				8171C3D91E60DF5B000C6DC5 /* View Controllers */,
@@ -74,6 +146,7 @@
 		8129529E1E60D0CF0048199B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A7686F871E6876E000402053 /* MapKit.framework */,
 				81C2A0D31E60D5F800F43791 /* CloudKit.framework */,
 				BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */,
 			);
@@ -83,10 +156,13 @@
 		8171C3D71E60DF37000C6DC5 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				DEA80B361E686F3E001E0747 /* Resources */,
+				DE8BF0C51E65FB70007D2486 /* Fonts */,
 				81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */,
 				8129528B1E60D08A0048199B /* AppDelegate.swift */,
 				812952921E60D08A0048199B /* Assets.xcassets */,
 				812952971E60D08A0048199B /* Info.plist */,
+				8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -94,6 +170,9 @@
 		8171C3D81E60DF54000C6DC5 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8164460B1E65FA2600477FBD /* WanderPost.swift */,
+				8164460D1E65FB0800477FBD /* Reaction.swift */,
+				DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -101,6 +180,13 @@
 		8171C3D91E60DF5B000C6DC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
+				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
+				A70DF45D1E648684000C6421 /* MapViewController.swift */,
+				A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */,
+				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
+				A7686F811E66017800402053 /* PostViewController.swift */,
+				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -108,6 +194,9 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				DEA80B431E6A0E58001E0747 /* APIManager.swift */,
+				DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */,
+				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -115,6 +204,12 @@
 		8171C3DB1E60DF68000C6DC5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */,
+				A7AF86021E68CFA70046487F /* Extension UITextField.swift */,
+				A7AF86041E68D6B80046487F /* WanderButton.swift */,
+				A7686F851E67626E00402053 /* ProfileView.swift */,
+				DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */,
+				A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -126,6 +221,41 @@
 				FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		DE8BF0C51E65FB70007D2486 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */,
+				DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */,
+				DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
+		DEA80B271E685CDD001E0747 /* Augmented Reality */ = {
+			isa = PBXGroup;
+			children = (
+				DEA80B341E6863C0001E0747 /* DebugMapViewController.swift */,
+				DEA80B281E685D1D001E0747 /* AnnotationView.swift */,
+				DEA80B291E685D1D001E0747 /* ARAnnotation.swift */,
+				DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */,
+				DEA80B2B1E685D1D001E0747 /* ARConfiguration.swift */,
+				DEA80B2C1E685D1D001E0747 /* ARTrackingManager.swift */,
+				DEA80B2D1E685D1D001E0747 /* ARViewController.swift */,
+			);
+			name = "Augmented Reality";
+			sourceTree = "<group>";
+		};
+		DEA80B361E686F3E001E0747 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				DEA80B371E686F58001E0747 /* DebugMapViewController.xib */,
+				DEA80B381E686F58001E0747 /* hdar_close.png */,
+				DEA80B391E686F58001E0747 /* hdar_close@2x.png */,
+				DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +296,12 @@
 						DevelopmentTeam = 26RHXP32FH;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Maps.iOS = {
+								enabled = 0;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -199,8 +335,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */,
 				812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */,
+				DEA80B3D1E686F58001E0747 /* hdar_close@2x.png in Resources */,
 				812952931E60D08A0048199B /* Assets.xcassets in Resources */,
+				DE8BF0C41E65FB5F007D2486 /* Comfortaa-Regular.ttf in Resources */,
+				DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */,
+				DEA80B3C1E686F58001E0747 /* hdar_close.png in Resources */,
+				DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */,
+				DEA80B3B1E686F58001E0747 /* DebugMapViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,7 +402,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */,
+				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
+				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
+				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
+				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
+				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,
+				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
+				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
+				A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */,
+				A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */,
+				DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */,
+				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
+				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
+				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
+				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
+				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
+				DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */,
+				A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */,
+				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
+				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
+				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
+				A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */,
+				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
+				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
+				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
+				8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */,
+				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,7 +468,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -317,9 +488,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -348,7 +520,8 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -361,8 +534,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -376,9 +550,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wandr/Wandr.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 26RHXP32FH;
 				INFOPLIST_FILE = Wandr/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.c4q.badfish.Wandr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -397,6 +573,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = 26RHXP32FH;
 				INFOPLIST_FILE = Wandr/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nyc.c4q.badfish.Wandr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
