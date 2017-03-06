@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */; };
 		8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8129528B1E60D08A0048199B /* AppDelegate.swift */; };
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
@@ -49,6 +50,7 @@
 
 /* Begin PBXFileReference section */
 		3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.debug.xcconfig"; sourceTree = "<group>"; };
+		8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKAsset+UIImage+Extension.swift"; sourceTree = "<group>"; };
 		812952881E60D08A0048199B /* Wandr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wandr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8129528B1E60D08A0048199B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		812952921E60D08A0048199B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				8129528B1E60D08A0048199B /* AppDelegate.swift */,
 				812952921E60D08A0048199B /* Assets.xcassets */,
 				812952971E60D08A0048199B /* Info.plist */,
+				8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -421,6 +424,7 @@
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
 				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
+				8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */,
 				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,6 +9,14 @@ import Foundation
 import CloudKit
 import UIKit
 
+//TODO List
+
+/*
+ _friends
+ _user picture/user name/update posts locally -- i should've done this from the get go. That was poor thinking.
+ _
+ */
+
 enum PostContentType: NSString {
     case audio, text, video
 }
@@ -121,17 +129,18 @@ class CloudManager {
         queue.addOperations([userFetch, userSave, savePost], waitUntilFinished: false)
     }
     
-    //This doesn't really work, I need to pull the existing user file and update it, not try and create a new one. This is especially useful because this is how I am going to be updating friends and posts.
-    func createUsername (userName: String, completion: @escaping (Error?) -> Void) {
+    func createUsername (userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
         
         let validUsername = userName as NSString
         let id = CKRecordID(recordName: currentUser!.recordName)
+        let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
         
         publicDatabase.fetch(withRecordID: id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
             } else if let validUserRecord = userRecord {
                 validUserRecord["username"] = validUsername
+                validUserRecord["profileImage"] = imageAsset
                 
                 self.publicDatabase.save(validUserRecord) { (record, error) in
                     completion(error)
@@ -152,6 +161,22 @@ class CloudManager {
         }
     }
     
+    func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
+        publicDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
+            if error != nil {
+                completion(nil, error)
+            } else if let validRecord = record,
+                let imageAsset = validRecord["profileImage"] as? CKAsset{
+                do {
+                    let data = try Data(contentsOf: imageAsset.fileURL)
+                    completion(data, nil)
+                } catch {
+                    completion(nil, error)
+                }
+            }
+        }
+    }
+    
     func checkUser () {
         let userID = CKRecordID(recordName: self.currentUser!.recordName)
         publicDatabase.fetch(withRecordID: userID) { (record, error) in
@@ -165,16 +190,14 @@ class CloudManager {
             }
             if let record = record {
                 print("\n\n record \n\n")
-                
                 dump(record)
             }
         }
     }
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 1000", currentLocation)
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
         query.sortDescriptors = [locationSorter]
         
@@ -193,36 +216,36 @@ class CloudManager {
 }
 
 /*
-func fixPostCount() {
-    let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
-    let userSave = CKModifyRecordsOperation()
-    
-    userFetch.fetchRecordsCompletionBlock = { (record, error) in
-        if error != nil {
-            if let ckError = error as? CKError  {
-                //TODO Add retry logic
-            } else {
-                print(error!.localizedDescription)
-            }
-        }
-        if let validRecord = record?.first {
-            
-            
-            //Fix this.
-            //Update the posts array
-            let userRecord = validRecord.value
-            var posts: [NSString] =  []
-            userRecord["posts"] = posts as CKRecordValue?
-            
-            //Save and post the record
-            userSave.recordsToSave = [userRecord]
-        }
-    }
-    
-    userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-    }
-    
-    let queue = OperationQueue()
-    queue.addOperations([userFetch, userSave], waitUntilFinished: false)
-}
-*/
+ func fixPostCount() {
+ let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
+ let userSave = CKModifyRecordsOperation()
+ 
+ userFetch.fetchRecordsCompletionBlock = { (record, error) in
+ if error != nil {
+ if let ckError = error as? CKError  {
+ //TODO Add retry logic
+ } else {
+ print(error!.localizedDescription)
+ }
+ }
+ if let validRecord = record?.first {
+ 
+ 
+ //Fix this.
+ //Update the posts array
+ let userRecord = validRecord.value
+ var posts: [NSString] =  []
+ userRecord["posts"] = posts as CKRecordValue?
+ 
+ //Save and post the record
+ userSave.recordsToSave = [userRecord]
+ }
+ }
+ 
+ userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
+ }
+ 
+ let queue = OperationQueue()
+ queue.addOperations([userFetch, userSave], waitUntilFinished: false)
+ }
+ */
