@@ -142,20 +142,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapCamera.pitch = 5
         mapView.camera = mapCamera
         mapView.setRegion(region, animated: false)
-
+        
         if lastUpdatedLocation.distance(from: location) > 100 {
             lastUpdatedLocation = location
             getWanderPosts(location)
             makeNotification(withBody: "hello")
             print("new location")
-
+            
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("error:: \(error)")
     }
-
+    
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -337,7 +337,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             case .everyone:
                 break
             }
-        //makeNotification(withBody: <#T##String#>)
+            //makeNotification(withBody: <#T##String#>)
         }
     }
     

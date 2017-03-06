@@ -125,7 +125,7 @@ class CloudManager {
                 publicPostsToSave.recordsToSave = [userRecord, postRecord]
             }
         }
-
+        
         //Init the userSave (to save the post)
         privateUserSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
             if error != nil {
@@ -147,7 +147,7 @@ class CloudManager {
                 }
             }
         }
-
+        
         
         privateUserSave.addDependency(privateUserFetch)
         privateUserSave.addDependency(publicUserFetch)
@@ -159,7 +159,7 @@ class CloudManager {
         
         let queue = OperationQueue.main
         queue.addOperations([privateUserFetch, publicUserFetch, privateUserSave, publicPostsToSave], waitUntilFinished: false)
-        queue.addOperation { 
+        queue.addOperation {
             completion(completionRecord, completionError)
         }
     }
@@ -192,6 +192,26 @@ class CloudManager {
             case .none:
                 print("fetched ID \(recordID?.recordName)")
                 self.currentUser = recordID
+            }
+        }
+    }
+    
+    func getUserInfo(for id: CKRecordID, completion: @escaping (Data?, String?, [String]?, Error?) -> Void) {
+        
+        publicDatabase.fetch(withRecordID: id) { (record, error) in
+            if error != nil {
+                completion(nil, nil, nil, error)
+            }
+            if let validRecord = record {
+                var data: Data?
+                if let imageAsset = validRecord["profileImage"] as? CKAsset {
+                    do {
+                        data = try Data(contentsOf: imageAsset.fileURL)
+                    } catch {
+                        completion(nil, nil, nil, error)
+                    }
+                }
+                completion(data, validRecord["username"] as? String, validRecord["posts"] as? [String], nil)
             }
         }
     }
@@ -274,38 +294,38 @@ class CloudManager {
 }
 
 /*
-    func fixPostCount() {
-        let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
-        let userSave = CKModifyRecordsOperation()
-        
-        userFetch.fetchRecordsCompletionBlock = { (record, error) in
-            
-            
-            if error != nil {
-                if let ckError = error as? CKError  {
-                    //TODO Add retry logic
-                } else {
-                    print(error!.localizedDescription)
-                }
-            }
-            if let validRecord = record?.first {
-                
-                
-                //Fix this.
-                //Update the posts array
-                let userRecord = validRecord.value
-                var posts: [NSString] =  []
-                userRecord["posts"] = posts as CKRecordValue?
-                
-                //Save and post the record
-                userSave.recordsToSave = [userRecord]
-            }
-        }
-        
-        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-        }
-        userSave.addDependency(userFetch)
-        let queue = OperationQueue()
-        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
-    }
+ func fixPostCount() {
+ let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
+ let userSave = CKModifyRecordsOperation()
+ 
+ userFetch.fetchRecordsCompletionBlock = { (record, error) in
+ 
+ 
+ if error != nil {
+ if let ckError = error as? CKError  {
+ //TODO Add retry logic
+ } else {
+ print(error!.localizedDescription)
+ }
+ }
+ if let validRecord = record?.first {
+ 
+ 
+ //Fix this.
+ //Update the posts array
+ let userRecord = validRecord.value
+ var posts: [NSString] =  []
+ userRecord["posts"] = posts as CKRecordValue?
+ 
+ //Save and post the record
+ userSave.recordsToSave = [userRecord]
+ }
+ }
+ 
+ userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
+ }
+ userSave.addDependency(userFetch)
+ let queue = OperationQueue()
+ queue.addOperations([userFetch, userSave], waitUntilFinished: false)
+ }
  */
