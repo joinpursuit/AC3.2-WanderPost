@@ -262,7 +262,7 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
             self.didLayoutSubviews = true
             
             // Close button
-            if self.uiOptions.closeButtonEnabled { self.addCloseButton() }
+            //if self.uiOptions.closeButtonEnabled { self.addCloseButton() }
             
             // Debug
             if self.uiOptions.debugEnabled { self.addDebugUi() }

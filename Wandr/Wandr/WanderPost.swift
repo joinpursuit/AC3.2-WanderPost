@@ -21,7 +21,14 @@ class WanderPost: ARAnnotation {
     let locationDescription: String
     var read: Bool
     
-    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date, user: CKRecordID, locationDescription: String, read: Bool) {
+    var dateAndTime: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: time)
+    }
+
+    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], time: Date, user: CKRecordID, locationDescription: String) {
         self.content = content
         self.contentType = contentType
         self.privacyLevel = privacyLevel
