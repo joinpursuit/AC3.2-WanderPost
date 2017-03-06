@@ -64,8 +64,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: - UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
             self.profileHeaderView.profileImageView.image = image
         }
+        dump(info)
         self.dismiss(animated: true, completion: nil)
     }
     

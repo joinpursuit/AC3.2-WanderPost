@@ -11,12 +11,14 @@ import MapKit
 import CoreLocation
 import SnapKit
 import TwicketSegmentedControl
+import UserNotifications
 
 protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
+
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -28,23 +30,26 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
-    var arDelegate: ARPostDelegate!
-    
-    var addPostViewShown = false
-    
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    var arDelegate: ARPostDelegate!
+    var addPostViewShown = false
+    var lastUpdatedLocation: CLLocation!
+    let userNotificationCenter = UNUserNotificationCenter.current()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.title = "wanderpost"
         //Make this more dynamic
+        self.lastUpdatedLocation = locationManager.location!
         self.arDelegate = tabBarController?.viewControllers?.last as! ARViewController
         setupViewHierarchy()
         configureConstraints()
         configureTwicketSegmentControl()
         setupLocationManager()
+        getWanderPosts(lastUpdatedLocation)
         //        setupGestures()
+        userNotificationCenter.delegate = self
         mapView.delegate = self
     }
     
@@ -102,7 +107,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
     }
-
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -122,56 +127,41 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapCamera.pitch = 5
         mapView.camera = mapCamera
         mapView.setRegion(region, animated: false)
-        
-        CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
-            if let error = error {
-                print("Error fetching posts, \(error)")
-            } else if let posts = posts {
-                self.wanderposts = posts
-                self.allWanderPosts = posts
-                print("Post count..... \(self.wanderposts!.count)")
-                self.reloadMapView()
-            }
+      
+        if lastUpdatedLocation.distance(from: location) > 100 {
+            lastUpdatedLocation = location
+            getWanderPosts(location)
+            makeNotification(withBody: "hello")
+            print("new location")
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("error:: \(error)")
     }
-    
-    
-    
+
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        let annotationIdentifier = "AnnotationIdentifier"
-        let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
         
-        APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
-            if let data = data {
-                DispatchQueue.main.async {
-                    annotationView.profileImageView.image = UIImage(data: data)
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            
+            APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
+                if let data = data {
+                    DispatchQueue.main.async {
+                        annotationView.profileImageView.image = UIImage(data: data)
+                    }
                 }
             }
+            return annotationView
+            
         }
-        return annotationView
-    }
-    
-    func reloadMapView() {
-        if let posts = self.wanderposts {
-            var annotations: [MKAnnotation] = []
-            for post in posts {
-                let annotaton = PostAnnotation()
-                guard let postLocation = post.location else { return }
-                annotaton.coordinate = postLocation.coordinate
-                annotaton.title = post.content as? String
-                annotations.append(annotaton)
-            }
-            DispatchQueue.main.async {
-                self.mapView.removeAnnotations(self.mapView.annotations)
-                self.mapView.addAnnotations(annotations)
-            }
-        }
+        
     }
     
     // MARK: - Actions
@@ -194,6 +184,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         mapView.showsBuildings = false
+        mapView.showsUserLocation = true
+        mapView.tintColor = StyleManager.shared.accent
         return mapView
     }()
     
@@ -236,117 +228,107 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }()
     
     
+    //MARK: - Helper Functions
     
-    //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
-    //        switch sender.direction {
-    //        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
-    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-    //             self.addPostViewShown = !addPostViewShown
-    //        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
-    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-    //             self.addPostViewShown = !addPostViewShown
-    //        default:
-    //            print("Not a recognized gesture")
-    //        }
-    //    }
+    func getWanderPosts(_ location: CLLocation) {
+        CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
+            if let error = error {
+                print("Error fetching posts, \(error)")
+            } else if let posts = posts {
+                self.wanderposts = posts
+                
+                DispatchQueue.main.async {
+                    self.reloadMapView()
+                }
+            }
+        }
+    }
     
-    //    func togglePostView(_ sender: UISwipeGestureRecognizer) {
-    //        switch sender.direction {
-    //        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
-    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-    //             self.addPostViewShown = !addPostViewShown
-    //        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
-    //            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-    //             self.addPostViewShown = !addPostViewShown
-    //        default:
-    //            print("Not a recognized gesture")
-    //        }
-    //    }
+    func reloadMapView() {
+        if let posts = self.wanderposts {
+            var annotations: [MKAnnotation] = []
+            for post in posts {
+                let annotaton = PostAnnotation()
+                guard let postLocation = post.location else { return }
+                annotaton.coordinate = postLocation.coordinate
+                annotaton.title = post.content as? String
+                annotations.append(annotaton)
+            }
+            DispatchQueue.main.async {
+                self.mapView.removeAnnotations(self.mapView.annotations)
+                self.mapView.addAnnotations(annotations)
+            }
+        }
+    }
+    //MARK: - Notification Delegate Methods
     
-    //    func animatePostView() {
-    //        animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-    //        self.addPostViewShown = !addPostViewShown
-    //    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        print(response)
+        
+        
+        
+        switch response.actionIdentifier {
+        case UNNotificationDefaultActionIdentifier:
+            // the user swiped to unlock
+            print("Default identifier")
+            
+        case "show":
+            // the user tapped our "show more info…" button
+            print("Show more information…")
+            break
+            
+        default:
+            break
+        }
+        
+        // you must call the completion handler when you're done
+        completionHandler()
+        
+    }
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler(.alert)
+    }
     
-    //    private func animateSettingsMenu(showPost: Bool, duration: TimeInterval, dampening: CGFloat = 0.005, springVelocity: CGFloat = 0.005) {
-    //        switch self.addPostViewShown {
-    //        case true:
-    //            UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
-    //
-    //                self.dragUpOrDownContainerView.snp.remakeConstraints { (view) in
-    //                    view.leading.equalToSuperview()
-    //                    view.trailing.equalToSuperview()
-    //                    view.height.equalToSuperview().multipliedBy(0.5)
-    //                    view.width.equalToSuperview()
-    //                }
-    //
-    //                self.cheveronButton.snp.remakeConstraints { (button) in
-    //                    button.top.equalToSuperview()
-    //                    button.trailing.equalToSuperview().inset(16)
-    //                }
-    //
-    //                self.segmentedControlContainerView.snp.remakeConstraints { (view) in
-    //                    view.top.equalTo(self.cheveronButton.snp.centerY)
-    //                    view.leading.trailing.equalToSuperview()
-    //                    view.height.equalToSuperview().multipliedBy(0.175)
-    //                    view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-    //                }
-    //
-    //                self.segmentedControl.snp.remakeConstraints { (control) in
-    //                    control.top.leading.bottom.trailing.equalToSuperview()
-    //                }
-    //
-    //                self.postContainerView.snp.remakeConstraints { (view) in
-    //                    view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
-    //                    view.leading.trailing.bottom.equalToSuperview()
-    //                }
-    //
-    //            }, completion: nil)
-    //
-    //        case false:
-    //           UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
-    //            self.dragUpOrDownContainerView.snp.remakeConstraints({ (view) in
-    //                view.leading.trailing.equalToSuperview()
-    //                view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-    //                view.height.equalToSuperview().multipliedBy(0.5)
-    //                view.width.equalToSuperview()
-    //            })
-    //
-    //            self.cheveronButton.snp.remakeConstraints { (button) in
-    //                button.top.equalToSuperview()
-    //                button.trailing.equalToSuperview().inset(16)
-    //            }
-    //
-    //            self.segmentedControlContainerView.snp.remakeConstraints({ (view) in
-    //                view.top.equalTo(self.cheveronButton.snp.centerY)
-    //                view.leading.trailing.equalToSuperview()
-    //                view.height.equalToSuperview().multipliedBy(0.175)
-    //            })
-    //
-    //            self.segmentedControl.snp.remakeConstraints { (control) in
-    //                control.top.leading.bottom.trailing.equalToSuperview()
-    //            }
-    //
-    //            self.postContainerView.snp.remakeConstraints { (view) in
-    //                view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
-    //                view.leading.trailing.bottom.equalToSuperview()
-    //            }
-    //
-    //           }, completion: nil)
-    //        }
-    //    }
+    //MARK: - Helper Functions
     
-    // Mark: - Add Gestures
-    //    private func setupGestures() {
-    //        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
-    //        swipeUpGesture.direction = .up
-    //        self.dragUpOrDownContainerView.addGestureRecognizer(swipeUpGesture)
-    //
-    //        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
-    //        swipeDownGesture.direction = .down
-    //         self.dragUpOrDownContainerView.addGestureRecognizer(swipeDownGesture)
-    //    }
+    func makeNotification(withBody body: String) {
+        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let content = UNMutableNotificationContent()
+        content.title = "New Wanderposts"
+        content.body = body
+        content.categoryIdentifier = "newPost"
+        content.badge = 1
+        
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: notificationTrigger)
+        userNotificationCenter.add(request) { (error) in
+            //Add in error handling
+            print(error)
+        }
+        let show = UNNotificationAction(identifier: "newData", title: "WOO", options: .foreground)
+        let category = UNNotificationCategory(identifier: "newPost", actions: [show], intentIdentifiers: [])
+        userNotificationCenter.setNotificationCategories([category])
+        
+    }
     
+    func checkForNewWanderPosts(ofType type: PrivacyLevel) {
+        if let validWanderPosts = self.wanderposts {
+            //figure this out
+            var body: String
+            switch type {
+            case .friends:
+                body = ""
+            case .message:
+                body = ""
+            case .everyone:
+                break
+            }
+        //makeNotification(withBody: <#T##String#>)
+        }
+    }
+    
+    //HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo.
 }
 
 extension MapViewController: TwicketSegmentedControlDelegate {
@@ -389,6 +371,9 @@ extension MapViewController: ARDataSource {
     }
 }
 
+
+
+
 extension MapViewController: AnnotationViewDelegate {
     func didTouch(annotationView: AnnotationView) {
         print("Tapped view for POI: \(annotationView.titleLabel?.text)")
@@ -420,4 +405,117 @@ extension MapViewController: AnnotationViewDelegate {
     //    arViewController.present(alert, animated: true, completion: nil)
     //  }
 }
+
+//MARK: - Commented Out Code
+
+//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
+//        switch sender.direction {
+//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        default:
+//            print("Not a recognized gesture")
+//        }
+//    }
+
+//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
+//        switch sender.direction {
+//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
+//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//             self.addPostViewShown = !addPostViewShown
+//        default:
+//            print("Not a recognized gesture")
+//        }
+//    }
+
+//    func animatePostView() {
+//        animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
+//        self.addPostViewShown = !addPostViewShown
+//    }
+
+//    private func animateSettingsMenu(showPost: Bool, duration: TimeInterval, dampening: CGFloat = 0.005, springVelocity: CGFloat = 0.005) {
+//        switch self.addPostViewShown {
+//        case true:
+//            UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
+//
+//                self.dragUpOrDownContainerView.snp.remakeConstraints { (view) in
+//                    view.leading.equalToSuperview()
+//                    view.trailing.equalToSuperview()
+//                    view.height.equalToSuperview().multipliedBy(0.5)
+//                    view.width.equalToSuperview()
+//                }
+//
+//                self.cheveronButton.snp.remakeConstraints { (button) in
+//                    button.top.equalToSuperview()
+//                    button.trailing.equalToSuperview().inset(16)
+//                }
+//
+//                self.segmentedControlContainerView.snp.remakeConstraints { (view) in
+//                    view.top.equalTo(self.cheveronButton.snp.centerY)
+//                    view.leading.trailing.equalToSuperview()
+//                    view.height.equalToSuperview().multipliedBy(0.175)
+//                    view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+//                }
+//
+//                self.segmentedControl.snp.remakeConstraints { (control) in
+//                    control.top.leading.bottom.trailing.equalToSuperview()
+//                }
+//
+//                self.postContainerView.snp.remakeConstraints { (view) in
+//                    view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
+//                    view.leading.trailing.bottom.equalToSuperview()
+//                }
+//
+//            }, completion: nil)
+//
+//        case false:
+//           UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
+//            self.dragUpOrDownContainerView.snp.remakeConstraints({ (view) in
+//                view.leading.trailing.equalToSuperview()
+//                view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+//                view.height.equalToSuperview().multipliedBy(0.5)
+//                view.width.equalToSuperview()
+//            })
+//
+//            self.cheveronButton.snp.remakeConstraints { (button) in
+//                button.top.equalToSuperview()
+//                button.trailing.equalToSuperview().inset(16)
+//            }
+//
+//            self.segmentedControlContainerView.snp.remakeConstraints({ (view) in
+//                view.top.equalTo(self.cheveronButton.snp.centerY)
+//                view.leading.trailing.equalToSuperview()
+//                view.height.equalToSuperview().multipliedBy(0.175)
+//            })
+//
+//            self.segmentedControl.snp.remakeConstraints { (control) in
+//                control.top.leading.bottom.trailing.equalToSuperview()
+//            }
+//
+//            self.postContainerView.snp.remakeConstraints { (view) in
+//                view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
+//                view.leading.trailing.bottom.equalToSuperview()
+//            }
+//
+//           }, completion: nil)
+//        }
+//    }
+
+// Mark: - Add Gestures
+//    private func setupGestures() {
+//        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
+//        swipeUpGesture.direction = .up
+//        self.dragUpOrDownContainerView.addGestureRecognizer(swipeUpGesture)
+//
+//        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
+//        swipeDownGesture.direction = .down
+//         self.dragUpOrDownContainerView.addGestureRecognizer(swipeDownGesture)
+//    }
+
 
