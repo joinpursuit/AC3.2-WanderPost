@@ -181,10 +181,10 @@
 				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
 				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
-				A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */,
-				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
 				A7686F811E66017800402053 /* PostViewController.swift */,
+				A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */,
 				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
+				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
