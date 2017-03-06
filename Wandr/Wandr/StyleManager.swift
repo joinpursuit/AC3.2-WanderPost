@@ -33,10 +33,10 @@ class StyleManager {
         return UIColor(hexString: "#283C68")
     }
     var primaryLight: UIColor {
-        return UIColor(hexString: "#A9C5FF")
+        return UIColor(hexString: "#FBFFFF")
     }
     var accent: UIColor {
-        return UIColor(hexString: "#B7F0A1")
+        return UIColor(hexString: "#FF8B8B")
     }
     var primaryText: UIColor {
         return UIColor(hexString: "#212121")
