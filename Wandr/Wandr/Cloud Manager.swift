@@ -77,10 +77,10 @@ class CloudManager {
         
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user])
         let userSave = CKModifyRecordsOperation()
-        //userFetch = CKFetchRecordsOperation(
         
         userFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
+                completionError?.append(error!)
                 if let ckError = error as? CKError  {
                     //TODO Add retry logic
                 } else {
@@ -88,8 +88,6 @@ class CloudManager {
                 }
             }
             if let validRecord = record?.first {
-                
-                
                 //Fix this.
                 //Update the posts array
                 let userRecord = validRecord.value
@@ -117,7 +115,6 @@ class CloudManager {
                 completionError?.append(error!)
             }
         }
-        
         
         userSave.addDependency(userFetch)
         userFetch.queuePriority = .veryHigh
