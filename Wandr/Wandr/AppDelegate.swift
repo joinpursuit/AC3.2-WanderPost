@@ -24,7 +24,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
-        
+        CloudManager.shared.getUserPostActivity { (string, error) in
+            dump(string)
+        }
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let mapViewController = UINavigationController(rootViewController: MapViewController())
+        let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
+        let arViewController = ARViewController()
+
+        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let onBoardIcon = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
+        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
         let rootVC = userHasOnboarded ? AppDelegate.setUpAppNavigation() : setUpOnBoarding()
         

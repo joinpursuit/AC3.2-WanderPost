@@ -11,7 +11,7 @@ import TwicketSegmentedControl
 import CloudKit
 
 class PostViewController: UIViewController, UITextFieldDelegate {
-
+    
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
     
@@ -28,7 +28,6 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
-        self.segmentedControl.delegate = self
         
     }
     
@@ -42,6 +41,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         let content = self.textField.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
+        self.dismiss(animated: true, completion: nil)
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: {
             placemarks, error in
@@ -52,19 +52,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
                 let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
                 
-                CloudManager.shared.createPost(post: post) { (record, error) in
-                    if error != nil {
-                        print(error?.localizedDescription)
+                CloudManager.shared.createPost(post: post) { (record, errors) in
+                    if errors != nil {
+                        print(errors)
                         //TODO Add in error handling.
                     }
+                    print("\n\ni think this works? \n\n")
+                    //DO SOMETHING WITH THE RECORD?
                     dump(record)
                 }
+                
                 self.dismiss(animated: true, completion: nil)
             }
         })
-        
-        
-        
     }
     
     func imageTapped() {
@@ -134,41 +134,34 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     }
     
     //MARK: - Views
-
+    
     lazy var postContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = StyleManager.shared.primaryLight
         return view
     }()
     
-    lazy var profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "default-placeholder")
-        imageView.layer.borderWidth = 2.0
-        imageView.layer.borderColor = StyleManager.shared.accent.cgColor
-        imageView.contentMode = .scaleAspectFill
-        imageView.frame.size = CGSize(width: 50.0, height: 50.0)
+    lazy var profileImageView: WanderProfileImageView = {
+        let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        imageView.addGestureRecognizer(tapImageGesture)
+                imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
-        imageView.layer.masksToBounds = true
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.height / 2
         return imageView
     }()
     
     lazy var segmentedControlContainerView: UIView = {
-       let view = UIView()
+        let view = UIView()
         return view
     }()
-
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let control = TwicketSegmentedControl()
+    
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
+        control.delegate = self
         return control
     }()
     
     lazy var textField: WanderTextField = {
-       let textField = WanderTextField()
+        let textField = WanderTextField()
         //textField.tintColor = StyleManager.shared.accent
         //textField.backgroundColor = UIColor.white
         textField.border(placeHolder: "message")
@@ -183,7 +176,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     }()
     
     lazy var dismissButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.tintColor = StyleManager.shared.primaryDark
         button.setTitle("X", for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)

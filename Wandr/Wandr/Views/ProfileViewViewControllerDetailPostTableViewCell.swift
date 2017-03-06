@@ -34,6 +34,7 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
     }
     
     private func setupViewHierarchy() {
+        self.addSubview(profileImageView)
         self.addSubview(nameLabel)
         self.addSubview(dateAndTimeLabel)
         self.addSubview(locationLabel)
@@ -41,6 +42,13 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
     }
     
     private func configureConstraints() {
+        profileImageView.snp.makeConstraints{ (view) in
+            view.top.equalToSuperview().offset(16.0)
+            view.leading.equalToSuperview().offset(16.0)
+            view.height.equalTo(75)
+            view.width.equalTo(75)
+        }
+        
         nameLabel.snp.makeConstraints { (label) in
             label.top.leading.equalToSuperview().offset(8.0)
             label.trailing.equalTo(self.dateAndTimeLabel.snp.leading)
@@ -65,6 +73,12 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
             label.trailing.bottom.equalToSuperview().inset(8.0)
         }
     }
+    
+    lazy var profileImageView: WanderProfileImageView = {
+        //let imageView = WanderProfileImageView(image: #imageLiteral(resourceName: "default-placeholder"))
+        let imageView = WanderProfileImageView(width: 75.0, height: 75.0)
+        return imageView
+    }()
     
     lazy var nameLabel: UILabel = {
        let label = UILabel()
