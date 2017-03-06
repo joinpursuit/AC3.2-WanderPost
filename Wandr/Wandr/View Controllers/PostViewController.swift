@@ -40,7 +40,8 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         //init post, this is going to be a rough sketch of doing it
         let content = self.textField.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
-        
+                
+        self.dismiss(animated: true, completion: nil)
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: {
             placemarks, error in
@@ -51,19 +52,19 @@ class PostViewController: UIViewController, UITextFieldDelegate {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
                 let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
                 
-                CloudManager.shared.createPost(post: post) { (record, error) in
-                    if error != nil {
-                        print(error?.localizedDescription)
-                        //TODO Add in error handling.
-                    }
-                    dump(record)
-                }
+                        CloudManager.shared.createPost(post: post) { (record, errors) in
+            if errors != nil {
+                print(errors)
+                //TODO Add in error handling.
+            }
+            print("\n\ni think this works? \n\n")
+            //DO SOMETHING WITH THE RECORD?
+            dump(record)
+        }
+
                 self.dismiss(animated: true, completion: nil)
             }
         })
-        
-        
-        
     }
     
     func imageTapped() {

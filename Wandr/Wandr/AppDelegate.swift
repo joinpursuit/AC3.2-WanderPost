@@ -21,7 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
-        
+        CloudManager.shared.getUserPostActivity { (string, error) in
+            dump(string)
+        }
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
         let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())

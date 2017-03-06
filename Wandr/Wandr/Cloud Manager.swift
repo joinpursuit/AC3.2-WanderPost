@@ -38,9 +38,11 @@ class CloudManager {
     
     var currentUser: CKRecordID?
     
-    func createPost (post: WanderPost, completion: @escaping (CKRecord?, Error?) -> Void) {
+    func createPost (post: WanderPost, completion: @escaping (CKRecord?, [Error]?) -> Void) {
         
         //Update user at the same time
+        var completionRecord: CKRecord? = nil
+        var completionError: [Error]? = nil
         let recordType = "post"
         //init set the information of the record
         
@@ -75,10 +77,10 @@ class CloudManager {
         
         let userFetch = CKFetchRecordsOperation(recordIDs: [post.user])
         let userSave = CKModifyRecordsOperation()
-        //userFetch = CKFetchRecordsOperation(
         
         userFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
+                completionError?.append(error!)
                 if let ckError = error as? CKError  {
                     //TODO Add retry logic
                 } else {
@@ -86,47 +88,42 @@ class CloudManager {
                 }
             }
             if let validRecord = record?.first {
-                
-                
                 //Fix this.
                 //Update the posts array
                 let userRecord = validRecord.value
                 var posts = userRecord["posts"] as? [NSString] ?? []
                 posts.append(postRecord.recordID.recordName as NSString)
                 userRecord["posts"] = posts as CKRecordValue?
-                print(posts )
                 
                 //Save and post the record
-                userSave.recordsToSave = [userRecord]
+                userSave.recordsToSave = [userRecord, postRecord]
             }
         }
         
         //Init the userSave (to save the post)
-        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-            if errors == nil, records?.count == 2 {
-                _ = records?.map {
+        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            
+            
+            if error == nil, let validRecords = records {
+                _ = validRecords.map {
                     if $0.recordType == recordType {
                         print("working")
-                        completion($0, nil)
+                        completionRecord = $0
                     }
                 }
             } else {
-                completion(nil, errors)
+                completionError?.append(error!)
             }
-        }
-        let savePost = CKDatabaseOperation()
-        savePost.container = self.container
-        savePost.container?.publicCloudDatabase.save(postRecord) { (record, error) in
-            completion(record, error)
         }
         
         userSave.addDependency(userFetch)
-        userSave.addDependency(savePost)
-        savePost.addDependency(userFetch)
-        savePost.addDependency(userSave)
+        userFetch.queuePriority = .veryHigh
         
-        let queue = OperationQueue()
-        queue.addOperations([userFetch, userSave, savePost], waitUntilFinished: false)
+        let queue = OperationQueue.main
+        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
+        queue.addOperation { 
+            completion(completionRecord, completionError)
+        }
     }
     
     func createUsername (userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
@@ -209,6 +206,19 @@ class CloudManager {
             
             if let validLocalRecords = records {
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
+                
+            }
+        }
+    }
+    
+    func getUserPostActivity (completion: @escaping ([String]?, Error?) -> Void) {
+        privateDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            if let validRecord = record,
+                let posts = validRecord["posts"] as? [String] {
+                completion(posts, nil)
                 
             }
         }
