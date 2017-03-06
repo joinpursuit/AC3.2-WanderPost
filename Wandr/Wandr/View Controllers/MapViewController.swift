@@ -27,6 +27,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
+            self.reloadMapView()
         }
     }
     
@@ -45,7 +46,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.arDelegate = tabBarController?.viewControllers?.last as! ARViewController
         setupViewHierarchy()
         configureConstraints()
-        //configureTwicketSegmentControl()
         setupLocationManager()
         getWanderPosts(lastUpdatedLocation)
         //setupGestures()
@@ -166,9 +166,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 }
             }
             return annotationView
-            
         }
-        
     }
     
     // MARK: - Actions
@@ -177,7 +175,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         postVC.location = locationManager.location
         self.navigationController?.present(postVC, animated: true, completion: nil)
     }
-    
     
     //MARK: - Lazy Vars
     lazy var mapContainerView: UIView = {
@@ -231,14 +228,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     lazy var segmentedControl: WanderSegmentedControl = {
         let control = WanderSegmentedControl()
-        //control.backgroundColor = StyleManager.shared.primary
-        //control.sliderBackgroundColor = StyleManager.shared.accent
-        //control.font = StyleManager.shared.comfortaaFont14
-        //control.segmentsBackgroundColor = StyleManager.shared.primary
         control.delegate = self
         return control
     }()
-    
     
     //MARK: - Helper Functions
     
@@ -349,12 +341,15 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         case 0:
             print("Everyone")
             self.wanderposts = self.allWanderPosts
+            dump(self.wanderposts?.count)
         case 1:
             print("Friends")
             self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .friends} + self.allWanderPosts.filter{$0.privacyLevel == .message}
+            dump(self.wanderposts?.count)
         case 2:
             print("Message")
             self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .message}
+            dump(self.wanderposts?.count)
         default:
             print("Can not make a decision")
         }
