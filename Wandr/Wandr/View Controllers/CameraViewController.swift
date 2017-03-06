@@ -19,8 +19,7 @@ import CoreLocation
 
 class CameraViewController: UIViewController, ARPostDelegate {
     
-    let myWanderPost = WanderPost(location: CLLocation(latitude: 40.7470, longitude: -73.9529), content: "I was in LIC Bar with the bucket brigade!" as AnyObject, contentType: .text, privacyLevel: .everyone)
-
+    
     var posts: [WanderPost] = []
     
     override func viewDidLoad() {
