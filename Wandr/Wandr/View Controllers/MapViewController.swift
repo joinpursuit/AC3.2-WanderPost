@@ -22,7 +22,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var allWanderPosts: [WanderPost] = []
+    var allWanderPosts: [WanderPost]? = []
     
     var wanderposts: [WanderPost]? {
         didSet {
@@ -248,10 +248,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             if let error = error {
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
-                self.wanderposts = posts
-                self.allWanderPosts = posts
                 DispatchQueue.main.async {
-                    self.reloadMapView()
+                    self.wanderposts = posts
+                    self.allWanderPosts = posts
                 }
             }
         }
@@ -326,18 +325,27 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     func checkForNewWanderPosts(ofType type: PrivacyLevel) {
-        if let validWanderPosts = self.wanderposts {
+        if let validWanderPosts = self.allWanderPosts?.filter({ $0.privacyLevel == type }),
+            !validWanderPosts.isEmpty {
             //figure this out
-            var body: String
+            let count = validWanderPosts.count
+            var body: String = ""
             switch type {
             case .friends:
-                body = ""
+                if count > 1 {
+                    body = "\(count) of your friends have left messages here!"
+                } else {
+                    fallthrough
+                }
             case .message:
-                body = ""
+                CloudManager.shared
+                
+                
+                body = "\(validWanderPosts[0])"
             case .everyone:
                 break
             }
-            //makeNotification(withBody: <#T##String#>)
+            makeNotification(withBody: body)
         }
     }
     
@@ -346,18 +354,21 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 
 extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
+        guard let allValidWanderPosts = self.allWanderPosts else { return }
         switch segmentIndex {
         case 0:
             print("Everyone")
-            self.wanderposts = self.allWanderPosts
+            self.wanderposts = allValidWanderPosts
             dump(self.wanderposts?.count)
         case 1:
             print("Friends")
-            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .friends} + self.allWanderPosts.filter{$0.privacyLevel == .message}
+            let friends = allValidWanderPosts.filter{ $0.privacyLevel == .friends }
+            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message }
+            self.wanderposts = friends + messages
             dump(self.wanderposts?.count)
         case 2:
             print("Message")
-            self.wanderposts = self.allWanderPosts.filter{$0.privacyLevel == .message}
+            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message}
             dump(self.wanderposts?.count)
         default:
             print("Can not make a decision")

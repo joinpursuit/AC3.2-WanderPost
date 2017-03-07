@@ -22,9 +22,9 @@ enum PostContentType: NSString {
 }
 
 enum PrivacyLevel: NSString {
-    case message = "Message"
-    case friends = "Friends"
-    case everyone = "Everyone"
+    case message
+    case friends
+    case everyone
 }
 
 class CloudManager {
@@ -196,42 +196,6 @@ class CloudManager {
         }
     }
     
-    func getUserInfo(for id: CKRecordID, completion: @escaping (Data?, String?, [String]?, Error?) -> Void) {
-        
-        publicDatabase.fetch(withRecordID: id) { (record, error) in
-            if error != nil {
-                completion(nil, nil, nil, error)
-            }
-            if let validRecord = record {
-                var data: Data?
-                if let imageAsset = validRecord["profileImage"] as? CKAsset {
-                    do {
-                        data = try Data(contentsOf: imageAsset.fileURL)
-                    } catch {
-                        completion(nil, nil, nil, error)
-                    }
-                }
-                completion(data, validRecord["username"] as? String, validRecord["posts"] as? [String], nil)
-            }
-        }
-    }
-    
-    func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
-            if error != nil {
-                completion(nil, error)
-            } else if let validRecord = record,
-                let imageAsset = validRecord["profileImage"] as? CKAsset{
-                do {
-                    let data = try Data(contentsOf: imageAsset.fileURL)
-                    completion(data, nil)
-                } catch {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-    
     func checkUser (completion: @escaping (Bool, Error?) -> Void) {
         let userID = CKRecordID(recordName: self.currentUser!.recordName)
         publicDatabase.fetch(withRecordID: userID) { (record, error) in
@@ -279,6 +243,42 @@ class CloudManager {
                 let posts = validRecord["posts"] as? [String] {
                 completion(posts, nil)
                 
+            }
+        }
+    }
+    
+    func getUserInfo(for id: CKRecordID, completion: @escaping (Data?, String?, [String]?, Error?) -> Void) {
+        
+        publicDatabase.fetch(withRecordID: id) { (record, error) in
+            if error != nil {
+                completion(nil, nil, nil, error)
+            }
+            if let validRecord = record {
+                var data: Data?
+                if let imageAsset = validRecord["profileImage"] as? CKAsset {
+                    do {
+                        data = try Data(contentsOf: imageAsset.fileURL)
+                    } catch {
+                        completion(nil, nil, nil, error)
+                    }
+                }
+                completion(data, validRecord["username"] as? String, validRecord["posts"] as? [String], nil)
+            }
+        }
+    }
+    
+    func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
+        publicDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
+            if error != nil {
+                completion(nil, error)
+            } else if let validRecord = record,
+                let imageAsset = validRecord["profileImage"] as? CKAsset{
+                do {
+                    let data = try Data(contentsOf: imageAsset.fileURL)
+                    completion(data, nil)
+                } catch {
+                    completion(nil, error)
+                }
             }
         }
     }
