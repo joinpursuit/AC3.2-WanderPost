@@ -11,6 +11,8 @@ import CloudKit
 import UserNotifications
 import UserNotificationsUI
 
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
@@ -24,38 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         CloudManager.shared.getUserPostActivity { (string, error) in
             dump(string)
         }
-        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
-        let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
-        let arViewController = ARViewController()
-
-        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
-        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
-        let onBoardIcon = UITabBarItem(title: "onBoard", image: nil, selectedImage: nil)
-        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
-        
-        //1
-        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
-        //2
-        arViewController.maxVisibleAnnotations = 30
-        arViewController.headingSmoothingFactor = 0.05
-        //3
-        arViewController.setAnnotations([])
-
-        
-        profileViewController.tabBarItem = profileIcon
-        mapViewController.tabBarItem = mapIcon
-        onBoardViewController.tabBarItem = onBoardIcon
-        arViewController.tabBarItem = arIcon
-        
-        let tabController = UITabBarController()
-        tabController.viewControllers = [onBoardViewController, profileViewController, mapViewController, arViewController]
-        tabController.tabBar.tintColor = StyleManager.shared.accent
-        tabController.selectedIndex = 1
-        
+        let rootVC = AppDelegate.setUpAppNavigation()
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = tabController
+        self.window?.rootViewController = rootVC
         self.window?.makeKeyAndVisible()
         
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
@@ -91,6 +65,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         tabBarItemAppearance.setTitleTextAttributes(normalAttributes, for: .normal)
         tabBarItemAppearance.setTitleTextAttributes(selectedAttributes, for: .selected)
         tabBarAppearance.tintColor = StyleManager.shared.accent
+    }
+    
+    static func setUpAppNavigation() -> UIViewController {
+        let profileViewController = UINavigationController(rootViewController: ProfileViewController())
+        let mapViewController = UINavigationController(rootViewController: MapViewController())
+        let arViewController = ARViewController()
+        
+        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
+        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)        
+        
+        //1
+        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
+        //2
+        arViewController.maxVisibleAnnotations = 30
+        arViewController.headingSmoothingFactor = 0.05
+        //3
+        arViewController.setAnnotations([])
+        
+        
+        profileViewController.tabBarItem = profileIcon
+        mapViewController.tabBarItem = mapIcon
+        //onBoardViewController.tabBarItem = onBoardIcon
+        arViewController.tabBarItem = arIcon
+        
+        let tabController = UITabBarController()
+        tabController.viewControllers = [profileViewController, mapViewController, arViewController]
+        tabController.tabBar.tintColor = StyleManager.shared.accent
+        tabController.selectedIndex = 1
+        
+        return tabController
+    }
+    
+    func setUpOnBoarding() -> UIViewController {
+        let onBoardViewController = UINavigationController(rootViewController: OnBoardViewController())
+        return onBoardViewController
     }
     
     
@@ -138,7 +148,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("user info \(userInfo)")
     }
+    
 }
+
 
 /*
  
