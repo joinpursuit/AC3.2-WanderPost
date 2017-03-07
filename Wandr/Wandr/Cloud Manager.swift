@@ -27,6 +27,12 @@ enum PrivacyLevel: NSString {
     case everyone
 }
 
+enum ProfileViewFilterType: String {
+    case posts = "posts"
+    case feed = "feed"
+    case messages = "messages"
+}
+
 class CloudManager {
     static let shared = CloudManager()
     private init () {}
