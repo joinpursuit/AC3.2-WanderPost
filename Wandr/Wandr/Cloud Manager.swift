@@ -235,14 +235,15 @@ class CloudManager {
         }
     }
     
-    func getUserPostActivity (completion: @escaping ([String]?, Error?) -> Void) {
+    func getUserPostActivity (completion: @escaping ([WanderPost]?, Error?) -> Void) {
         privateDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
             if let validRecord = record,
                 let posts = validRecord["posts"] as? [String] {
-                completion(posts, nil)
+                let postRecordIDs = posts.map { CKRecordID(recordName: $0) }
+                let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: postRecordIDs)
                 
             }
         }
