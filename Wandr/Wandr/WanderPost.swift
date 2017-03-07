@@ -48,6 +48,7 @@ class WanderPost: ARAnnotation {
     }
     
     convenience init?(withCKRecord record: CKRecord) {
+        
         guard let content = record.object(forKey: "content"),
             let location = record.object(forKey: "location") as? CLLocation,
             let user = record.creatorUserRecordID,
@@ -59,7 +60,6 @@ class WanderPost: ARAnnotation {
             let locationDescription = record.object(forKey: "locationDescription") as? String,
             let read = record.object(forKey: "read") as? Bool
         else { return nil }
-        
         
         self.init(location: location, content: content as AnyObject, contentType: contentType, privacyLevel: privacyLevel, reactions: [], time: time, user: user, locationDescription: locationDescription, read: read)
     }

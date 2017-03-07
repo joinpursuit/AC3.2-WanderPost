@@ -57,7 +57,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             if error != nil {
                 print(error?.localizedDescription)
             }
-            if !userExists {
+            if userExists {
                 self.present(OnBoardViewController(), animated: true, completion: nil)
             }
         }

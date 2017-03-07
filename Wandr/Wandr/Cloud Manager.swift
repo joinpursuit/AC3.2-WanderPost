@@ -228,6 +228,7 @@ class CloudManager {
             }
             
             if let validLocalRecords = records {
+                
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
                 
             }
