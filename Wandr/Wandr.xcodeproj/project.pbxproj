@@ -17,6 +17,7 @@
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
+		A743DF091E6DF67400BB43B8 /* WanderProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */; };
 		A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */; };
 		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
 		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
@@ -64,6 +65,7 @@
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
+		A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderProfileImageView.swift; path = Views/WanderProfileImageView.swift; sourceTree = "<group>"; };
 		A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderSegmentedControl.swift; sourceTree = "<group>"; };
 		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
 		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 			isa = PBXGroup;
 			children = (
 				A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */,
+				A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */,
 				A7AF86021E68CFA70046487F /* Extension UITextField.swift */,
 				A7AF86041E68D6B80046487F /* WanderButton.swift */,
 				A7686F851E67626E00402053 /* ProfileView.swift */,
@@ -406,6 +409,7 @@
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
 				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
+				A743DF091E6DF67400BB43B8 /* WanderProfileImageView.swift in Sources */,
 				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
 				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,

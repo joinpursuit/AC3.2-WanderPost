@@ -10,7 +10,7 @@ import UIKit
 import TwicketSegmentedControl
 import CloudKit
 
-class PostViewController: UIViewController, UITextFieldDelegate {
+class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
@@ -31,51 +31,12 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    // MARK: - Actions
-    func dismissButtonPressed(_ sender: UIButton) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    func postButtonPressed(_ sender: UIButton) {
-        //init post, this is going to be a rough sketch of doing it
-        let content = self.textField.text as AnyObject
-        let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
-        
-        self.dismiss(animated: true, completion: nil)
-        let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location, completionHandler: {
-            placemarks, error in
-            if let error = error {
-                print("error with geocoder: \(error)")
-            }
-            if let marks = placemarks, let thisMark = marks.last {
-                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
-                
-                CloudManager.shared.createPost(post: post) { (record, errors) in
-                    if errors != nil {
-                        print(errors)
-                        //TODO Add in error handling.
-                    }
-                    print("\n\ni think this works? \n\n")
-                    //DO SOMETHING WITH THE RECORD?
-                    dump(record)
-                }
-                
-                self.dismiss(animated: true, completion: nil)
-            }
-        })
-    }
-    
-    func imageTapped() {
-        
-    }
-    
     // MARK: - Layout
     private func setupViewHierarchy() {
         self.view.addSubview(postContainerView)
         self.postContainerView.addSubview(profileImageView)
         self.postContainerView.addSubview(segmentedControlContainerView)
+        self.postContainerView.addSubview(userTextField)
         self.postContainerView.addSubview(textField)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
@@ -106,8 +67,8 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
         segmentedControlContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(profileImageView.snp.bottom).offset(8)
-            view.leading.equalToSuperview().offset(16.0)
-            view.trailing.equalToSuperview().inset(16.0)
+            view.leading.equalToSuperview().offset(32.0)
+            view.trailing.equalToSuperview().inset(32.0)
             view.height.equalTo(30)
         }
         
@@ -115,11 +76,18 @@ class PostViewController: UIViewController, UITextFieldDelegate {
             control.top.trailing.leading.bottom.equalToSuperview()
         }
         
-        textField.snp.makeConstraints { (textField) in
-            textField.top.equalTo(segmentedControlContainerView.snp.bottom).offset(16.0)
-            textField.leading.equalToSuperview().offset(16.0)
-            textField.trailing.equalToSuperview().inset(16.0)
-            textField.height.equalTo(150)
+        userTextField.snp.makeConstraints { (view) in
+            view.leading.equalToSuperview().offset(16.0)
+            view.top.equalTo(segmentedControl.snp.bottom).offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(1)
+        }
+        
+        textField.snp.makeConstraints { (view) in
+            view.top.equalTo(userTextField.snp.bottom).offset(16.0)
+            view.leading.equalToSuperview().offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(150)
         }
         
         postButton.snp.makeConstraints { (button) in
@@ -133,6 +101,91 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
     }
     
+    
+    // MARK: - Actions
+    func dismissButtonPressed(_ sender: UIButton) {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func postButtonPressed(_ sender: UIButton) {
+        //init post, this is going to be a rough sketch of doing it
+        let content = self.textField.text as AnyObject
+        let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
+        
+        self.dismiss(animated: true, completion: nil)
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location, completionHandler: {
+            placemarks, error in
+            if let error = error {
+                print("error with geocoder: \(error)")
+            }
+            if let marks = placemarks, let thisMark = marks.last {
+                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
+                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
+                
+                CloudManager.shared.createPost(post: post) { (record, errors) in
+                    if errors != nil {
+                        print(errors!)
+                        //TODO Add in error handling.
+                    }
+                    print("\n\ni think this works? \n\n")
+                    //DO SOMETHING WITH THE RECORD?
+                    dump(record)
+                }
+                
+                self.dismiss(animated: true, completion: nil)
+            }
+        })
+    }
+    
+    func imageTapped() {
+        
+    }
+    
+    func toggleUserTextField(show: Bool) {
+        let height = show ? 44 : 1
+        let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut) {
+            self.userTextField.snp.remakeConstraints { (view) in
+                view.leading.equalToSuperview().offset(16.0)
+                view.top.equalTo(self.segmentedControl.snp.bottom).offset(16.0)
+                view.trailing.equalToSuperview().inset(16.0)
+                view.height.equalTo(height)
+            }
+            self.textField.snp.remakeConstraints { (view) in
+                view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
+                view.leading.equalToSuperview().offset(16.0)
+                view.trailing.equalToSuperview().inset(16.0)
+                view.height.equalTo(150)
+            }
+            self.postContainerView.layoutIfNeeded()
+        }
+        if show {
+            self.userTextField.isHidden = false
+        } else {
+            animator.addCompletion({ (_) in
+                self.userTextField.isHidden = true
+            })
+        }
+        animator.startAnimation()
+
+    }
+    
+    
+    // MARK: - TwicketSegmentControl
+    
+    func didSelect(_ segmentIndex: Int) {
+        switch segmentIndex {
+        case 0:
+            toggleUserTextField(show: false)
+        case 1:
+            toggleUserTextField(show: false)
+        case 2:
+            toggleUserTextField(show: true)
+        default:
+            print("Can not make a decision")
+        }
+    }
+    
     //MARK: - Views
     
     lazy var postContainerView: UIView = {
@@ -141,19 +194,11 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         return view
     }()
     
-    lazy var profileImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "default-placeholder")
-        imageView.layer.borderWidth = 2.0
-        imageView.layer.borderColor = StyleManager.shared.accent.cgColor
-        imageView.contentMode = .scaleAspectFill
-        imageView.frame.size = CGSize(width: 50.0, height: 50.0)
+    lazy var profileImageView: WanderProfileImageView = {
+        let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        imageView.addGestureRecognizer(tapImageGesture)
+                imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
-        imageView.layer.masksToBounds = true
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = imageView.frame.height / 2
         return imageView
     }()
     
@@ -173,9 +218,20 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         //textField.tintColor = StyleManager.shared.accent
         //textField.backgroundColor = UIColor.white
         textField.border(placeHolder: "message")
-        textField.font = StyleManager.shared.comfortaaFont18
+        textField.font = UIFont.systemFont(ofSize: 18)
         textField.textAlignment = NSTextAlignment.left
         return textField
+    }()
+    
+    lazy var userTextField: WanderTextField = {
+        let field = WanderTextField()
+        field.border(placeHolder: "enter username...")
+        field.textColor = StyleManager.shared.primaryText
+        field.font = UIFont.systemFont(ofSize: 18)
+        field.autocorrectionType = .no
+        field.autocapitalizationType = .none
+        field.isHidden = true
+        return field
     }()
     
     lazy var postButton: WanderButton = {
@@ -192,19 +248,3 @@ class PostViewController: UIViewController, UITextFieldDelegate {
     }()
     
 }
-
-extension PostViewController: TwicketSegmentedControlDelegate {
-    func didSelect(_ segmentIndex: Int) {
-        switch segmentIndex {
-        case 0:
-            print("Internal")
-        case 1:
-            print("Private")
-        case 2:
-            print("Public")
-        default:
-            print("Can not make a decision")
-        }
-    }
-}
-

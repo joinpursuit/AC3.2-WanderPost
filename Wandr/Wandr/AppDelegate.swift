@@ -12,7 +12,6 @@ import UserNotifications
 import UserNotificationsUI
 
 
-let userHasOnboarded = true
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -25,20 +24,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
 
-        fixPostCount()
-        
         CloudManager.shared.getUserPostActivity { (string, error) in
             dump(string)
         }
         
-        
-        let rootVC = userHasOnboarded ? AppDelegate.setUpAppNavigation() : setUpOnBoarding()
-        
+        let rootVC = AppDelegate.setUpAppNavigation()
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = rootVC
         self.window?.makeKeyAndVisible()
-
-        
         
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
@@ -155,42 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("user info \(userInfo)")
-    }
-    
-    func fixPostCount() {
-        let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
-        let userSave = CKModifyRecordsOperation()
-        
-        userFetch.fetchRecordsCompletionBlock = { (record, error) in
-            
-            
-            if error != nil {
-                if let ckError = error as? CKError  {
-                    //TODO Add retry logic
-                } else {
-                    print(error!.localizedDescription)
-                }
-            }
-            if let validRecord = record?.first {
-                
-                
-                //Fix this.
-                //Update the posts array
-                let userRecord = validRecord.value
-                var posts: [NSString] =  []
-                userRecord["posts"] = posts as CKRecordValue?
-                
-                //Save and post the record
-                userSave.recordsToSave = [userRecord]
-            }
-        }
-        
-        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-        }
-        userSave.addDependency(userFetch)
-        let queue = OperationQueue()
-        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
-    }
+    }    
 }
 
 

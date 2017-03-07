@@ -22,7 +22,7 @@ extension UITextField {
         //layer
         self.layer.cornerRadius = 8
         self.layer.masksToBounds = true
-        self.layer.borderColor = StyleManager.shared.secondaryText.cgColor
+        self.layer.borderColor = StyleManager.shared.primaryDark.cgColor
         self.layer.borderWidth = 1
     }
     
