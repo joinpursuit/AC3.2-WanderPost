@@ -53,14 +53,14 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         
         dismissButton.snp.makeConstraints { (button) in
             button.top.equalToSuperview().offset(16)
-            button.leading.equalToSuperview().offset(16)
+            button.trailing.equalToSuperview().offset(-16)
             button.height.equalTo(50.0)
             button.width.equalTo(50.0)
         }
         
         profileImageView.snp.makeConstraints { (view) in
             view.top.equalToSuperview().offset(16)
-            view.trailing.equalToSuperview().inset(16)
+            view.leading.equalToSuperview().offset(16)
             view.height.equalTo(50.0)
             view.width.equalTo(50.0)
         }
@@ -243,6 +243,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         let button = UIButton()
         button.tintColor = StyleManager.shared.primaryDark
         button.setTitle("X", for: .normal)
+        button.setTitleColor(StyleManager.shared.primaryDark, for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
     }()

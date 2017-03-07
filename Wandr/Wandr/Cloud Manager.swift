@@ -22,9 +22,9 @@ enum PostContentType: NSString {
 }
 
 enum PrivacyLevel: NSString {
-    case message = "message"
-    case friends = "friends"
-    case everyone = "everyone"
+    case message
+    case friends
+    case everyone
 }
 
 class CloudManager {
@@ -244,6 +244,7 @@ class CloudManager {
             }
             
             if let validLocalRecords = records {
+                
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
                 
             }

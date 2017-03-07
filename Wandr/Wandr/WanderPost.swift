@@ -48,6 +48,7 @@ class WanderPost: ARAnnotation {
     }
     
     convenience init?(withCKRecord record: CKRecord) {
+        
         guard let content = record.object(forKey: "content"),
             let location = record.object(forKey: "location") as? CLLocation,
             let user = record.creatorUserRecordID,
