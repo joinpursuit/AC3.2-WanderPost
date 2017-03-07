@@ -44,6 +44,8 @@ class CloudManager {
     
     var currentUser: CKRecordID?
     
+    //MARK: - Creating a Post and a User
+    
     func createPost (post: WanderPost, completion: @escaping (CKRecord?, [Error]?) -> Void) {
         
         //Update user at the same time
@@ -190,6 +192,8 @@ class CloudManager {
         }
     }
     
+    //MARK: - Checking User existance and pulling current User
+    
     func getCurrentUser() {
         self.container.fetchUserRecordID() { recordID, error in
             switch error {
@@ -221,6 +225,8 @@ class CloudManager {
         }
     }
     
+    //MARK: - Get Posts in Location
+    
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
         let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
@@ -241,6 +247,8 @@ class CloudManager {
         }
     }
     
+    //MARK: - Get User Activity and Information
+    
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         privateDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
@@ -257,14 +265,10 @@ class CloudManager {
                     }
                     if let validRecords = records {
                         let postRecords = validRecords.values
-                        
                         completion(postRecords.map { WanderPost(withCKRecord: $0)! }, nil)
-                        
                     }
                     
                 }
-                    
-                
                 self.publicDatabase.add(fetchPostsOperation)
             }
         }
@@ -306,7 +310,13 @@ class CloudManager {
         }
     }
     
-    //MARK: Helper Functions
+    //MARK: - Friend Adding and Notifications
+    
+    func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
+        
+    }
+    
+    //MARK: - Helper Functions
     private func addPost(to record: CKRecord, value: String) -> CKRecord {
         let userRecord = record
         var posts = userRecord["posts"] as? [NSString] ?? []
