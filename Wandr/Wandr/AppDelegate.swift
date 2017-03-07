@@ -24,10 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
         
-        CloudManager.shared.getUserPostActivity { (string, error) in
-            dump(string)
-        }
-        
         let rootVC = AppDelegate.setUpAppNavigation()
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = rootVC
