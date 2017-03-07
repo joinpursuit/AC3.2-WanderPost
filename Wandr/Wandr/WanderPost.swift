@@ -40,7 +40,6 @@ class WanderPost: ARAnnotation {
         
         super.init()
             self.location = location
-        
     }
     
     convenience init(location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, locationDescription: String) {
