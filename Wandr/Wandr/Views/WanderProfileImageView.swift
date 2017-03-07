@@ -15,9 +15,9 @@ class WanderProfileImageView: UIImageView {
         super.init(image: image)
     }
     
-    convenience init(width: Double = 150.0, height: Double = 150.0 ) {
+    convenience init(width: Double = 50.0, height: Double = 50.0, borderWidth: CGFloat = 2.0) {
         self.init(image: #imageLiteral(resourceName: "default-placeholder"))
-        self.layer.borderWidth = 2.0
+        self.layer.borderWidth = borderWidth
         self.layer.borderColor = StyleManager.shared.accent.cgColor
         self.contentMode = .scaleAspectFill
         self.frame.size = CGSize(width: width, height: height)

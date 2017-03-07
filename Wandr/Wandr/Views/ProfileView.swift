@@ -84,7 +84,7 @@ class ProfileView: UIView {
     }
     
     lazy var profileImageView: WanderProfileImageView = {
-        let imageView = WanderProfileImageView(width: 150.0, height: 150.0)
+        let imageView = WanderProfileImageView(width: 150.0, height: 150.0, borderWidth: 3.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
         imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
@@ -123,7 +123,7 @@ class ProfileView: UIView {
 class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     static let identifier = "segmentedControlHeaderFooterViewIdentifier"
     
-    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    let segmentTitles = [ProfileViewFilterType.posts.rawValue, ProfileViewFilterType.feed.rawValue, ProfileViewFilterType.messages.rawValue]
     
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
