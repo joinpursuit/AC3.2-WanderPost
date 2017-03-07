@@ -251,6 +251,21 @@ class CloudManager {
                 let postRecordIDs = posts.map { CKRecordID(recordName: $0) }
                 let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: postRecordIDs)
                 
+                fetchPostsOperation.fetchRecordsCompletionBlock = {(records, error) in
+                    if error != nil {
+                        completion(nil, error)
+                    }
+                    if let validRecords = records {
+                        let postRecords = validRecords.values
+                        
+                        completion(postRecords.map { WanderPost(withCKRecord: $0)! }, nil)
+                        
+                    }
+                    
+                }
+                    
+                
+                self.publicDatabase.add(fetchPostsOperation)
             }
         }
     }
