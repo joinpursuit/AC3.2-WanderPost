@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
+
         CloudManager.shared.getUserPostActivity { (string, error) in
             dump(string)
         }
@@ -147,8 +148,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("user info \(userInfo)")
-    }
-    
+    }    
 }
 
 

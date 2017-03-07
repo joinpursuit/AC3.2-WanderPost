@@ -10,7 +10,7 @@ import UIKit
 import TwicketSegmentedControl
 import CloudKit
 
-class PostViewController: UIViewController, UITextFieldDelegate {
+class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
@@ -30,6 +30,77 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         self.segmentedControl.setSegmentItems(segmentTitles)
         
     }
+    
+    // MARK: - Layout
+    private func setupViewHierarchy() {
+        self.view.addSubview(postContainerView)
+        self.postContainerView.addSubview(profileImageView)
+        self.postContainerView.addSubview(segmentedControlContainerView)
+        self.postContainerView.addSubview(userTextField)
+        self.postContainerView.addSubview(textField)
+        self.postContainerView.addSubview(postButton)
+        self.postContainerView.addSubview(dismissButton)
+        
+        self.segmentedControlContainerView.addSubview(segmentedControl)
+    }
+    
+    private func configureConstraints() {
+        postContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.topLayoutGuide.snp.bottom)
+            view.leading.trailing.equalToSuperview()
+            view.bottom.equalToSuperview()
+        }
+        
+        dismissButton.snp.makeConstraints { (button) in
+            button.top.equalToSuperview().offset(16)
+            button.trailing.equalToSuperview().offset(-16)
+            button.height.equalTo(50.0)
+            button.width.equalTo(50.0)
+        }
+        
+        profileImageView.snp.makeConstraints { (view) in
+            view.top.equalToSuperview().offset(16)
+            view.leading.equalToSuperview().offset(16)
+            view.height.equalTo(50.0)
+            view.width.equalTo(50.0)
+        }
+        
+        segmentedControlContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(profileImageView.snp.bottom).offset(8)
+            view.leading.equalToSuperview().offset(32.0)
+            view.trailing.equalToSuperview().inset(32.0)
+            view.height.equalTo(30)
+        }
+        
+        segmentedControl.snp.makeConstraints { (control) in
+            control.top.trailing.leading.bottom.equalToSuperview()
+        }
+        
+        userTextField.snp.makeConstraints { (view) in
+            view.leading.equalToSuperview().offset(16.0)
+            view.top.equalTo(segmentedControl.snp.bottom).offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(1)
+        }
+        
+        textField.snp.makeConstraints { (view) in
+            view.top.equalTo(userTextField.snp.bottom).offset(16.0)
+            view.leading.equalToSuperview().offset(16.0)
+            view.trailing.equalToSuperview().inset(16.0)
+            view.height.equalTo(150)
+        }
+        
+        postButton.snp.makeConstraints { (button) in
+            button.top.equalTo(textField.snp.bottom).offset(8)
+            button.trailing.equalToSuperview().inset(16)
+        }
+    }
+    
+    func configureTargets () {
+        postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
+        dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
+    }
+    
     
     // MARK: - Actions
     func dismissButtonPressed(_ sender: UIButton) {
@@ -54,7 +125,7 @@ class PostViewController: UIViewController, UITextFieldDelegate {
                 
                 CloudManager.shared.createPost(post: post) { (record, errors) in
                     if errors != nil {
-                        print(errors)
+                        print(errors!)
                         //TODO Add in error handling.
                     }
                     print("\n\ni think this works? \n\n")
@@ -71,66 +142,48 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    // MARK: - Layout
-    private func setupViewHierarchy() {
-        self.view.addSubview(postContainerView)
-        self.postContainerView.addSubview(profileImageView)
-        self.postContainerView.addSubview(segmentedControlContainerView)
-        self.postContainerView.addSubview(textField)
-        self.postContainerView.addSubview(postButton)
-        self.postContainerView.addSubview(dismissButton)
-        
-        self.segmentedControlContainerView.addSubview(segmentedControl)
+    func toggleUserTextField(show: Bool) {
+        let height = show ? 44 : 1
+        let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut) {
+            self.userTextField.snp.remakeConstraints { (view) in
+                view.leading.equalToSuperview().offset(16.0)
+                view.top.equalTo(self.segmentedControl.snp.bottom).offset(16.0)
+                view.trailing.equalToSuperview().inset(16.0)
+                view.height.equalTo(height)
+            }
+            self.textField.snp.remakeConstraints { (view) in
+                view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
+                view.leading.equalToSuperview().offset(16.0)
+                view.trailing.equalToSuperview().inset(16.0)
+                view.height.equalTo(150)
+            }
+            self.postContainerView.layoutIfNeeded()
+        }
+        if show {
+            self.userTextField.isHidden = false
+        } else {
+            animator.addCompletion({ (_) in
+                self.userTextField.isHidden = true
+            })
+        }
+        animator.startAnimation()
+
     }
     
-    private func configureConstraints() {
-        postContainerView.snp.makeConstraints { (view) in
-            view.top.equalTo(self.topLayoutGuide.snp.bottom)
-            view.leading.trailing.equalToSuperview()
-            view.bottom.equalToSuperview()
-        }
-        
-        dismissButton.snp.makeConstraints { (button) in
-            button.top.equalToSuperview().offset(16)
-            button.leading.equalToSuperview().offset(16)
-            button.height.equalTo(50.0)
-            button.width.equalTo(50.0)
-        }
-        
-        profileImageView.snp.makeConstraints { (view) in
-            view.top.equalToSuperview().offset(16)
-            view.trailing.equalToSuperview().inset(16)
-            view.height.equalTo(50.0)
-            view.width.equalTo(50.0)
-        }
-        
-        segmentedControlContainerView.snp.makeConstraints { (view) in
-            view.top.equalTo(profileImageView.snp.bottom).offset(8)
-            view.leading.equalToSuperview().offset(16.0)
-            view.trailing.equalToSuperview().inset(16.0)
-            view.height.equalTo(30)
-        }
-        
-        segmentedControl.snp.makeConstraints { (control) in
-            control.top.trailing.leading.bottom.equalToSuperview()
-        }
-        
-        textField.snp.makeConstraints { (textField) in
-            textField.top.equalTo(segmentedControlContainerView.snp.bottom).offset(16.0)
-            textField.leading.equalToSuperview().offset(16.0)
-            textField.trailing.equalToSuperview().inset(16.0)
-            textField.height.equalTo(150)
-        }
-        
-        postButton.snp.makeConstraints { (button) in
-            button.top.equalTo(textField.snp.bottom).offset(8)
-            button.trailing.equalToSuperview().inset(16)
-        }
-    }
     
-    func configureTargets () {
-        postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
-        dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
+    // MARK: - TwicketSegmentControl
+    
+    func didSelect(_ segmentIndex: Int) {
+        switch segmentIndex {
+        case 0:
+            toggleUserTextField(show: false)
+        case 1:
+            toggleUserTextField(show: false)
+        case 2:
+            toggleUserTextField(show: true)
+        default:
+            print("Can not make a decision")
+        }
     }
     
     //MARK: - Views
@@ -165,9 +218,20 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         //textField.tintColor = StyleManager.shared.accent
         //textField.backgroundColor = UIColor.white
         textField.border(placeHolder: "message")
-        textField.font = StyleManager.shared.comfortaaFont18
+        textField.font = UIFont.systemFont(ofSize: 18)
         textField.textAlignment = NSTextAlignment.left
         return textField
+    }()
+    
+    lazy var userTextField: WanderTextField = {
+        let field = WanderTextField()
+        field.border(placeHolder: "enter username...")
+        field.textColor = StyleManager.shared.primaryText
+        field.font = UIFont.systemFont(ofSize: 18)
+        field.autocorrectionType = .no
+        field.autocapitalizationType = .none
+        field.isHidden = true
+        return field
     }()
     
     lazy var postButton: WanderButton = {
@@ -179,24 +243,9 @@ class PostViewController: UIViewController, UITextFieldDelegate {
         let button = UIButton()
         button.tintColor = StyleManager.shared.primaryDark
         button.setTitle("X", for: .normal)
+        button.setTitleColor(StyleManager.shared.primaryDark, for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
     }()
     
 }
-
-extension PostViewController: TwicketSegmentedControlDelegate {
-    func didSelect(_ segmentIndex: Int) {
-        switch segmentIndex {
-        case 0:
-            print("Everyone")
-        case 1:
-            print("Friends")
-        case 2:
-            print("Messages")
-        default:
-            print("Can not make a decision")
-        }
-    }
-}
-
