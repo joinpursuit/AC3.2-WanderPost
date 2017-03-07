@@ -18,6 +18,7 @@
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
 		A743DF091E6DF67400BB43B8 /* WanderProfileImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */; };
+		A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */; };
 		A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */; };
 		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
 		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
@@ -66,6 +67,7 @@
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
 		A70DF45D1E648684000C6421 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapViewController.swift; path = "View Controllers/MapViewController.swift"; sourceTree = "<group>"; };
 		A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderProfileImageView.swift; path = Views/WanderProfileImageView.swift; sourceTree = "<group>"; };
+		A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailFeedTableViewCell.swift; path = Views/ProfileViewViewControllerDetailFeedTableViewCell.swift; sourceTree = "<group>"; };
 		A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderSegmentedControl.swift; sourceTree = "<group>"; };
 		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
 		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */,
+				A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */,
 				A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */,
 				A7AF86021E68CFA70046487F /* Extension UITextField.swift */,
 				A7AF86041E68D6B80046487F /* WanderButton.swift */,
@@ -431,6 +434,7 @@
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
 				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,
+				A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
 				8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */,
 				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,

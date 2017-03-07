@@ -189,11 +189,11 @@ extension PostViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         switch segmentIndex {
         case 0:
-            print("Internal")
+            print("Everyone")
         case 1:
-            print("Private")
+            print("Friends")
         case 2:
-            print("Public")
+            print("Messages")
         default:
             print("Can not make a decision")
         }
