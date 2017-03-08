@@ -172,12 +172,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let userID = postAnnotation.wanderpost.user
             
             // gets user profile image from cloud with id
-            CloudManager.shared.getUserInfo(for: userID, completion: { (imageData, username, userPostsIDs, error) in
-                if let imageData = imageData, let username = username {
+            CloudManager.shared.getUserInfo(for: userID, completion: { (user, error) in
+                if let user = user {
                     DispatchQueue.main.async {
                         // why cant I set this here !!??
                         
-                        annotationView.profileImageView.image = UIImage(data: imageData)
+                        annotationView.profileImageView.image = UIImage(data: user.userImageData)
                     }
                 }
             })
