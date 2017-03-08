@@ -166,17 +166,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         } else {
             let annotationIdentifier = "AnnotationIdentifier"
             let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            annotationView.canShowCallout = true
+            // gets the user id from the annotaion
+            let postAnnotation = annotation as! PostAnnotation
+            let userID = postAnnotation.wanderpost.user
             
-            APIRequestManager.manager.getData(endPoint: "https://randomuser.me/api/portraits/lego/\(Int(arc4random_uniform(9))).jpg") { (data) in
-                if let data = data {
+            // gets user profile image from cloud with id
+            CloudManager.shared.getUserInfo(for: userID, completion: { (imageData, username, userPostsIDs, error) in
+                if let imageData = imageData, let username = username {
                     DispatchQueue.main.async {
-                        annotationView.profileImageView.image = UIImage(data: data)
+                        // why cant I set this here !!??
+                        
+                        annotationView.profileImageView.image = UIImage(data: imageData)
                     }
                 }
-            }
+            })
             return annotationView
         }
     }
+    
     
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
@@ -260,11 +268,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if let posts = self.wanderposts {
             var annotations: [MKAnnotation] = []
             for post in posts {
-                let annotaton = PostAnnotation()
+                let myAnnotaton = PostAnnotation()
+                myAnnotaton.wanderpost = post
                 guard let postLocation = post.location else { return }
-                annotaton.coordinate = postLocation.coordinate
-                annotaton.title = post.content as? String
-                annotations.append(annotaton)
+                myAnnotaton.coordinate = postLocation.coordinate
+                myAnnotaton.title = "wtf"
+                annotations.append(myAnnotaton)
             }
             DispatchQueue.main.async {
                 self.mapView.removeAnnotations(self.mapView.annotations)
@@ -380,7 +389,7 @@ extension MapViewController: ARDataSource {
         let annotationView = AnnotationView()
         annotationView.annotation = viewForAnnotation
         annotationView.delegate = self
-        annotationView.frame = CGRect(x: 0, y: 0, width: 300, height: 100)
+        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 200)
         return annotationView
     }
 }
@@ -388,7 +397,6 @@ extension MapViewController: ARDataSource {
 
 extension MapViewController: AnnotationViewDelegate {
     func didTouch(annotationView: AnnotationView) {
-        print("Tapped view for POI: \(annotationView.titleLabel?.text)")
         
         if let wanderpost = annotationView.annotation as? WanderPost {
             dump(wanderpost)

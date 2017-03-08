@@ -16,51 +16,78 @@ protocol AnnotationViewDelegate {
 //2
 class AnnotationView: ARAnnotationView {
     //3
-    var titleLabel: UILabel?
-    var distanceLabel: UILabel?
+    var profileImageView: UIImageView?
+    var userLabel: UILabel?
+    var messageLabel: UILabel?
     var timeLabel: UILabel?
+    var distanceLabel: UILabel?
+    
+    private let viewBackgroundColor: UIColor = UIColor(white: 0.3, alpha: 0.7)
+    
+    
     var delegate: AnnotationViewDelegate?
     
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
+        self.backgroundColor = viewBackgroundColor
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 20
+        setUpViews()
         loadUI()
+    }
+    
+    func setUpViews() {
+        profileImageView?.removeFromSuperview()
+        userLabel?.removeFromSuperview()
+        messageLabel?.removeFromSuperview()
+        timeLabel?.removeFromSuperview()
+        distanceLabel?.removeFromSuperview()
+        
+        profileImageView = UIImageView(frame: CGRect(x: 8, y: 0, width: 30, height: 30))
+        
+        userLabel = UILabel(frame: CGRect(x: 46, y: 0, width: self.frame.size.width - 16 - 38, height: 30))
+        messageLabel = UILabel(frame: CGRect(x: 8, y: 30, width: self.frame.size.width - 16, height: 150))
+        
+        timeLabel = UILabel(frame: CGRect(x: 8, y: 180, width: 130 - 16, height: 20))
+        distanceLabel = UILabel(frame: CGRect(x: 108, y: 180, width: 70 - 16, height: 20))
+
+        
     }
     
     //4
     func loadUI() {
-        titleLabel?.removeFromSuperview()
-        distanceLabel?.removeFromSuperview()
-        timeLabel?.removeFromSuperview()
         
-        let title = UILabel(frame: CGRect(x: 10, y: 0, width: self.frame.size.width, height: 50))
-        title.font = UIFont.systemFont(ofSize: 16)
-        title.numberOfLines = 0
-        title.backgroundColor = UIColor(white: 0.3, alpha: 0.7)
-        title.textColor = UIColor.white
+        profileImageView?.clipsToBounds = true
+        profileImageView?.layer.cornerRadius = 15
+        self.addSubview(profileImageView!)
         
-        self.addSubview(title)
-        self.titleLabel = title
+        userLabel?.font = StyleManager.shared.comfortaaFont14
+        userLabel?.numberOfLines = 1
+        userLabel?.textColor = StyleManager.shared.primaryDark
+        self.addSubview(userLabel!)
         
-        let time = UILabel(frame: CGRect(x: 10, y: 50, width: self.frame.size.width, height: 20))
-        time.font = UIFont.systemFont(ofSize: 16)
-        time.numberOfLines = 1
-        time.backgroundColor = UIColor(white: 0.3, alpha: 0.7)
-        time.textColor = UIColor.white
+        messageLabel?.font = UIFont.systemFont(ofSize: 12)
+        messageLabel?.numberOfLines = 0
+        messageLabel?.textColor = UIColor.white
+        messageLabel?.clipsToBounds = true
+        self.addSubview(messageLabel!)
         
-        self.addSubview(time)
-        self.timeLabel = time
+        timeLabel?.font = UIFont.systemFont(ofSize: 10)
+        timeLabel?.numberOfLines = 1
+        timeLabel?.textColor = UIColor.white
+        self.addSubview(timeLabel!)
         
-        distanceLabel = UILabel(frame: CGRect(x: 10, y: 70, width: self.frame.size.width, height: 20))
-        distanceLabel?.backgroundColor = UIColor(white: 0.3, alpha: 0.7)
+        
+        distanceLabel?.font = UIFont.systemFont(ofSize: 10)
+        distanceLabel?.numberOfLines = 1
         distanceLabel?.textColor = StyleManager.shared.accent
-        distanceLabel?.font = UIFont.systemFont(ofSize: 12)
         self.addSubview(distanceLabel!)
         
         if let annotation = annotation as? WanderPost {
-            print("................\nSuccess")
-            dump(annotation.location)
-            titleLabel?.text = annotation.content as! String
+            profileImageView?.image = #imageLiteral(resourceName: "Plus-50")
+            userLabel?.text = "anama118118"
+            messageLabel?.text = annotation.content as? String
             distanceLabel?.text = String(format: "%.2f km", annotation.distanceFromUser / 1000)
             timeLabel?.text = annotation.dateAndTime
         }
@@ -69,8 +96,11 @@ class AnnotationView: ARAnnotationView {
     //1
     override func layoutSubviews() {
         super.layoutSubviews()
-        titleLabel?.frame = CGRect(x: 10, y: 0, width: self.frame.size.width, height: 30)
-        distanceLabel?.frame = CGRect(x: 10, y: 30, width: self.frame.size.width, height: 20)
+        profileImageView?.frame = CGRect(x: 8, y: 0, width: 30, height: 30)
+        userLabel?.frame = CGRect(x: 46, y: 0, width: self.frame.size.width - 16 - 38, height: 30)
+        messageLabel?.frame = CGRect(x: 8, y: 30, width: self.frame.size.width - 16, height: 150)
+        timeLabel?.frame = CGRect(x: 8, y: 180, width: 130 - 16, height: 20)
+        distanceLabel?.frame = CGRect(x: 108, y: 180, width: 70 - 16, height: 20)
     }
     
     //2
