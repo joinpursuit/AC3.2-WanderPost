@@ -21,6 +21,8 @@ class WanderPost: ARAnnotation {
     let locationDescription: String
     var read: Bool
     
+    var wanderUser: WanderUser?
+    
     var dateAndTime: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
