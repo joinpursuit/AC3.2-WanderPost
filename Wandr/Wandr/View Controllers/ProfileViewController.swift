@@ -19,6 +19,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
     let dummyDataMessage = [1,2,3,4,5]
     
+    var wanderPosts = [WanderPost]()
+    
     var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.posts
     
     var imagePickerController: UIImagePickerController!
@@ -44,6 +46,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
+        
+        CloudManager.shared.getUserPostActivity(for: CloudManager.shared.currentUser!) { (wanderPosts:[WanderPost]?, error: Error?) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            guard let validWanderPosts = wanderPosts else { return }
+            self.wanderPosts = validWanderPosts
+            dump(self.wanderPosts)
+        }
     }
     
     // MARK: - Actions
@@ -96,7 +107,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.profileViewFilterType {
         case ProfileViewFilterType.posts:
-            return self.dummyDataPost.count
+            return self.wanderPosts.count
         case ProfileViewFilterType.feed:
             return self.dummyDataFeed.count
         case ProfileViewFilterType.messages:
@@ -110,11 +121,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType{
         case ProfileViewFilterType.posts:
              let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
-             cell.locationLabel.text = "Location: \(self.dummyDataPost[indexPath.row])"
-            //cell.nameLabel.text = self.dummyData["name"]
-            //cell.dateAndTimeLabel.text = "\(self.dummyData["date"]) \(self.dummyData["time"])"
-            //cell.locationLabel.text = self.dummyData["location"]
-            //cell.messageLabel.text = self.dummyData["message"]
+             let post = self.wanderPosts[indexPath.row]
+             cell.locationLabel.text = post.locationDescription
+             cell.messageLabel.text = post.content as? String
+             cell.dateAndTimeLabel.text = post.dateAndTime
             return cell
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
