@@ -31,6 +31,8 @@
 		A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86001E68B11D0046487F /* OnBoardViewController.swift */; };
 		A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86021E68CFA70046487F /* Extension UITextField.swift */; };
 		A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86041E68D6B80046487F /* WanderButton.swift */; };
+		A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */; };
+		A7D046821E6FB1CC002D2F24 /* PostHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D046811E6FB1CC002D2F24 /* PostHeaderFooterView.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
@@ -81,6 +83,8 @@
 		A7AF86001E68B11D0046487F /* OnBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnBoardViewController.swift; path = "View Controllers/OnBoardViewController.swift"; sourceTree = "<group>"; };
 		A7AF86021E68CFA70046487F /* Extension UITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UITextField.swift"; path = "Views/Extension UITextField.swift"; sourceTree = "<group>"; };
 		A7AF86041E68D6B80046487F /* WanderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderButton.swift; path = Views/WanderButton.swift; sourceTree = "<group>"; };
+		A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailPostViewWithCommentsViewController.swift; path = "View Controllers/DetailPostViewWithCommentsViewController.swift"; sourceTree = "<group>"; };
+		A7D046811E6FB1CC002D2F24 /* PostHeaderFooterView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostHeaderFooterView.swift; path = Views/PostHeaderFooterView.swift; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
@@ -188,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
+				A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */,
 				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
 				A7686F811E66017800402053 /* PostViewController.swift */,
@@ -219,6 +224,7 @@
 				A7686F851E67626E00402053 /* ProfileView.swift */,
 				DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */,
 				A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */,
+				A7D046811E6FB1CC002D2F24 /* PostHeaderFooterView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -421,6 +427,7 @@
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */,
+				A7D046821E6FB1CC002D2F24 /* PostHeaderFooterView.swift in Sources */,
 				A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */,
 				DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
@@ -433,6 +440,7 @@
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
 				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
+				A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */,
 				A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
