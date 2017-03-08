@@ -22,7 +22,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var allWanderPosts: [WanderPost]? = []
+    var allWanderPosts: [WanderPost]? {
+        didSet {
+            CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
+                print(self.allWanderPosts?[0].wanderUser?.id.recordName)
+            }
+        }
+    }
     
     var wanderposts: [WanderPost]? {
         didSet {
