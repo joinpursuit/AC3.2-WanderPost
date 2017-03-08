@@ -62,7 +62,6 @@ extension CameraViewController: ARDataSource {
 
 extension CameraViewController: AnnotationViewDelegate {
     func didTouch(annotationView: AnnotationView) {
-        print("Tapped view for POI: \(annotationView.titleLabel?.text)")
         //1
         //    if let annotation = annotationView.annotation as? WanderPost {
         //      //2

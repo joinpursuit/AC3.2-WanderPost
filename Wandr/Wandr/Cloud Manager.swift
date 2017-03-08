@@ -39,10 +39,13 @@ class CloudManager {
     
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
+    private let sharedDatabase = CKContainer.default().sharedCloudDatabase
     private let container = CKContainer.default()
     
     
     var currentUser: CKRecordID?
+    
+    //MARK: - Creating a Post and a User
     
     func createPost (post: WanderPost, completion: @escaping (CKRecord?, [Error]?) -> Void) {
         
@@ -190,6 +193,8 @@ class CloudManager {
         }
     }
     
+    //MARK: - Checking User existance and pulling current User
+    
     func getCurrentUser() {
         self.container.fetchUserRecordID() { recordID, error in
             switch error {
@@ -221,6 +226,8 @@ class CloudManager {
         }
     }
     
+    //MARK: - Get Posts in Location
+    
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
         let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
@@ -241,35 +248,42 @@ class CloudManager {
         }
     }
     
-    func getUserPostActivity (completion: @escaping ([String]?, Error?) -> Void) {
-        privateDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
+    //MARK: - Get User Activity and Information
+    
+    func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
+        privateDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
             if let validRecord = record,
                 let posts = validRecord["posts"] as? [String] {
-                completion(posts, nil)
+                let postRecordIDs = posts.map { CKRecordID(recordName: $0) }
+                let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: postRecordIDs)
                 
+                fetchPostsOperation.fetchRecordsCompletionBlock = {(records, error) in
+                    if error != nil {
+                        completion(nil, error)
+                    }
+                    if let validRecords = records {
+                        let postRecords = validRecords.values
+                        completion(postRecords.map { WanderPost(withCKRecord: $0)! }, nil)
+                    }
+                    
+                }
+                self.publicDatabase.add(fetchPostsOperation)
             }
         }
     }
     
-    func getUserInfo(for id: CKRecordID, completion: @escaping (Data?, String?, [String]?, Error?) -> Void) {
+    func getUserInfo(for id: CKRecordID, completion: @escaping (WanderUser?, Error?) -> Void) {
         
         publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
-                completion(nil, nil, nil, error)
+                completion(nil, error)
             }
-            if let validRecord = record {
-                var data: Data?
-                if let imageAsset = validRecord["profileImage"] as? CKAsset {
-                    do {
-                        data = try Data(contentsOf: imageAsset.fileURL)
-                    } catch {
-                        completion(nil, nil, nil, error)
-                    }
-                }
-                completion(data, validRecord["username"] as? String, validRecord["posts"] as? [String], nil)
+            if let validRecord = record,
+                let user = WanderUser(from: validRecord) {
+                completion(user, nil)
             }
         }
     }
@@ -290,7 +304,36 @@ class CloudManager {
         }
     }
     
-    //MARK: Helper Functions
+    //MARK: - Friend Adding and Notifications
+    
+    func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
+        
+    }
+    
+    func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
+        //let friendAddedSubscription = CKDatabaseSubscription(subscriptionID: "friendAdded")
+        let predicate = NSPredicate(format: "TRUEPREDICATE")
+        
+        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
+        
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.alertBody = "working"
+        notificationInfo.shouldBadge = true
+        notificationInfo.shouldSendContentAvailable = true
+        
+        friendAddedSubscription.notificationInfo = notificationInfo
+        
+        
+        
+        publicDatabase.save(friendAddedSubscription) { (subscription, error) in
+            
+            print(subscription)
+            print(error)
+            
+        }
+    }
+    
+    //MARK: - Helper Functions
     private func addPost(to record: CKRecord, value: String) -> CKRecord {
         let userRecord = record
         var posts = userRecord["posts"] as? [NSString] ?? []

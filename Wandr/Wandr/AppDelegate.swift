@@ -23,10 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         CloudManager.shared.getCurrentUser()
         setNavigationTheme()
-
-        CloudManager.shared.getUserPostActivity { (string, error) in
-            dump(string)
-        }
         
         let rootVC = AppDelegate.setUpAppNavigation()
         self.window = UIWindow(frame: UIScreen.main.bounds)
@@ -147,8 +143,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("user info \(userInfo)")
-    }    
+        //print("user info \(userInfo)")
+        //completionHandler(.newData)
+        
+        let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
+        if cloudKitNotification.notificationType == .query {
+            let queryNotification = cloudKitNotification as! CKQueryNotification
+            if queryNotification.queryNotificationReason == .recordDeleted {
+                // If the record has been deleted in CloudKit then delete the local copy here
+            } else {
+                // If the record has been created or changed, we fetch the data from CloudKit
+                let database: CKDatabase
+                if queryNotification.isPublicDatabase {
+                    database = CKContainer.default().publicCloudDatabase
+                } else {
+                    database = CKContainer.default().privateCloudDatabase
+                }
+                database.fetch(withRecordID: queryNotification.recordID!, completionHandler: { (record: CKRecord?, error: NSError?) -> Void in
+                    guard error == nil else {
+                        // Handle the error here
+                        return
+                    }
+                    
+                    if queryNotification.queryNotificationReason == .recordUpdated {
+                        // Use the information in the record object to modify your local data
+                    } else {
+                        // Use the information in the record object to create a new local object
+                    }
+                } as! (CKRecord?, Error?) -> Void)
+            }
+        }
+        
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler(.alert)
+    }
 }
 
 
