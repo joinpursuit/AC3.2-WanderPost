@@ -33,10 +33,19 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.mapHeaderView.isScrollEnabled = false
         self.mapHeaderView.isZoomEnabled = false
         self.mapHeaderView.showsBuildings = false
-        self.mapHeaderView.showsUserLocation = true
+        self.mapHeaderView.showsUserLocation = false
         self.mapHeaderView.tintColor = StyleManager.shared.accent
         commentTableView.tableHeaderView = self.mapHeaderView
         self.mapHeaderView.delegate = self
+        
+        let postAnnotation = PostAnnotation()
+        postAnnotation.wanderpost = self.wanderPost
+        guard let postLocation = self.wanderPost?.location else { return }
+        postAnnotation.coordinate = postLocation.coordinate
+        postAnnotation.title = self.wanderPost?.content as? String
+        DispatchQueue.main.async {
+            self.mapHeaderView.addAnnotation(postAnnotation)
+        }
         
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
@@ -47,8 +56,13 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let postHeaderFooterView = (self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: PostHeaderFooterView.identifier) as? PostHeaderFooterView)!
+        if let validWanderPost = self.wanderPost {
+            postHeaderFooterView.locationLabel.text = validWanderPost.locationDescription
+            postHeaderFooterView.messageLabel.text = validWanderPost.content as? String
+            postHeaderFooterView.dateAndTimeLabel.text = validWanderPost.dateAndTime
+        }
+        postHeaderFooterView.backgroundColor = UIColor.gray
         self.postHeaderFooterView = postHeaderFooterView
-        self.postHeaderFooterView.backgroundColor = UIColor.gray
         return postHeaderFooterView
     }
     

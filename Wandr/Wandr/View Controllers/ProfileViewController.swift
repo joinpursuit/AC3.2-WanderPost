@@ -51,9 +51,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             if error != nil {
                 print(error?.localizedDescription)
             }
-            guard let validWanderPosts = wanderPosts else { return }
-            self.wanderPosts = validWanderPosts
-            dump(self.wanderPosts)
+            DispatchQueue.main.async {
+                guard let validWanderPosts = wanderPosts else { return }
+                self.wanderPosts = validWanderPosts
+                self.postTableView.reloadData()
+            }
         }
     }
     
@@ -141,7 +143,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType{
         case ProfileViewFilterType.posts:
             print(ProfileViewFilterType.posts.rawValue)
+            let selectedWanderPost = self.wanderPosts[indexPath.row]
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
+            detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
         case ProfileViewFilterType.feed:
             print(ProfileViewFilterType.feed.rawValue)
