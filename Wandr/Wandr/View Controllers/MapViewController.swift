@@ -165,8 +165,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return nil
         } else {
             let annotationIdentifier = "AnnotationIdentifier"
-            let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
-            annotationView.canShowCallout = true
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.canShowCallout = true
             // gets the user id from the annotaion
             let postAnnotation = annotation as! PostAnnotation
             let userID = postAnnotation.wanderpost.user
@@ -177,11 +177,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     DispatchQueue.main.async {
                         // why cant I set this here !!??
                         
-                        annotationView.profileImageView.image = UIImage(data: imageData)
+                        mapAnnotationView.profileImageView.image = UIImage(data: imageData)
                     }
                 }
             })
-            return annotationView
+            return mapAnnotationView
         }
     }
     
