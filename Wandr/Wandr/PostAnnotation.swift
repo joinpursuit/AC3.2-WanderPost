@@ -11,6 +11,8 @@ import MapKit
 
 class PostAnnotation: MKPointAnnotation {
     
+    var wanderpost: WanderPost!
+    
     override init () {
         super.init()
     }
