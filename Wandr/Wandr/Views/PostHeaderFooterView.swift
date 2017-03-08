@@ -22,10 +22,6 @@ class PostHeaderFooterView: UITableViewHeaderFooterView {
         configureConstraints()
     }
     
-    required init?(coder aDecoder: NSCoder){
-        super.init(coder: aDecoder)
-    }
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -40,27 +36,27 @@ class PostHeaderFooterView: UITableViewHeaderFooterView {
     
     private func configureConstraints() {
         locationLabel.snp.makeConstraints { (label) in
-            label.top.leading.equalToSuperview().offset(16.0)
+            label.top.leading.equalToSuperview().offset(8.0)
             label.trailing.equalToSuperview().inset(8.0)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.locationLabel.snp.bottom).offset(8.0)
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
+            label.leading.equalToSuperview().offset(8.0)
+            label.trailing.equalToSuperview().inset(8.0)
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(16.0)
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(8.0)
+            label.leading.equalToSuperview().offset(8.0)
+            label.trailing.equalToSuperview().inset(8.0)
             label.bottom.equalTo(self.commentCountLabel.snp.top).inset(8.0)
         }
         
         commentCountLabel.snp.makeConstraints { (label) in
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
-            label.bottom.equalToSuperview().inset(16.0)
+            label.leading.equalToSuperview().offset(8.0)
+            label.trailing.equalToSuperview().inset(8.0)
+            label.bottom.equalToSuperview().inset(8.0)
         }
     }
     

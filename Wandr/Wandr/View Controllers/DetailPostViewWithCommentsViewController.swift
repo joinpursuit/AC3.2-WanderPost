@@ -47,12 +47,13 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let postHeaderFooterView = (self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: PostHeaderFooterView.identifier) as? PostHeaderFooterView)!
-        postHeaderFooterView.backgroundColor = UIColor.gray
+        self.postHeaderFooterView = postHeaderFooterView
+        self.postHeaderFooterView.backgroundColor = UIColor.gray
         return postHeaderFooterView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 150.0
+        return 100.0
     }
     
     private func setupViewHierarchy() {
@@ -61,8 +62,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     private func configureConstraints() {
         commentTableView.snp.makeConstraints { (tableView) in
-            tableView.top.equalTo(self.topLayoutGuide.snp.bottom)
-            tableView.leading.trailing.bottom.equalToSuperview()
+            tableView.top.leading.trailing.bottom.equalToSuperview()
         }
     }
     
@@ -81,7 +81,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return cell
     }
     
-    
     lazy var commentTableView: UITableView = {
        let tableView = UITableView()
         tableView.delegate = self
@@ -96,5 +95,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return mapView
     }()
 
-
+    lazy var postHeaderFooterView: PostHeaderFooterView = {
+        let view = PostHeaderFooterView()
+        return view
+    }()
 }
