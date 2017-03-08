@@ -128,7 +128,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        switch self.profileViewFilterType{
+        case ProfileViewFilterType.posts:
+            print(ProfileViewFilterType.posts.rawValue)
+            let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
+            self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
+        case ProfileViewFilterType.feed:
+            print(ProfileViewFilterType.feed.rawValue)
+        case ProfileViewFilterType.messages:
+            print(ProfileViewFilterType.messages.rawValue)
+        }
     }
     
     // MARK: - Layout
