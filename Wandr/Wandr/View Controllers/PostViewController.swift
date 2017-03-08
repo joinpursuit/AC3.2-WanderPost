@@ -219,7 +219,9 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         //textField.backgroundColor = UIColor.white
         textField.border(placeHolder: "message")
         textField.font = UIFont.systemFont(ofSize: 18)
-        textField.textAlignment = NSTextAlignment.left
+        //textField.textAlignment = NSTextAlignment.left
+        textField.contentVerticalAlignment = .top
+        textField.contentHorizontalAlignment = .left
         return textField
     }()
     
