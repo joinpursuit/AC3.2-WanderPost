@@ -304,6 +304,28 @@ class CloudManager {
         }
     }
     
+    func getUserInfo (forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
+        let users = Set<CKRecordID>(posts.map{ $0.user })
+        let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: Array(users))
+        
+        fetchPostsOperation.fetchRecordsCompletionBlock = {(records, error) in
+            if error != nil {
+                completion(error)
+            }
+            if let validRecords = records?.values {
+                for userRecord in validRecords {
+                    let user = WanderUser(from: userRecord)!
+                    let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
+                    usersPosts.map { $0.wanderUser = user }
+                }
+                completion(nil)
+            }
+            
+        }
+        self.publicDatabase.add(fetchPostsOperation)
+
+    }
+    
     //MARK: - Friend Adding and Notifications
     
     func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
