@@ -11,6 +11,7 @@
 		8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8129528B1E60D08A0048199B /* AppDelegate.swift */; };
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
+		81569D691E70855500FFC8F6 /* WanderUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81569D681E70855500FFC8F6 /* WanderUser.swift */; };
 		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
 		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
 		8164460E1E65FB0800477FBD /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* Reaction.swift */; };
@@ -59,6 +60,7 @@
 		812952921E60D08A0048199B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		812952951E60D08A0048199B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		81569D681E70855500FFC8F6 /* WanderUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderUser.swift; sourceTree = "<group>"; };
 		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
 		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
 		8164460D1E65FB0800477FBD /* Reaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 			isa = PBXGroup;
 			children = (
 				8164460B1E65FA2600477FBD /* WanderPost.swift */,
+				81569D681E70855500FFC8F6 /* WanderUser.swift */,
 				8164460D1E65FB0800477FBD /* Reaction.swift */,
 				DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */,
 			);
@@ -436,6 +439,7 @@
 				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,
 				A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
+				81569D691E70855500FFC8F6 /* WanderUser.swift in Sources */,
 				8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */,
 				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
