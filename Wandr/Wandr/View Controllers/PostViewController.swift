@@ -128,9 +128,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
                         print(errors!)
                         //TODO Add in error handling.
                     }
-                    print("\n\ni think this works? \n\n")
                     //DO SOMETHING WITH THE RECORD?
-                    dump(record)
+                    //dump(record)
                 }
                 
                 self.dismiss(animated: true, completion: nil)

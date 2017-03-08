@@ -39,6 +39,7 @@ class CloudManager {
     
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
+    private let sharedDatabase = CKContainer.default().sharedCloudDatabase
     private let container = CKContainer.default()
     
     
@@ -274,22 +275,15 @@ class CloudManager {
         }
     }
     
-    func getUserInfo(for id: CKRecordID, completion: @escaping (Data?, String?, [String]?, Error?) -> Void) {
+    func getUserInfo(for id: CKRecordID, completion: @escaping (WanderUser?, Error?) -> Void) {
         
         publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
-                completion(nil, nil, nil, error)
+                completion(nil, error)
             }
-            if let validRecord = record {
-                var data: Data?
-                if let imageAsset = validRecord["profileImage"] as? CKAsset {
-                    do {
-                        data = try Data(contentsOf: imageAsset.fileURL)
-                    } catch {
-                        completion(nil, nil, nil, error)
-                    }
-                }
-                completion(data, validRecord["username"] as? String, validRecord["posts"] as? [String], nil)
+            if let validRecord = record,
+                let user = WanderUser(from: validRecord) {
+                completion(user, nil)
             }
         }
     }
@@ -314,6 +308,29 @@ class CloudManager {
     
     func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
         
+    }
+    
+    func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
+        //let friendAddedSubscription = CKDatabaseSubscription(subscriptionID: "friendAdded")
+        let predicate = NSPredicate(format: "TRUEPREDICATE")
+        
+        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
+        
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.alertBody = "working"
+        notificationInfo.shouldBadge = true
+        notificationInfo.shouldSendContentAvailable = true
+        
+        friendAddedSubscription.notificationInfo = notificationInfo
+        
+        
+        
+        publicDatabase.save(friendAddedSubscription) { (subscription, error) in
+            
+            print(subscription)
+            print(error)
+            
+        }
     }
     
     //MARK: - Helper Functions
