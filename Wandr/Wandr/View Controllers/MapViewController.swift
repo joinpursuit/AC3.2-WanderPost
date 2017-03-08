@@ -25,7 +25,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
-                print(self.allWanderPosts?[0].wanderUser?.id.recordName)
+                DispatchQueue.main.async {
+                    self.reloadMapView()
+                }
             }
         }
     }
@@ -173,19 +175,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let annotationIdentifier = "AnnotationIdentifier"
             let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
             mapAnnotationView.canShowCallout = true
-            // gets the user id from the annotaion
-            let postAnnotation = annotation as! PostAnnotation
-            let userID = postAnnotation.wanderpost.user
-            
-            // gets user profile image from cloud with id
-            CloudManager.shared.getUserInfo(for: userID, completion: { (user, error) in
-                if let user = user {
-                    DispatchQueue.main.async {
-                        // why cant I set this here !!??
-                        mapAnnotationView.profileImageView.image = UIImage(data: user.userImageData)
-                    }
-                }
-            })
+            let postAnnotation = annotation as! PostAnnotation            
+            if let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
             return mapAnnotationView
         }
     }

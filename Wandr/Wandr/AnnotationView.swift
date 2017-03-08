@@ -24,7 +24,6 @@ class AnnotationView: ARAnnotationView {
     
     private let viewBackgroundColor: UIColor = UIColor(white: 0.3, alpha: 0.7)
     
-    
     var delegate: AnnotationViewDelegate?
     
     override func didMoveToSuperview() {
@@ -32,7 +31,7 @@ class AnnotationView: ARAnnotationView {
         
         self.backgroundColor = viewBackgroundColor
         self.clipsToBounds = true
-        self.layer.cornerRadius = 20
+        self.layer.cornerRadius = 10
         setUpViews()
         loadUI()
     }
@@ -51,8 +50,6 @@ class AnnotationView: ARAnnotationView {
         
         timeLabel = UILabel(frame: CGRect(x: 8, y: 180, width: 130 - 16, height: 20))
         distanceLabel = UILabel(frame: CGRect(x: 108, y: 180, width: 70 - 16, height: 20))
-
-        
     }
     
     //4
@@ -84,12 +81,14 @@ class AnnotationView: ARAnnotationView {
         distanceLabel?.textColor = StyleManager.shared.accent
         self.addSubview(distanceLabel!)
         
-        if let annotation = annotation as? WanderPost {
-            profileImageView?.image = #imageLiteral(resourceName: "Plus-50")
-            userLabel?.text = "anama118118"
-            messageLabel?.text = annotation.content as? String
-            distanceLabel?.text = String(format: "%.2f km", annotation.distanceFromUser / 1000)
-            timeLabel?.text = annotation.dateAndTime
+        if let wanderPostForThisAnnotation = annotation as? WanderPost {
+            if let user = wanderPostForThisAnnotation.wanderUser {
+                profileImageView?.image = UIImage(data: user.userImageData)
+                userLabel?.text = user.username
+            }
+            messageLabel?.text = wanderPostForThisAnnotation.content as? String
+            distanceLabel?.text = String(format: "%.2f km", wanderPostForThisAnnotation.distanceFromUser / 1000)
+            timeLabel?.text = wanderPostForThisAnnotation.dateAndTime
         }
     }
     
