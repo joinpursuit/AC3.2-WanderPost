@@ -25,7 +25,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
-                print(self.allWanderPosts?[0].wanderUser?.id.recordName)
+                DispatchQueue.main.async {
+                    self.reloadMapView()
+                }
             }
         }
     }
@@ -171,23 +173,13 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return nil
         } else {
             let annotationIdentifier = "AnnotationIdentifier"
-            let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
-            annotationView.canShowCallout = true
-            // gets the user id from the annotaion
-            let postAnnotation = annotation as! PostAnnotation
-            let userID = postAnnotation.wanderpost.user
-            
-            // gets user profile image from cloud with id
-            CloudManager.shared.getUserInfo(for: userID, completion: { (user, error) in
-                if let user = user {
-                    DispatchQueue.main.async {
-                        // why cant I set this here !!??
-                        
-                        annotationView.profileImageView.image = UIImage(data: user.userImageData)
-                    }
-                }
-            })
-            return annotationView
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.canShowCallout = true
+            let postAnnotation = annotation as! PostAnnotation            
+            if let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
+            return mapAnnotationView
         }
     }
     
@@ -406,7 +398,6 @@ extension MapViewController: AnnotationViewDelegate {
         
         if let wanderpost = annotationView.annotation as? WanderPost {
             dump(wanderpost)
-            
             // push on post detail VC
         }
     }
