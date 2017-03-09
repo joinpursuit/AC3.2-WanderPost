@@ -40,6 +40,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
+        
+        CloudManager.shared.addSubscriptionToCurrentuser { (error) in
+            print(error)
+            
+        }
+
+        
         return true
     }
     

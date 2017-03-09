@@ -20,13 +20,22 @@ func reverse(string: String) -> String {
 
 reverse(string: "")
 
-func findTheSecondLargestInt (in arr: [Int]) -> Int? {
+func findTheSecondSmallestElement<T: Comparable> (in arr: [T]) -> T? {
     guard arr.count > 1 else { return nil }
     
-    var smallest = Int.max
-    var secondSmallest = Int.max
+    var smallest = arr[0]
+    var secondSmallest: T? = nil
     
+    for int in arr {
+        if int < smallest {
+            secondSmallest = smallest
+            smallest = int
+        } else if secondSmallest == nil || int < secondSmallest! {
+            secondSmallest = int
+        }
+    }
     
-    
-    return nil
+    return secondSmallest
 }
+findTheSecondSmallestElement(in: [42, 8, 3])
+
