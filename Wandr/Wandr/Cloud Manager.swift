@@ -266,6 +266,7 @@ class CloudManager {
                     }
                     if let validRecords = records {
                         let postRecords = validRecords.values
+                        
                         completion(postRecords.map { WanderPost(withCKRecord: $0)! }, nil)
                     }
                     

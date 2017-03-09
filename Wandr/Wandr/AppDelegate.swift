@@ -147,6 +147,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //completionHandler(.newData)
         
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
+        
         if cloudKitNotification.notificationType == .query {
             let queryNotification = cloudKitNotification as! CKQueryNotification
             if queryNotification.queryNotificationReason == .recordDeleted {
