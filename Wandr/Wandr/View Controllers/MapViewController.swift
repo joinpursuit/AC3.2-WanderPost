@@ -49,9 +49,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         super.viewDidLoad()
         
         self.navigationItem.title = "wanderpost"
-        //Make this more dynamic
         self.lastUpdatedLocation = locationManager.location!
-        self.arDelegate = tabBarController?.viewControllers?.last as! ARViewController
+        
+        //Make this more dynamic
+        let nav = tabBarController?.viewControllers?.last as! UINavigationController
+        self.arDelegate = nav.viewControllers.first! as! ARViewController
+        
         setupViewHierarchy()
         configureConstraints()
         setupLocationManager()
@@ -382,26 +385,6 @@ extension MapViewController: TwicketSegmentedControlDelegate {
     }
 }
 
-extension MapViewController: ARDataSource {
-    func ar(_ arViewController: ARViewController, viewForAnnotation: ARAnnotation) -> ARAnnotationView {
-        let annotationView = AnnotationView()
-        annotationView.annotation = viewForAnnotation
-        annotationView.delegate = self
-        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 200)
-        return annotationView
-    }
-}
-
-
-extension MapViewController: AnnotationViewDelegate {
-    func didTouch(annotationView: AnnotationView) {
-        
-        if let wanderpost = annotationView.annotation as? WanderPost {
-            dump(wanderpost)
-            // push on post detail VC
-        }
-    }
-}
 
 //MARK: - Commented Out Code
 
