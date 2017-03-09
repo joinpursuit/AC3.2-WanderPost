@@ -40,6 +40,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         application.registerForRemoteNotifications()
+        
+        CloudManager.shared.addSubscriptionToCurrentuser { (error) in
+            print(error)
+            
+        }
+
+        
         return true
     }
     
@@ -56,9 +63,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         let tabBarItemAppearance  = UITabBarItem.appearance()
         let normalAttributes = [NSForegroundColorAttributeName: UIColor.white,
-                                NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+                                NSFontAttributeName: UIFont.Comfortaa.regular(size: 10)!]
         let selectedAttributes = [NSForegroundColorAttributeName: StyleManager.shared.accent,
-                                  NSFontAttributeName: UIFont.Comfortaa.regular(size: 20)!]
+                                  NSFontAttributeName: UIFont.Comfortaa.regular(size: 10)!]
         tabBarItemAppearance.setTitleTextAttributes(normalAttributes, for: .normal)
         tabBarItemAppearance.setTitleTextAttributes(selectedAttributes, for: .selected)
         tabBarAppearance.tintColor = StyleManager.shared.accent
@@ -69,9 +76,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let mapViewController = UINavigationController(rootViewController: MapViewController())
         let arViewController = UINavigationController(rootViewController: ARViewController())
         
-        let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
-        let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
-        let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)        
+        let profileIcon = UITabBarItem(title: "profile", image: UIImage(named: "profile_white"), selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: UIImage(named: "map_white"), selectedImage: nil)
+        let arIcon = UITabBarItem(title: "a.r.", image: UIImage(named: "camera_white"), selectedImage: nil)
         
         profileViewController.tabBarItem = profileIcon
         mapViewController.tabBarItem = mapIcon
@@ -137,6 +144,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //completionHandler(.newData)
         
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
+        
         if cloudKitNotification.notificationType == .query {
             let queryNotification = cloudKitNotification as! CKQueryNotification
             if queryNotification.queryNotificationReason == .recordDeleted {

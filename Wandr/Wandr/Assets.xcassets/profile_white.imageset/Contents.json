@@ -2,15 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "up_cheveron.png",
+      "filename" : "profile_white.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "profile_white@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "profile_white@3x.png",
       "scale" : "3x"
     }
   ],

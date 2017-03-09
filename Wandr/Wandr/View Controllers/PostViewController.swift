@@ -242,9 +242,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
     
     lazy var dismissButton: UIButton = {
         let button = UIButton()
-        button.tintColor = StyleManager.shared.primaryDark
-        button.setTitle("X", for: .normal)
-        button.setTitleColor(StyleManager.shared.primaryDark, for: .normal)
+        button.setImage(UIImage(named: "cancel"), for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
     }()
