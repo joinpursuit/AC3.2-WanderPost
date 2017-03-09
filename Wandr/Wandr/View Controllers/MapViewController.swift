@@ -26,7 +26,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         didSet {
             CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
                 DispatchQueue.main.async {
-                    self.reloadMapView()
+                     self.reloadMapView()
                 }
             }
         }
@@ -35,7 +35,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
-            self.reloadMapView()
         }
     }
     
@@ -49,8 +48,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         super.viewDidLoad()
         
         self.navigationItem.title = "wanderpost"
-        self.lastUpdatedLocation = locationManager.location!
         
+        mapView.delegate = self
+        userNotificationCenter.delegate = self
+
         //Make this more dynamic
         let nav = tabBarController?.viewControllers?.last as! UINavigationController
         self.arDelegate = nav.viewControllers.first! as! ARViewController
@@ -58,10 +59,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         setupViewHierarchy()
         configureConstraints()
         setupLocationManager()
-        getWanderPosts(lastUpdatedLocation)
         //setupGestures()
-        userNotificationCenter.delegate = self
-        mapView.delegate = self
+        self.lastUpdatedLocation = locationManager.location!
+        getWanderPosts(lastUpdatedLocation)
         self.segmentedControl.setSegmentItems(segmentTitles)
         
         CloudManager.shared.checkUser { (userExists, error) in
