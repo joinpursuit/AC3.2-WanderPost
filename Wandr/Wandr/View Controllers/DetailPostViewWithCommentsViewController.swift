@@ -59,8 +59,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
 
     }
-    
-    //Add table footer view
 
     // MARK: - TableView Header And Footer Customizations
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
