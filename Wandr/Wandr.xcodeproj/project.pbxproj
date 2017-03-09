@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */; };
 		8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8129528B1E60D08A0048199B /* AppDelegate.swift */; };
 		812952931E60D08A0048199B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 812952921E60D08A0048199B /* Assets.xcassets */; };
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
@@ -22,12 +21,10 @@
 		A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */; };
 		A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */; };
 		A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7D1E65F26000402053 /* ProfileViewController.swift */; };
-		A7686F801E65F34700402053 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F7F1E65F34700402053 /* CameraViewController.swift */; };
 		A7686F821E66017800402053 /* PostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F811E66017800402053 /* PostViewController.swift */; };
 		A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */; };
 		A7686F861E67626E00402053 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F851E67626E00402053 /* ProfileView.swift */; };
 		A7686F881E6876E100402053 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7686F871E6876E000402053 /* MapKit.framework */; };
-		A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */; };
 		A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86001E68B11D0046487F /* OnBoardViewController.swift */; };
 		A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86021E68CFA70046487F /* Extension UITextField.swift */; };
 		A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86041E68D6B80046487F /* WanderButton.swift */; };
@@ -56,7 +53,6 @@
 
 /* Begin PBXFileReference section */
 		3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.debug.xcconfig"; sourceTree = "<group>"; };
-		8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CKAsset+UIImage+Extension.swift"; sourceTree = "<group>"; };
 		812952881E60D08A0048199B /* Wandr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Wandr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8129528B1E60D08A0048199B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		812952921E60D08A0048199B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -74,12 +70,10 @@
 		A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailFeedTableViewCell.swift; path = Views/ProfileViewViewControllerDetailFeedTableViewCell.swift; sourceTree = "<group>"; };
 		A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderSegmentedControl.swift; sourceTree = "<group>"; };
 		A7686F7D1E65F26000402053 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = "View Controllers/ProfileViewController.swift"; sourceTree = "<group>"; };
-		A7686F7F1E65F34700402053 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = "View Controllers/CameraViewController.swift"; sourceTree = "<group>"; };
 		A7686F811E66017800402053 /* PostViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostViewController.swift; path = "View Controllers/PostViewController.swift"; sourceTree = "<group>"; };
 		A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewViewControllerDetailPostTableViewCell.swift; path = Views/ProfileViewViewControllerDetailPostTableViewCell.swift; sourceTree = "<group>"; };
 		A7686F851E67626E00402053 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
 		A7686F871E6876E000402053 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
-		A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MapCameraViewController.swift; path = "View Controllers/MapCameraViewController.swift"; sourceTree = "<group>"; };
 		A7AF86001E68B11D0046487F /* OnBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnBoardViewController.swift; path = "View Controllers/OnBoardViewController.swift"; sourceTree = "<group>"; };
 		A7AF86021E68CFA70046487F /* Extension UITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UITextField.swift"; path = "Views/Extension UITextField.swift"; sourceTree = "<group>"; };
 		A7AF86041E68D6B80046487F /* WanderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderButton.swift; path = Views/WanderButton.swift; sourceTree = "<group>"; };
@@ -172,7 +166,6 @@
 				8129528B1E60D08A0048199B /* AppDelegate.swift */,
 				812952921E60D08A0048199B /* Assets.xcassets */,
 				812952971E60D08A0048199B /* Info.plist */,
-				8127C9891E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -196,9 +189,7 @@
 				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
 				A7686F811E66017800402053 /* PostViewController.swift */,
-				A7AF85FE1E687CD80046487F /* MapCameraViewController.swift */,
 				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
-				A7686F7F1E65F34700402053 /* CameraViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -428,7 +419,6 @@
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */,
 				A7D046821E6FB1CC002D2F24 /* PostHeaderFooterView.swift in Sources */,
-				A7AF85FF1E687CD80046487F /* MapCameraViewController.swift in Sources */,
 				DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
 				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
@@ -448,8 +438,6 @@
 				A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
 				81569D691E70855500FFC8F6 /* WanderUser.swift in Sources */,
-				8127C98A1E6C729B0028BA30 /* CKAsset+UIImage+Extension.swift in Sources */,
-				A7686F801E65F34700402053 /* CameraViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

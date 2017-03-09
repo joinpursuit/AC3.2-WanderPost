@@ -39,11 +39,11 @@ class CloudManager {
     
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
-    private let sharedDatabase = CKContainer.default().sharedCloudDatabase
     private let container = CKContainer.default()
     
-    
+    //Look into making this a wanderuser
     var currentUser: CKRecordID?
+    
     
     //MARK: - Creating a Post and a User
     
@@ -110,7 +110,7 @@ class CloudManager {
             if let validRecord = record?.first {
                 //Fix this.
                 //Update the posts array
-                let userRecord = self.addPost(to: validRecord.value, value: postRecord.recordID.recordName)
+                let userRecord = self.addValue(to: validRecord.value, key: "posts", value: postRecord.recordID.recordName)
                 //Save and post the record
                 privateUserSave.recordsToSave = [userRecord]
             }
@@ -129,7 +129,7 @@ class CloudManager {
             if let validRecord = record?.first {
                 //Fix this.
                 //Update the posts array
-                let userRecord = self.addPost(to: validRecord.value, value: postRecord.recordID.recordName)
+                let userRecord = self.addValue(to: validRecord.value, key: "posts", value: postRecord.recordID.recordName)
                 //Save and post the record
                 publicPostsToSave.recordsToSave = [userRecord, postRecord]
             }
@@ -141,6 +141,7 @@ class CloudManager {
                 completionError?.append(error!)
             }
         }
+        
         publicPostsToSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
             
             
@@ -195,6 +196,8 @@ class CloudManager {
     
     //MARK: - Checking User existance and pulling current User
     
+    
+    //Refactor this into one functions that gets the current user, make it a Wanderuser. if that fails, present the error, if the error is no user found, present the onboard screen
     func getCurrentUser() {
         self.container.fetchUserRecordID() { recordID, error in
             switch error {
@@ -266,6 +269,7 @@ class CloudManager {
                     }
                     if let validRecords = records {
                         let postRecords = validRecords.values
+                        
                         completion(postRecords.map { WanderPost(withCKRecord: $0)! }, nil)
                     }
                     
@@ -329,12 +333,41 @@ class CloudManager {
     //MARK: - Friend Adding and Notifications
     
     func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
+        let fetchBothUsersOperation = CKFetchRecordsOperation(recordIDs: [id, self.currentUser!])        
+        let saveFriendsToBothUsersOperation = CKModifyRecordsOperation()
         
+        
+        fetchBothUsersOperation.fetchRecordsCompletionBlock = {(recordDict, error) in
+            if error != nil {
+                completion(error)
+            }
+            if let validRecordDictionary = recordDict,
+                let currentUser = validRecordDictionary[self.currentUser!],
+                let friendAdded = validRecordDictionary[id] {
+                let friendRecordOne = self.addValue(to: currentUser,
+                                                    key: "friends",
+                                                    value: id.recordName)
+                let friendRecordTwo = self.addValue(to: friendAdded,
+                                                    key: "friends",
+                                                    value: self.currentUser!.recordName)
+                
+                saveFriendsToBothUsersOperation.recordsToSave = [friendRecordOne, friendRecordTwo]
+            }
+        }
+        
+        saveFriendsToBothUsersOperation.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            completion(error)
+        }
+        
+        saveFriendsToBothUsersOperation.addDependency(fetchBothUsersOperation)
+        
+        publicDatabase.add(fetchBothUsersOperation)
+        publicDatabase.add(saveFriendsToBothUsersOperation)
     }
     
     func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
         //let friendAddedSubscription = CKDatabaseSubscription(subscriptionID: "friendAdded")
-        let predicate = NSPredicate(format: "TRUEPREDICATE")
+        let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.recordName)
         
         let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
         
@@ -356,12 +389,20 @@ class CloudManager {
     }
     
     //MARK: - Helper Functions
-    private func addPost(to record: CKRecord, value: String) -> CKRecord {
-        let userRecord = record
-        var posts = userRecord["posts"] as? [NSString] ?? []
-        posts.append(value as NSString)
-        userRecord["posts"] = posts as CKRecordValue?
-        return userRecord
+    private func addValue(to record: CKRecord, key: String, value: String) -> CKRecord {
+        let mutableRecord = record
+        var ids = mutableRecord[key] as? [NSString] ?? []
+        
+        
+        if !ids.contains(value as NSString) {
+            ids.append(value as NSString)
+            print("addedFriend")
+        } else {
+            print("yall are already friends, don't be insecure")
+            return record
+        }
+        mutableRecord[key] = ids as CKRecordValue?
+        return mutableRecord
     }
 }
 

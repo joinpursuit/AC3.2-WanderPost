@@ -159,7 +159,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         tabController.viewControllers = [profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
-        
+
     }
     
     
