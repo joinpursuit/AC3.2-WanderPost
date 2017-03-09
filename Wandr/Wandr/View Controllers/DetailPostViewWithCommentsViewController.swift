@@ -10,7 +10,7 @@ import UIKit
 import MapKit
 import SnapKit
 
-class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource {
+class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var wanderPost: WanderPost?
     
@@ -27,7 +27,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
         
         //TableViewSectionHeader MKMapView
-        let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 275.0)
+        let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
         self.mapHeaderView = MKMapView(frame: mapViewFrame)
         self.mapHeaderView.mapType = .standard
         self.mapHeaderView.isScrollEnabled = false
@@ -58,6 +58,58 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
 
+        
+        //let customView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 100))
+        //customView.backgroundColor = UIColor.red
+        //commentTextField.inputAccessoryView = customView
+        
+        //let textFieldFake = UITextField(frame: CGRect.zero)
+        //self.view.addSubview(textFieldFake)
+        //let viewOnKeyboardView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 39.0))
+        //viewOnKeyboardView.backgroundColor = UIColor.darkGray
+        //let textField = UITextField(frame: CGRect(x: 0.0, y: 4.0, width: 300.0, height: 31.0))
+        //textField.borderStyle = UITextBorderStyle.roundedRect
+        //textField.font = UIFont.systemFont(ofSize: 24.0)
+        //textField.delegate = self
+        //viewOnKeyboardView.addSubview(textField)
+        //textFieldFake.inputAccessoryView = viewOnKeyboardView
+        //textFieldFake.becomeFirstResponder()
+        
+        //commentTextField.inputAccessoryView = self.viewOnKeyboardView
+        /*
+    CGRect rectFake = CGRectZero;
+
+    UITextField *fakeField = [[UITextField alloc] initWithFrame:rectFake];
+
+    [self.view addSubview:fakeField];
+
+    UIView *av = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 39.0)];
+
+    av.backgroundColor = [UIColor darkGrayColor];
+
+    CGRect rect = CGRectMake(200.0, 4.0, 400.0, 31.0);
+
+    UITextField *textField = [[UITextField alloc] initWithFrame:rect];
+
+    textField.borderStyle = UITextBorderStyleRoundedRect;
+
+    textField.font = [UIFont systemFontOfSize:24.0];
+
+    textField.delegate = self;
+
+    [av addSubview:textField];
+
+    fakeField.inputAccessoryView = av;
+
+    [fakeField becomeFirstResponder];
+
+ */
+    }
+    
+    // MARK: - TextFieldDelegate
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        
+        return true
     }
 
     // MARK: - TableView Header And Footer Customizations
@@ -80,12 +132,54 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     private func setupViewHierarchy() {
         self.view.addSubview(commentTableView)
+        self.view.addSubview(textFieldContainerView)
+        
+        self.textFieldContainerView.addSubview(accentBarView)
+        self.textFieldContainerView.addSubview(commentTextField)
+        self.textFieldContainerView.addSubview(doneButton)
+        
+        //self.viewOnKeyboardView.addSubview(self.textFieldOnKeyboardView)
+        //self.viewOnKeyboardView.addSubview(self.doneButton)
     }
     
     private func configureConstraints() {
         commentTableView.snp.makeConstraints { (tableView) in
-            tableView.top.leading.trailing.bottom.equalToSuperview()
+            tableView.top.leading.trailing.equalToSuperview()
         }
+        
+        textFieldContainerView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.commentTableView.snp.bottom)
+            view.leading.trailing.equalToSuperview()
+            view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+            view.height.equalTo(60)
+        }
+        
+        accentBarView.snp.makeConstraints { (view) in
+            view.top.leading.trailing.equalToSuperview()
+            view.height.equalTo(2.0)
+        }
+        
+        commentTextField.snp.makeConstraints { (textField) in
+            textField.top.equalTo(self.accentBarView.snp.bottom)
+            textField.leading.equalToSuperview().offset(8.0)
+            textField.bottom.equalToSuperview()
+        }
+        
+        doneButton.snp.makeConstraints { (button) in
+            button.top.equalTo(self.accentBarView.snp.bottom).offset(8.0)
+            button.leading.equalTo(self.commentTextField.snp.trailing).offset(8.0)
+            button.trailing.bottom.equalToSuperview().inset(8.0)
+        }
+        
+        //Stuff in onKeyboardView
+//        textFieldOnKeyboardView.snp.makeConstraints { (textField) in
+//            textField.leading.top.bottom.equalToSuperview()
+//        }
+//        
+//        doneButton.snp.makeConstraints { (button) in
+//            button.leading.equalTo(self.textFieldOnKeyboardView.snp.trailing)
+//            button.top.bottom.trailing.equalToSuperview()
+//        }
     }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Methods
@@ -122,4 +216,41 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return view
     }()
     
+    lazy var commentTextField: UITextField = {
+        let textField = UITextField()
+        textField.backgroundColor = UIColor.clear
+        textField.delegate = self
+        textField.placeholder = "Comment"
+        return textField
+    }()
+    
+    lazy var viewOnKeyboardView: UIView = {
+       let view = UIView()
+        view.backgroundColor = UIColor.darkGray
+        view.frame = CGRect(x: 0, y: 0, width: 10, height: 44)
+        return view
+    }()
+    
+    lazy var textFieldOnKeyboardView: WanderTextField = {
+        let textField = WanderTextField()
+        textField.delegate = self
+        textField.placeholder = "Comment"
+        return textField
+    }()
+    
+    lazy var doneButton: WanderButton = {
+        let button = WanderButton(title: "done")
+        return button
+    }()
+    
+    lazy var textFieldContainerView: UIView = {
+       let view = UIView()
+        return view
+    }()
+    
+    lazy var accentBarView: UIView = {
+       let view = UIView()
+        view.backgroundColor = StyleManager.shared.accent
+        return view
+    }()
 }
