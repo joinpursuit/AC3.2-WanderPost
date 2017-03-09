@@ -26,7 +26,7 @@ import CoreLocation
  *      https://github.com/DanijelHuis/HDAugmentedReality.git
  *
  */
-open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPostDelegate
+open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPostDelegate, ARDataSource, AnnotationViewDelegate
 {
     
     var posts: [WanderPost] = [] {
@@ -221,6 +221,13 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
     
     fileprivate func onViewWillAppear()
     {
+        
+        self.navigationItem.title = "wanderpost"
+        self.dataSource = self
+        self.maxVisibleAnnotations = 30
+        self.headingSmoothingFactor = 0.05
+
+        
         // Camera layer if not added
         if self.cameraLayer?.superlayer == nil { self.loadCamera() }
         
@@ -242,16 +249,10 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
     {
         stopCamera()
     }
-    
-    
-    internal func closeButtonTap()
-    {
-        self.presentingViewController?.dismiss(animated: true, completion: nil)
-    }
-    
+
     open override var prefersStatusBarHidden : Bool
     {
-        return true
+        return false
     }
     
     fileprivate func onViewDidLayoutSubviews()
@@ -306,6 +307,31 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
             self.trackingManager.startTracking(notifyLocationFailure: true)
         }
     }
+    
+    
+    // MARK: - View for annotation / AR Data Source Method
+    
+    
+    public func ar(_ arViewController: ARViewController, viewForAnnotation: ARAnnotation) -> ARAnnotationView {
+        let annotationView = AnnotationView()
+        annotationView.annotation = viewForAnnotation
+        annotationView.delegate = self
+        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 200)
+        return annotationView
+    }
+    
+    
+    // MARK: - AnnotationViewDelegate
+    
+    func didTouch(annotationView: AnnotationView) {
+        
+        if let wanderpost = annotationView.annotation as? WanderPost {
+            dump(wanderpost)
+            // push on post detail VC
+        }
+    }
+
+
     //==========================================================================================================================================================
     // MARK:                                                        Annotations and annotation views
     //==========================================================================================================================================================
@@ -1074,32 +1100,6 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
         }
     }
 
-    //==========================================================================================================================================================
-    //MARK:                                                        UI
-    //==========================================================================================================================================================
-    func addCloseButton()
-    {
-        self.closeButton?.removeFromSuperview()
-        
-        if self.closeButtonImage == nil
-        {
-            let bundle = Bundle(for: ARViewController.self)
-            let path = bundle.path(forResource: "hdar_close", ofType: "png")
-            if let path = path
-            {
-                self.closeButtonImage = UIImage(contentsOfFile: path)
-            }
-        }
-        
-        // Close button - make it customizable
-        let closeButton: UIButton = UIButton(type: UIButtonType.custom)
-        closeButton.setImage(closeButtonImage, for: UIControlState());
-        closeButton.frame = CGRect(x: self.view.bounds.size.width - 45, y: 5,width: 40,height: 40)
-        closeButton.addTarget(self, action: #selector(ARViewController.closeButtonTap), for: UIControlEvents.touchUpInside)
-        closeButton.autoresizingMask = [UIViewAutoresizing.flexibleLeftMargin, UIViewAutoresizing.flexibleBottomMargin]
-        self.view.addSubview(closeButton)
-        self.closeButton = closeButton
-    }
     
     //==========================================================================================================================================================
     //MARK:                                                        Debug

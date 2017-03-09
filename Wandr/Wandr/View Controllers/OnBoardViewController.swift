@@ -141,13 +141,13 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
         let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)
         
-        //1
-        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
-        //2
-        arViewController.maxVisibleAnnotations = 30
-        arViewController.headingSmoothingFactor = 0.05
-        //3
-        arViewController.setAnnotations([])
+//        //1
+//        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
+//        //2
+//        arViewController.maxVisibleAnnotations = 30
+//        arViewController.headingSmoothingFactor = 0.05
+//        //3
+//        arViewController.setAnnotations([])
         
         
         profileViewController.tabBarItem = profileIcon
