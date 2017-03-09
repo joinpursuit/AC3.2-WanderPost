@@ -54,9 +54,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             DispatchQueue.main.async {
                 guard let validWanderPosts = wanderPosts else { return }
                 self.wanderPosts = validWanderPosts
+                self.profileHeaderView.postNumberLabel.text = "\(self.wanderPosts.count) \n posts"
                 self.postTableView.reloadData()
             }
         }
+        
     }
     
     // MARK: - Actions
@@ -114,8 +116,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             return self.dummyDataFeed.count
         case ProfileViewFilterType.messages:
             return self.dummyDataMessage.count
-        default:
-            return 0
         }
     }
     
@@ -127,6 +127,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
              cell.locationLabel.text = post.locationDescription
              cell.messageLabel.text = post.content as? String
              cell.dateAndTimeLabel.text = post.dateAndTime
+             cell.commentCountLabel.text = "\(post.reactions.count) Comments"
             return cell
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
