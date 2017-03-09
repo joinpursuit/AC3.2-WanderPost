@@ -26,7 +26,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         //TableViewHeader
         self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
         
-        //TableViewSectionHeader
+        //TableViewSectionHeader MKMapView
         let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 275.0)
         self.mapHeaderView = MKMapView(frame: mapViewFrame)
         self.mapHeaderView.mapType = .standard
@@ -43,6 +43,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         guard let postLocation = self.wanderPost?.location else { return }
         postAnnotation.coordinate = postLocation.coordinate
         postAnnotation.title = self.wanderPost?.content as? String
+        let span = MKCoordinateSpanMake(0.01, 0.01)
+        let region = MKCoordinateRegion(center: postLocation.coordinate, span: span)
+        let location2D = CLLocationCoordinate2DMake(postLocation.coordinate.latitude, postLocation.coordinate.longitude)
+        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
+        mapCamera.altitude = 500 // example altitude
+        mapCamera.pitch = 45
+        self.mapHeaderView.camera = mapCamera
+        self.mapHeaderView.setRegion(region, animated: false)
         DispatchQueue.main.async {
             self.mapHeaderView.addAnnotation(postAnnotation)
         }
@@ -51,6 +59,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
 
     }
+    
+    //Add table footer view
 
     // MARK: - TableView Header And Footer Customizations
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -113,4 +123,5 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let view = PostHeaderFooterView()
         return view
     }()
+    
 }

@@ -67,24 +67,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     static func setUpAppNavigation() -> UIViewController {
         let profileViewController = UINavigationController(rootViewController: ProfileViewController())
         let mapViewController = UINavigationController(rootViewController: MapViewController())
-        let arViewController = ARViewController()
+        let arViewController = UINavigationController(rootViewController: ARViewController())
         
         let profileIcon = UITabBarItem(title: "profile", image: nil, selectedImage: nil)
         let mapIcon = UITabBarItem(title: "map", image: nil, selectedImage: nil)
         let arIcon = UITabBarItem(title: "AR", image: nil, selectedImage: nil)        
         
-        //1
-        arViewController.dataSource = mapViewController.viewControllers.first! as! MapViewController
-        //2
-        arViewController.maxVisibleAnnotations = 30
-        arViewController.headingSmoothingFactor = 0.05
-        //3
-        arViewController.setAnnotations([])
-        
-        
         profileViewController.tabBarItem = profileIcon
         mapViewController.tabBarItem = mapIcon
-        //onBoardViewController.tabBarItem = onBoardIcon
         arViewController.tabBarItem = arIcon
         
         let tabController = UITabBarController()
