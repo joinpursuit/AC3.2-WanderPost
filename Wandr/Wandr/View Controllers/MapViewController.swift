@@ -25,6 +25,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
+                print(">>>>>getting users")
                 DispatchQueue.main.async {
                     self.reloadMapView()
                 }
@@ -255,6 +256,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func getWanderPosts(_ location: CLLocation) {
         CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
+            print(">>>>>getting posts")
+
             if let error = error {
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
