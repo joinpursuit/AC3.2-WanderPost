@@ -93,6 +93,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     private func configureConstraints() {
         //Map Container
+        
+        self.edgesForExtendedLayout = []
+
         mapContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.equalToSuperview()
@@ -105,10 +108,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         
         addPostButton.snp.makeConstraints { (button) in
-            button.trailing.equalToSuperview().inset(48.0)
-            button.bottom.equalToSuperview().inset(54.0)
-            button.width.equalTo(54.0)
-            button.height.equalTo(54.0)
+            button.trailing.bottom.equalToSuperview().inset(32.0)
+            button.width.height.equalTo(54.0)
         }
         
         segmentedControlContainerView.snp.makeConstraints { (view) in
@@ -159,7 +160,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             getWanderPosts(location)
             makeNotification(withBody: "hello")
             print("new location")
-            
         }
     }
     
@@ -214,13 +214,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     lazy var addPostButton: UIButton = {
         let button = UIButton(type: .custom)
         button.addTarget(self, action: #selector(addPostButtonPressed), for: UIControlEvents.touchUpInside)
-        button.setTitle("Add", for: .normal)
+        button.setImage(UIImage(named: "compose_white"), for: .normal)
+        button.backgroundColor = StyleManager.shared.accent
         button.layer.cornerRadius = 26
-        button.layer.shadowColor = UIColor.blue.cgColor
+        button.layer.cornerRadius = 26
+        button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.8
         button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 5
-        button.clipsToBounds = false
+        button.layer.shadowRadius = 8
         return button
     }()
     
