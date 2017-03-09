@@ -38,8 +38,7 @@ class ProfileView: UIView {
         self.addSubview(profileImageView)
         self.addSubview(userNameLabel)
         self.addSubview(postNumberLabel)
-        self.addSubview(followersNumberLabel)
-        self.addSubview(followingNumberLabel)
+        self.addSubview(friendsNumberLabel)
     }
     
     private func configureConstraints() {
@@ -57,22 +56,15 @@ class ProfileView: UIView {
             label.height.equalTo(30)
         }
         
-        followersNumberLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.centerX.equalToSuperview()
-            label.height.equalTo(30)
-        }
-        
         postNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.trailing.equalTo(self.followersNumberLabel.snp.leading).offset(-16.0)
+            label.centerX.equalToSuperview().offset(-self.frame.width / 4)
             label.height.equalTo(30)
         }
         
-        
-        followingNumberLabel.snp.makeConstraints { (label) in
+        friendsNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.leading.equalTo(self.followersNumberLabel.snp.trailing).offset(16.0)
+            label.centerX.equalToSuperview().offset(self.frame.width / 4)
             label.height.equalTo(30)
         }
     }
@@ -101,6 +93,15 @@ class ProfileView: UIView {
     lazy var postNumberLabel: UILabel = {
         let label = UILabel()
         label.text = "#Posts"
+        label.numberOfLines = 0
+        label.font = StyleManager.shared.comfortaaFont14
+        return label
+    }()
+    
+    lazy var friendsNumberLabel: UILabel = {
+        let label = UILabel()
+        label.text = "#Friends"
+        label.numberOfLines = 0
         label.font = StyleManager.shared.comfortaaFont14
         return label
     }()
@@ -118,6 +119,7 @@ class ProfileView: UIView {
         label.font = StyleManager.shared.comfortaaFont14
         return label
     }()
+    
 }
 
 class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {

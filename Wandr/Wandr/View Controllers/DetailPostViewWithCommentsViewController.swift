@@ -57,59 +57,67 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-
         
-        //let customView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 100))
-        //customView.backgroundColor = UIColor.red
-        //commentTextField.inputAccessoryView = customView
-        
-        //let textFieldFake = UITextField(frame: CGRect.zero)
-        //self.view.addSubview(textFieldFake)
-        //let viewOnKeyboardView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 0.0, height: 39.0))
-        //viewOnKeyboardView.backgroundColor = UIColor.darkGray
-        //let textField = UITextField(frame: CGRect(x: 0.0, y: 4.0, width: 300.0, height: 31.0))
-        //textField.borderStyle = UITextBorderStyle.roundedRect
-        //textField.font = UIFont.systemFont(ofSize: 24.0)
-        //textField.delegate = self
-        //viewOnKeyboardView.addSubview(textField)
-        //textFieldFake.inputAccessoryView = viewOnKeyboardView
-        //textFieldFake.becomeFirstResponder()
-        
-        //commentTextField.inputAccessoryView = self.viewOnKeyboardView
-        /*
-    CGRect rectFake = CGRectZero;
-
-    UITextField *fakeField = [[UITextField alloc] initWithFrame:rectFake];
-
-    [self.view addSubview:fakeField];
-
-    UIView *av = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 0.0, 39.0)];
-
-    av.backgroundColor = [UIColor darkGrayColor];
-
-    CGRect rect = CGRectMake(200.0, 4.0, 400.0, 31.0);
-
-    UITextField *textField = [[UITextField alloc] initWithFrame:rect];
-
-    textField.borderStyle = UITextBorderStyleRoundedRect;
-
-    textField.font = [UIFont systemFontOfSize:24.0];
-
-    textField.delegate = self;
-
-    [av addSubview:textField];
-
-    fakeField.inputAccessoryView = av;
-
-    [fakeField becomeFirstResponder];
-
- */
+        registerForNotifications()
     }
     
     // MARK: - TextFieldDelegate
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        
         return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    
+    // MARK: - Keyboard Notification
+    private func registerForNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidAppear(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillDisappear(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    internal func keyboardDidAppear(notification: Notification) {
+        self.shouldShowKeyboard(show: true, notification: notification, completion: nil)
+    }
+    
+    internal func keyboardWillDisappear(notification: Notification) {
+        self.shouldShowKeyboard(show: false, notification: notification, completion: nil)
+    }
+    
+    private func shouldShowKeyboard(show: Bool, notification: Notification, completion: ((Bool) -> Void)? ) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? CGRect,
+            let animationNumber = notification.userInfo?[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber,
+            let animationDuration = notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as? TimeInterval {
+            let animationOption = UIViewAnimationOptions(rawValue: animationNumber.uintValue)
+            if show {
+                self.textFieldContainerView.snp.remakeConstraints({ (view) in
+                    view.top.equalTo(self.commentTableView.snp.bottom)
+                    view.leading.trailing.equalToSuperview()
+                    view.height.equalTo(52.0)
+                    view.bottom.equalTo(keyboardFrame.size.height * -1)
+                })
+            } else {
+                self.textFieldContainerView.snp.remakeConstraints({ (view) in
+                    view.top.equalTo(self.commentTableView.snp.bottom)
+                    view.leading.trailing.equalToSuperview()
+                    view.height.equalTo(52.0)
+                    view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+                })
+            }
+            
+            UIView.animate(withDuration: animationDuration, delay: 0.0, options: animationOption, animations: {
+                self.view.layoutIfNeeded()
+            }, completion: completion)
+        }
     }
 
     // MARK: - TableView Header And Footer Customizations
@@ -138,8 +146,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.textFieldContainerView.addSubview(commentTextField)
         self.textFieldContainerView.addSubview(doneButton)
         
-        //self.viewOnKeyboardView.addSubview(self.textFieldOnKeyboardView)
-        //self.viewOnKeyboardView.addSubview(self.doneButton)
     }
     
     private func configureConstraints() {
@@ -151,7 +157,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             view.top.equalTo(self.commentTableView.snp.bottom)
             view.leading.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-            view.height.equalTo(60)
+            view.height.equalTo(52)
         }
         
         accentBarView.snp.makeConstraints { (view) in
@@ -170,16 +176,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.leading.equalTo(self.commentTextField.snp.trailing).offset(8.0)
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
-        
-        //Stuff in onKeyboardView
-//        textFieldOnKeyboardView.snp.makeConstraints { (textField) in
-//            textField.leading.top.bottom.equalToSuperview()
-//        }
-//        
-//        doneButton.snp.makeConstraints { (button) in
-//            button.leading.equalTo(self.textFieldOnKeyboardView.snp.trailing)
-//            button.top.bottom.trailing.equalToSuperview()
-//        }
     }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Methods
