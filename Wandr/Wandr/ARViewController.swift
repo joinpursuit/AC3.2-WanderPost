@@ -328,6 +328,9 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
         if let wanderpost = annotationView.annotation as? WanderPost {
             dump(wanderpost)
             // push on post detail VC
+            let postDetailVC = DetailPostViewWithCommentsViewController()
+            postDetailVC.wanderPost = wanderpost
+            self.navigationController?.pushViewController(postDetailVC, animated: true)
         }
     }
 
