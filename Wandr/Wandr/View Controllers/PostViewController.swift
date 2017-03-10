@@ -29,6 +29,23 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
         
+        CloudManager.shared.getUserProfilePic { (data, error) in
+            if error != nil {
+                //add error handling
+                print(error?.localizedDescription)
+            }
+            if let validData = data {
+                DispatchQueue.main.async {
+                    guard let validOriginalImage = UIImage(data: validData) else { return }
+                    //Do not delete becase imageToDisplay will be the long term solution
+                    let imageToDisplay = validOriginalImage.fixRotatedImage()
+                    let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+                    self.profileImageView.image = tempRotateSolution
+                }
+            }
+        }
+
+        
     }
     
     // MARK: - Layout
@@ -222,6 +239,11 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         textField.contentVerticalAlignment = .top
         textField.contentHorizontalAlignment = .left
         return textField
+    }()
+    
+    lazy var textView: UITextView = {
+       let textView = UITextView()
+        return textView
     }()
     
     lazy var userTextField: WanderTextField = {

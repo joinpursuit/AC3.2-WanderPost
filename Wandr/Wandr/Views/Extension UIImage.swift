@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 extension UIImage {
+    /// UIImage extension to rotate images back to default orientation.
+    /// http://stackoverflow.com/questions/8915630/ios-uiimageview-how-to-handle-uiimage-image-orientation
     func fixRotatedImage() -> UIImage {
         switch self.imageOrientation {
         case UIImageOrientation.right:

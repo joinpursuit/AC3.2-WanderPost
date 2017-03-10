@@ -59,6 +59,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 guard let validWanderPosts = wanderPosts else { return }
                 self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
                 self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
+                self.profileHeaderView.friendsNumberLabel.text = "1 \n friend"
                 self.postTableView.reloadData()
             }
         }
@@ -132,7 +133,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
              cell.locationLabel.text = post.locationDescription
              cell.messageLabel.text = post.content as? String
              cell.dateAndTimeLabel.text = post.dateAndTime
-             cell.commentCountLabel.text = "\(post.reactions.count) Comments"
+             if post.reactions.count > 1 {
+                cell.commentCountLabel.text = "\(post.reactions.count) Comments"
+             } else {
+                cell.commentCountLabel.text = "\(post.reactions.count) Comment"
+             }
             return cell
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
