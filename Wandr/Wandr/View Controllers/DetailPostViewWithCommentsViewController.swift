@@ -59,6 +59,23 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
         
         registerForNotifications()
+        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+    }
+    
+    //MARK: - Actions
+    
+    func doneButtonPressed () {
+        guard let content = self.commentTextField.text,
+              let post = self.wanderPost else {
+            //add alert to say empty comment
+            return
+        }
+        
+        let reaction = Reaction(type: .comment, content: content, postID: post.postID)
+        CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
+            //add fail alert
+            print(error)
+        }
     }
     
     // MARK: - TextFieldDelegate
@@ -195,12 +212,22 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dummyDataComments.count
+        
+        return self.wanderPost!.reactions!.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
+        guard let reactions = self.wanderPost?.reactions else {
+            
+            return cell
+        
+        }
+        let currentReaction = reactions[indexPath.row]
         cell.locationLabel.text = "Location:"
+        cell.messageLabel.text = currentReaction.content
+        cell.dateAndTimeLabel.text = currentReaction.time.description
+        cell.nameLabel.text = currentReaction.userID.recordName
         return cell
     }
     
