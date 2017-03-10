@@ -406,8 +406,6 @@ class CloudManager {
         
         friendAddedSubscription.notificationInfo = notificationInfo
         
-        
-        
         publicDatabase.save(friendAddedSubscription) { (subscription, error) in
             completion(error)
         }
@@ -436,7 +434,6 @@ class CloudManager {
             if let postRecord = record?[post.postID] {
                 //let parentReference = CKReference(record: postRecord, action: .deleteSelf)
                 commentRecord.setObject(comment.postID, forKey: "postID")
-                
                 
                 let modifiedRecord = self.addValue(to: postRecord, key: "reactions", value: commentRecord.recordID.recordName)
                 saveCommentRecords.recordsToSave = [modifiedRecord, commentRecord]
