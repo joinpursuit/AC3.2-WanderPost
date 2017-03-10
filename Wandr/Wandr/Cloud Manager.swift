@@ -12,9 +12,8 @@ import UIKit
 //TODO List
 
 /*
- _friends
- _user picture/user name/update posts locally -- i should've done this from the get go. That was poor thinking.
- _
+ _ deleting form data base, this include comments, posts, friends
+ _friend requests
  */
 
 enum PostContentType: NSString {
@@ -41,8 +40,7 @@ class CloudManager {
     private let privateDatabase = CKContainer.default().privateCloudDatabase
     private let container = CKContainer.default()
     
-    //Look into making this a wanderuser
-    var currentUser: CKRecordID?
+    var currentUser: WanderUser?
     
     
     //MARK: - Creating a Post and a User
@@ -177,10 +175,10 @@ class CloudManager {
     func createUsername (userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
         
         let validUsername = userName as NSString
-        let id = CKRecordID(recordName: currentUser!.recordName)
+        let id = CKRecordID(recordName: currentUser!.id.recordName)
         let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
         
-        publicDatabase.fetch(withRecordID: id) { (userRecord, error) in
+        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
             } else if let validUserRecord = userRecord {
@@ -198,21 +196,26 @@ class CloudManager {
     
     
     //Refactor this into one functions that gets the current user, make it a Wanderuser. if that fails, present the error, if the error is no user found, present the onboard screen
-    func getCurrentUser() {
-        self.container.fetchUserRecordID() { recordID, error in
-            switch error {
-            case .some:
-                print(error!.localizedDescription)
-            case .none:
-                print("fetched ID \(recordID?.recordName)")
-                self.currentUser = recordID
+    func getCurrentUser(completion: @escaping (Error?)-> Void ) {
+        
+        let currentUserFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
+        currentUserFetch.fetchRecordsCompletionBlock = {(userRecord, error) in
+            if error != nil {
+                completion(error)
+            }
+            if let validUserRecord = userRecord?.values,
+                let currentUser = validUserRecord.first {
+                
+                
+                self.currentUser = WanderUser(from: currentUser)
+                completion(nil)
             }
         }
+        self.publicDatabase.add(currentUserFetch)
     }
     
     func checkUser (completion: @escaping (Bool, Error?) -> Void) {
-        let userID = CKRecordID(recordName: self.currentUser!.recordName)
-        publicDatabase.fetch(withRecordID: userID) { (record, error) in
+        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
             if let error = error {
                 guard let ckError = error as? CKError else {
                     print(error.localizedDescription)
@@ -292,8 +295,10 @@ class CloudManager {
         }
     }
     
+    
+    //This needs to be refactoered today to not exist, just pull the image from the wanderuser in the cloud manager
     func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!) { (record, error) in
+        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             } else if let validRecord = record,
@@ -308,48 +313,72 @@ class CloudManager {
         }
     }
     
-    func getUserInfo (forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
+    func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
-        let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: Array(users))
+        var reactionIDs = [CKRecordID]()
+
+        for post in posts {
+            reactionIDs += post.reactionIDs
+        }
+        
+        let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: users + reactionIDs)
         
         fetchPostsOperation.fetchRecordsCompletionBlock = {(records, error) in
             if error != nil {
                 completion(error)
             }
-            if let validRecords = records?.values {
-                for userRecord in validRecords {
-                    let user = WanderUser(from: userRecord)!
-                    let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
-                    usersPosts.map { $0.wanderUser = user }
+            if let validRecords = records {
+                for user in users {
+                    if let validUserRecord = validRecords[user],
+                        let user = WanderUser(from: validUserRecord) {
+                        let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
+                        usersPosts.map { $0.wanderUser = user }
+                    }
+                }
+                
+                var reactions = [CKRecordID: [Reaction]]()
+                for reactionID in reactionIDs {
+                    if let validReactionRecord = validRecords[reactionID],
+                        let reaction = Reaction(from: validReactionRecord) {
+                        
+                        reactions[reaction.postID.recordID] = (reactions[reaction.postID.recordID] ?? []) + [reaction]
+                    }
+                }
+                
+                for post in posts {
+                    if let postReactions = reactions[post.postID] {
+                        
+                        post.reactions = postReactions
+                    }
                 }
                 completion(nil)
             }
-            
         }
+        
+        
         self.publicDatabase.add(fetchPostsOperation)
-
+        
     }
     
     //MARK: - Friend Adding and Notifications
     
     func add(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
-        let fetchBothUsersOperation = CKFetchRecordsOperation(recordIDs: [id, self.currentUser!])        
+        let fetchBothUsersOperation = CKFetchRecordsOperation(recordIDs: [id, self.currentUser!.id])
         let saveFriendsToBothUsersOperation = CKModifyRecordsOperation()
-        
         
         fetchBothUsersOperation.fetchRecordsCompletionBlock = {(recordDict, error) in
             if error != nil {
                 completion(error)
             }
             if let validRecordDictionary = recordDict,
-                let currentUser = validRecordDictionary[self.currentUser!],
+                let currentUser = validRecordDictionary[self.currentUser!.id],
                 let friendAdded = validRecordDictionary[id] {
                 let friendRecordOne = self.addValue(to: currentUser,
                                                     key: "friends",
                                                     value: id.recordName)
                 let friendRecordTwo = self.addValue(to: friendAdded,
                                                     key: "friends",
-                                                    value: self.currentUser!.recordName)
+                                                    value: self.currentUser!.id.recordName)
                 
                 saveFriendsToBothUsersOperation.recordsToSave = [friendRecordOne, friendRecordTwo]
             }
@@ -366,13 +395,12 @@ class CloudManager {
     }
     
     func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
-        //let friendAddedSubscription = CKDatabaseSubscription(subscriptionID: "friendAdded")
-        let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.recordName)
+        let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.id.recordName)
         
         let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertBody = "working"
+        notificationInfo.alertBody = "\(self.currentUser)"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -381,24 +409,56 @@ class CloudManager {
         
         
         publicDatabase.save(friendAddedSubscription) { (subscription, error) in
-            
-            print(subscription)
-            print(error)
-            
+            completion(error)
         }
     }
     
+    //MARK:  - Adding a comment
+    
+    func addReaction(to post: WanderPost, comment: Reaction, completion: @escaping (Error?) -> Void) {
+        
+        //create the comment
+        //Tom needs the userID, the the comment, the time,
+        let commentRecord = CKRecord(recordType: "comment")
+        
+        commentRecord.setObject(comment.type.rawValue, forKey: "type")
+        commentRecord.setObject(comment.content as NSString, forKey: "content")
+        commentRecord.setObject(comment.userID.recordName as NSString, forKey: "userID")
+        
+        let postRecordFetch = CKFetchRecordsOperation(recordIDs: [post.postID])
+        let saveCommentRecords = CKModifyRecordsOperation()
+        
+        postRecordFetch.fetchRecordsCompletionBlock = {(record, error) in
+            if error != nil {
+                completion(error)
+            }
+            
+            if let postRecord = record?[post.postID] {
+                //let parentReference = CKReference(record: postRecord, action: .deleteSelf)
+                commentRecord.setObject(comment.postID, forKey: "postID")
+                
+                
+                let modifiedRecord = self.addValue(to: postRecord, key: "reactions", value: commentRecord.recordID.recordName)
+                saveCommentRecords.recordsToSave = [modifiedRecord, commentRecord]
+            }
+        }
+        
+        saveCommentRecords.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            completion(error)
+        }
+        
+        saveCommentRecords.addDependency(postRecordFetch)
+        publicDatabase.add(postRecordFetch)
+        publicDatabase.add(saveCommentRecords)
+    }
+
     //MARK: - Helper Functions
     private func addValue(to record: CKRecord, key: String, value: String) -> CKRecord {
         let mutableRecord = record
         var ids = mutableRecord[key] as? [NSString] ?? []
-        
-        
         if !ids.contains(value as NSString) {
             ids.append(value as NSString)
-            print("addedFriend")
         } else {
-            print("yall are already friends, don't be insecure")
             return record
         }
         mutableRecord[key] = ids as CKRecordValue?

@@ -47,12 +47,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
         
-        CloudManager.shared.getUserPostActivity(for: CloudManager.shared.currentUser!) { (wanderPosts:[WanderPost]?, error: Error?) in
+        CloudManager.shared.getUserPostActivity(for: CloudManager.shared.currentUser!.id) { (wanderPosts:[WanderPost]?, error: Error?) in
             if error != nil {
                 print(error?.localizedDescription)
             }
             DispatchQueue.main.async {
                 guard let validWanderPosts = wanderPosts else { return }
+                CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
+                    print(error)
+                })
                 self.wanderPosts = validWanderPosts
                 self.profileHeaderView.postNumberLabel.text = "\(self.wanderPosts.count) \n posts"
                 self.postTableView.reloadData()
@@ -127,7 +130,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
              cell.locationLabel.text = post.locationDescription
              cell.messageLabel.text = post.content as? String
              cell.dateAndTimeLabel.text = post.dateAndTime
-             cell.commentCountLabel.text = "\(post.reactions.count) Comments"
+             cell.commentCountLabel.text = "\(post.reactionIDs.count) Comments"
             return cell
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
@@ -204,8 +207,6 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         default:
             print("Can not make a decision")
         }
-        DispatchQueue.main.async {
-            self.postTableView.reloadData()
-        }
+        self.postTableView.reloadData()
     }
 }

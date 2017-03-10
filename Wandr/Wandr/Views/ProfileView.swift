@@ -19,17 +19,7 @@ class ProfileView: UIView {
         // Drawing code
         setupViewHierarchy()
         configureConstraints()
-        CloudManager.shared.getUserProfilePic { (data, error) in
-            if error != nil {
-                //add error handling
-                print(error?.localizedDescription)
-            }
-            if let validData = data {
-                DispatchQueue.main.async {
-                    self.profileImageView.image = UIImage(data: validData)
-                }
-            }
-        }
+        self.profileImageView.image = UIImage(data: CloudManager.shared.currentUser!.userImageData)
     }
     
     var delegate : ProfileViewDelegate?

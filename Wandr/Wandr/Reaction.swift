@@ -6,20 +6,52 @@
 //  Copyright © 2017 C4Q. All rights reserved.
 //
 
-enum ReactionType {
+enum ReactionType: NSString {
     case like, comment
 }
 
 import Foundation
+import CloudKit
 
 class Reaction {
     let type: ReactionType
-    let content: String?
+    let time: Date
+    let userID: CKRecordID
+    let postID: CKReference
+    let content: String
     
-    init (type: ReactionType, content: String) {
+    init (type: ReactionType, content: String, time: Date, userID: CKRecordID, postID: CKReference) {
         self.type = type
         self.content = content
+        self.time = time
+        self.userID = userID
+        self.postID = postID
     }
     
-    //TODO Add a convience init to parse from the Cloud in a simple manner
+    convenience init(type: ReactionType, content: String, postID: CKRecordID) {
+        
+        let userID = CloudManager.shared.currentUser!.id
+        
+        let postID = CKReference(recordID: postID, action: .deleteSelf)
+        self.init(type: type,
+                  content: content,
+                  time: Date(),
+                  userID: userID,
+                  postID: postID)
+    }
+    
+    convenience init?(from record: CKRecord) {
+        
+        guard let typeString = record["type"] as? NSString,
+            let type = ReactionType(rawValue: typeString),
+            let time = record.creationDate,
+            let userID = record.creatorUserRecordID,
+            let postID = record["postID"] as? CKReference,
+            let content = record["content"] as? String else { return nil }
+        self.init(type: type,
+                  content: content,
+                  time: time,
+                  userID: userID,
+                  postID: postID)
+    }
 }

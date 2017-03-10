@@ -24,7 +24,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var allWanderPosts: [WanderPost]? {
         didSet {
-            CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
+            CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
                 DispatchQueue.main.async {
                      self.reloadMapView()
                 }
