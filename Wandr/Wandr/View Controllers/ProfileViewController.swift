@@ -29,6 +29,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         super.viewDidLoad()
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
+        
+        let friendsButton = UIBarButtonItem(title: "friends", style: .done, target: self, action: #selector(friendsButtonTapped))
+        self.navigationItem.rightBarButtonItem = friendsButton
 
         setupViewHierarchy()
         configureConstraints()
@@ -66,6 +69,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         //Able to change profile picture
         print("self.profileHeaderView.profileImageView")
         self.showImagePickerForSourceType(sourceType: .photoLibrary)
+    }
+    
+    func friendsButtonTapped() {
+        let friendsVC = ProfileFriendsTableViewController()
+        self.navigationController?.pushViewController(friendsVC, animated: true)
     }
     
     // MARK: - PhotoPicker Methods

@@ -75,6 +75,17 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return true
     }
     
+    // MARK: - Actions 
+    
+    func addCommentDoneTapped() {
+        if let commentText = commentTextField.text {
+            print(commentText)
+            
+            // this is where we put up the comment
+        }
+        commentTextField.text = nil
+    }
+    
     // MARK: - Keyboard Notification
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidAppear(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -193,6 +204,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return cell
     }
     
+    
+    // MARK: - Lazy Vars
+    
     lazy var commentTableView: UITableView = {
        let tableView = UITableView()
         tableView.delegate = self
@@ -236,6 +250,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     lazy var doneButton: WanderButton = {
         let button = WanderButton(title: "done")
+        button.addTarget(self, action: #selector(addCommentDoneTapped), for: .touchUpInside)
         return button
     }()
     

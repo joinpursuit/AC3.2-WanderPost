@@ -25,6 +25,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getUserInfo(forPosts: self.allWanderPosts!) { (error) in
+                print(">>>>>getting users")
                 DispatchQueue.main.async {
                      self.reloadMapView()
                 }
@@ -274,7 +275,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 myAnnotaton.wanderpost = post
                 guard let postLocation = post.location else { return }
                 myAnnotaton.coordinate = postLocation.coordinate
-                myAnnotaton.title = "wtf"
+                if let user = post.wanderUser {
+                    myAnnotaton.title = user.username
+                }
                 annotations.append(myAnnotaton)
             }
             DispatchQueue.main.async {
