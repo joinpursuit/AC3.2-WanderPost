@@ -15,10 +15,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
-    let dummyDataPost = [1,2,3]
     let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
     let dummyDataMessage = [1,2,3,4,5]
     
+    var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
     
     var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.posts
@@ -50,7 +50,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
         
-        CloudManager.shared.getUserPostActivity(for: CloudManager.shared.currentUser!.id) { (wanderPosts:[WanderPost]?, error: Error?) in
+        guard let validWanderUser = CloudManager.shared.currentUser else { return }
+        self.wanderUser = validWanderUser
+        
+        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
             if error != nil {
                 print(error?.localizedDescription)
             }
@@ -58,7 +61,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.wanderPosts = validWanderPosts
             self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
             self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
-            self.profileHeaderView.friendsNumberLabel.text = "\(CloudManager.shared.currentUser!.friends.count) \n friends"
+            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
             
             
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
@@ -145,12 +148,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.messageLabel.text = post.content as? String
             cell.dateAndTimeLabel.text = post.dateAndTime
             
-            //Add in logic to guard for 0
-            if post.reactions?.count == 1 {
-                cell.commentCountLabel.text = "\(post.reactions?.count) Comment"
+            let reactionsCount = post.reactions?.count ?? 0
+            if reactionsCount < 2 {
+                cell.commentCountLabel.text = "\(reactionsCount) Comment"
             } else {
-                cell.commentCountLabel.text = "\(post.reactions?.count) Comments"
+                cell.commentCountLabel.text = "\(reactionsCount) Comments"
             }
+        
             return cell
             
         case ProfileViewFilterType.feed:
