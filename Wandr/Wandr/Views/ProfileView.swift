@@ -19,17 +19,13 @@ class ProfileView: UIView {
         // Drawing code
         setupViewHierarchy()
         configureConstraints()
-        CloudManager.shared.getUserProfilePic { (data, error) in
-            if error != nil {
-                //add error handling
-                print(error?.localizedDescription)
-            }
-            if let validData = data {
-                DispatchQueue.main.async {
-                    self.profileImageView.image = UIImage(data: validData)
-                }
-            }
-        }
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        //Do not delete becase imageToDisplay will be the long term solution
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+
+        self.profileImageView.image = tempRotateSolution
+        self.userNameLabel.text = CloudManager.shared.currentUser!.username
     }
     
     var delegate : ProfileViewDelegate?

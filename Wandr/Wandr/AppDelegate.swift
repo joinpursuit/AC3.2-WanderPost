@@ -21,17 +21,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        CloudManager.shared.getCurrentUser()
-        setNavigationTheme()
         
-        let rootVC = AppDelegate.setUpAppNavigation()
-        self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = rootVC
-        self.window?.makeKeyAndVisible()
         
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
         
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.window?.rootViewController = LoadingViewController()
+        self.window?.makeKeyAndVisible()
         
         UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { (granted, error) in
             if error != nil {
@@ -41,10 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         application.registerForRemoteNotifications()
         
-        CloudManager.shared.addSubscriptionToCurrentuser { (error) in
-            print(error)
-            
-        }
 
         
         return true

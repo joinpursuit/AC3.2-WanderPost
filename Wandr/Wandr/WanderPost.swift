@@ -15,13 +15,14 @@ class WanderPost: ARAnnotation {
     let user: CKRecordID
     let contentType: PostContentType
     let privacyLevel: PrivacyLevel
-    let reactions: [Reaction]
-    let postID: String
+    let reactionIDs: [CKRecordID]
+    let postID: CKRecordID
     let time: Date
     let locationDescription: String
     var read: Bool
     
     var wanderUser: WanderUser?
+    var reactions: [Reaction]?
     
     var dateAndTime: String {
         let formatter = DateFormatter()
@@ -30,11 +31,11 @@ class WanderPost: ARAnnotation {
         return formatter.string(from: time)
     }
 
-    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactions: [Reaction], postID: String, time: Date, user: CKRecordID, locationDescription: String, read: Bool) {
+    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactionIDs: [CKRecordID], postID: CKRecordID, time: Date, user: CKRecordID, locationDescription: String, read: Bool) {
         self.content = content
         self.contentType = contentType
         self.privacyLevel = privacyLevel
-        self.reactions = reactions
+        self.reactionIDs = reactionIDs
         self.postID = postID
         self.time = time
         self.user = user
@@ -47,7 +48,7 @@ class WanderPost: ARAnnotation {
     
     convenience init(location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, locationDescription: String) {
         
-        self.init(location: location, content: content, contentType: contentType, privacyLevel: privacyLevel, reactions: [], postID: "", time: Date(), user: CloudManager.shared.currentUser!, locationDescription: locationDescription, read: false)
+        self.init(location: location, content: content, contentType: contentType, privacyLevel: privacyLevel, reactionIDs: [], postID: CKRecordID(recordName: "foobar"), time: Date(), user: CloudManager.shared.currentUser!.id, locationDescription: locationDescription, read: false)
     }
     
     convenience init?(withCKRecord record: CKRecord) {
@@ -59,13 +60,16 @@ class WanderPost: ARAnnotation {
             let contentType = PostContentType(rawValue: contentTypeString),
             let privacyLevelString = record.object(forKey: "privacyLevel") as? NSString,
             let privacyLevel = PrivacyLevel(rawValue: privacyLevelString),
-            let postID = record.recordID.recordName as? String,
             let time = record.creationDate,
             let locationDescription = record.object(forKey: "locationDescription") as? String,
             let read = record.object(forKey: "read") as? Bool
         else { return nil }
         
-        self.init(location: location, content: content as AnyObject, contentType: contentType, privacyLevel: privacyLevel, reactions: [], postID: postID, time: time, user: user, locationDescription: locationDescription, read: read)
+        let postID = record.recordID
+        
+        let reactionIDStrings = record.object(forKey: "reactions") as? [String] ?? []
+        let reactionIDs = reactionIDStrings.map { CKRecordID(recordName: $0) }
+        self.init(location: location, content: content as AnyObject, contentType: contentType, privacyLevel: privacyLevel, reactionIDs: reactionIDs, postID: postID, time: time, user: user, locationDescription: locationDescription, read: read)
     }
     
     static func descriptionForPlaceMark(_ mark: CLPlacemark) -> String {
