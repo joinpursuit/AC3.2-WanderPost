@@ -26,10 +26,18 @@ class ProfileView: UIView {
             }
             if let validData = data {
                 DispatchQueue.main.async {
-                    self.profileImageView.image = UIImage(data: validData)
+                    guard let validOriginalImage = UIImage(data: validData) else { return }
+                    //Do not delete becase imageToDisplay will be the long term solution
+                    let imageToDisplay = validOriginalImage.fixRotatedImage()
+                    let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+                    self.profileImageView.image = tempRotateSolution
                 }
             }
         }
+        //Temporary Solution Before The User Model is created
+        let tempUserName = "anama118118"
+        self.userNameLabel.text = tempUserName
+        
     }
     
     var delegate : ProfileViewDelegate?
