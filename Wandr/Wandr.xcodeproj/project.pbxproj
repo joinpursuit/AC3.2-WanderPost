@@ -36,6 +36,8 @@
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
 		DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */; };
 		DE8BF0C41E65FB5F007D2486 /* Comfortaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */; };
+		DEA4EF2D1E7230480038E330 /* ProfileFriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA4EF2C1E7230480038E330 /* ProfileFriendsTableViewController.swift */; };
+		DEA4EF2F1E7233EC0038E330 /* ProfileFriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA4EF2E1E7233EC0038E330 /* ProfileFriendTableViewCell.swift */; };
 		DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B281E685D1D001E0747 /* AnnotationView.swift */; };
 		DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B291E685D1D001E0747 /* ARAnnotation.swift */; };
 		DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */; };
@@ -86,6 +88,8 @@
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
 		DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
 		DE8BF0C11E65FB5F007D2486 /* Comfortaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Regular.ttf"; sourceTree = "<group>"; };
+		DEA4EF2C1E7230480038E330 /* ProfileFriendsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileFriendsTableViewController.swift; path = "View Controllers/ProfileFriendsTableViewController.swift"; sourceTree = "<group>"; };
+		DEA4EF2E1E7233EC0038E330 /* ProfileFriendTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileFriendTableViewCell.swift; path = Views/ProfileFriendTableViewCell.swift; sourceTree = "<group>"; };
 		DEA80B281E685D1D001E0747 /* AnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnnotationView.swift; sourceTree = "<group>"; };
 		DEA80B291E685D1D001E0747 /* ARAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARAnnotation.swift; sourceTree = "<group>"; };
 		DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARAnnotationView.swift; sourceTree = "<group>"; };
@@ -193,6 +197,7 @@
 				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
 				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
+				DEA4EF2C1E7230480038E330 /* ProfileFriendsTableViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -212,6 +217,7 @@
 			children = (
 				A7686F831E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift */,
 				A743DF0A1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift */,
+				DEA4EF2E1E7233EC0038E330 /* ProfileFriendTableViewCell.swift */,
 				A743DF081E6DF67400BB43B8 /* WanderProfileImageView.swift */,
 				A7AF86021E68CFA70046487F /* Extension UITextField.swift */,
 				A7AF86041E68D6B80046487F /* WanderButton.swift */,
@@ -425,6 +431,7 @@
 				DEA80B301E685D1D001E0747 /* ARAnnotationView.swift in Sources */,
 				8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */,
 				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
+				DEA4EF2F1E7233EC0038E330 /* ProfileFriendTableViewCell.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
@@ -435,6 +442,7 @@
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
 				A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */,
 				A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */,
+				DEA4EF2D1E7230480038E330 /* ProfileFriendsTableViewController.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
 				81569D6B1E723FE200FFC8F6 /* LoadingViewController.swift in Sources */,
 				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
