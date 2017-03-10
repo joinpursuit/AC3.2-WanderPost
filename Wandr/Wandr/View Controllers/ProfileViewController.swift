@@ -62,6 +62,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.postTableView.reloadData()
             }
         }
+        
     }
     
     // MARK: - Actions
@@ -84,9 +85,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: - UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            
-            self.profileHeaderView.profileImageView.image = image
+        if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let imageToDisplay = originalImage.fixRotatedImage()
+            self.profileHeaderView.profileImageView.image = imageToDisplay
         }
         dump(info)
         self.dismiss(animated: true, completion: nil)
@@ -192,6 +193,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         return tableView
     }()
 }
+
 
 extension ProfileViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {

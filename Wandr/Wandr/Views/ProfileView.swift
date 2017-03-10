@@ -26,7 +26,9 @@ class ProfileView: UIView {
             }
             if let validData = data {
                 DispatchQueue.main.async {
-                    self.profileImageView.image = UIImage(data: validData)
+                    guard let validOriginalImage = UIImage(data: validData) else { return }
+                    let imageToDisplay = validOriginalImage.fixRotatedImage()
+                    self.profileImageView.image = imageToDisplay
                 }
             }
         }

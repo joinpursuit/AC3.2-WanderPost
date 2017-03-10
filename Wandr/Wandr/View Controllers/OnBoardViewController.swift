@@ -75,7 +75,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
             
             //As weird as it sounds, you need an filePath URL to make a CKAsset, not an asset URL, this is making a temp filePathURL and then storing it in the temp file which gets automatically cleaned when needed.
             do {
-                let data = UIImagePNGRepresentation(image)!
+                let data = UIImagePNGRepresentation(image.fixRotatedImage())!
                 let fileType = ".\(imageURL.pathExtension)"
                 let fileName = ProcessInfo.processInfo.globallyUniqueString + fileType
                 let imageURL = NSURL.fileURL(withPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
