@@ -19,7 +19,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
     let dummyDataMessage = [1,2,3,4,5]
     
-    var wanderPosts = [WanderPost]()
+    var wanderPosts: [WanderPost]? {
+        didSet {
+            self.postTableView.reloadData()
+        }
+    }
     
     var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.posts
     
@@ -53,12 +57,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             DispatchQueue.main.async {
                 guard let validWanderPosts = wanderPosts else { return }
-                self.wanderPosts = validWanderPosts
-                self.profileHeaderView.postNumberLabel.text = "\(self.wanderPosts.count) \n posts"
+                self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
+                self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
                 self.postTableView.reloadData()
             }
         }
-        
     }
     
     // MARK: - Actions
@@ -111,7 +114,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch self.profileViewFilterType {
         case ProfileViewFilterType.posts:
-            return self.wanderPosts.count
+            guard let posts = self.wanderPosts else { return 0 }
+            return posts.count
         case ProfileViewFilterType.feed:
             return self.dummyDataFeed.count
         case ProfileViewFilterType.messages:
@@ -123,7 +127,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType{
         case ProfileViewFilterType.posts:
              let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
-             let post = self.wanderPosts[indexPath.row]
+             guard let post = self.wanderPosts?[indexPath.row] else { return cell }
              cell.locationLabel.text = post.locationDescription
              cell.messageLabel.text = post.content as? String
              cell.dateAndTimeLabel.text = post.dateAndTime
@@ -144,7 +148,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType{
         case ProfileViewFilterType.posts:
             print(ProfileViewFilterType.posts.rawValue)
-            let selectedWanderPost = self.wanderPosts[indexPath.row]
+            guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
             detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)

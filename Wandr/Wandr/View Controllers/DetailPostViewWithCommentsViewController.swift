@@ -189,7 +189,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-        cell.locationLabel.text = "Location:"
+        cell.locationLabel.text = ""
         return cell
     }
     
