@@ -36,6 +36,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         setupViewHierarchy()
         configureConstraints()
         
+        guard let validWanderUser = CloudManager.shared.currentUser else { return }
+        self.wanderUser = validWanderUser
+        
         //TabelViewCell
         self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
         self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
@@ -47,11 +50,14 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
         self.profileHeaderView = ProfileView(frame: profileViewFrame)
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        //Do not delete becase imageToDisplay will be the long term solution
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+        self.profileHeaderView.profileImageView.image = tempRotateSolution
+        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
-        
-        guard let validWanderUser = CloudManager.shared.currentUser else { return }
-        self.wanderUser = validWanderUser
         
         CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
             if error != nil {

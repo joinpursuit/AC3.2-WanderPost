@@ -14,11 +14,17 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     
     var searchedFriends: [WanderUser]?
 
+    var dummyData = [1,2,3,4,5,6,7,8]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUpSearchBar()
-
+        self.tableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
+        
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 150
+        self.tableView.layoutIfNeeded()
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,24 +41,22 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
+        return self.dummyData.count
     }
 
-    /*
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
+        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        let user = self.dummyData[indexPath.row]
+        cell.nameLabel.text = "\(user)"
 
         return cell
     }
-    */
+    
 
     /*
     // Override to support conditional editing of the table view.
