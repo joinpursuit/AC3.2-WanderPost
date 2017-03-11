@@ -53,11 +53,18 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
         let user = self.dummyData[indexPath.row]
         cell.nameLabel.text = "\(user)"
+        cell.addRemoveFriendButton.tag = indexPath.row
+        cell.addRemoveFriendButton.addTarget(self, action: #selector(addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
 
         return cell
     }
     
 
+    // MARK: - Button Action
+    func addOrRemoveFriend(_ sender: UIButton) {
+        let buttonTag = sender.tag
+    }
+    
     /*
     // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
