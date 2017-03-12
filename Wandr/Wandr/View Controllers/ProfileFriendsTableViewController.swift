@@ -16,11 +16,11 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setUpSearchBar()
-        
+        self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
+        self.navigationItem.title = "wanderpost"
+
+        setUpSearchBar()        
         setUpTableView()
-       
     }
 
     override func didReceiveMemoryWarning() {

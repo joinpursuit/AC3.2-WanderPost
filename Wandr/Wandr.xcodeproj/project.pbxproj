@@ -194,12 +194,12 @@
 			children = (
 				A7686F7D1E65F26000402053 /* ProfileViewController.swift */,
 				A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */,
+				DEA4EF2C1E7230480038E330 /* ProfileFriendsTableViewController.swift */,
 				A7686F811E66017800402053 /* PostViewController.swift */,
 				81569D6A1E723FE200FFC8F6 /* LoadingViewController.swift */,
 				A7AF86001E68B11D0046487F /* OnBoardViewController.swift */,
 				A70DF45D1E648684000C6421 /* MapViewController.swift */,
 				A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */,
-				DEA4EF2C1E7230480038E330 /* ProfileFriendsTableViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
