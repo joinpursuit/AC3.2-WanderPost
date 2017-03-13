@@ -31,7 +31,6 @@ class LoadingViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //animateLogo()
         flipLogoFromFourToTwo()
     }
 
@@ -45,7 +44,6 @@ class LoadingViewController: UIViewController {
                 appDelegate.window?.makeKeyAndVisible()
             }
         }
-
     }
     
     func flipLogoFromFourToTwo() {
@@ -138,15 +136,6 @@ class LoadingViewController: UIViewController {
         }) { (completion: Bool) in
             self.flipLogoFromFourToTwo()
         }
-
-    }
-    
-    func animateLogo() {
-        let animator = UIViewPropertyAnimator(duration: 2.0, curve: .linear) {
-            self.logo1.transform = CGAffineTransform(rotationAngle: 360)
-            self.view.layoutIfNeeded()
-        }
-        animator.startAnimation()
     }
     
     private func setupViewHierarchy() {
