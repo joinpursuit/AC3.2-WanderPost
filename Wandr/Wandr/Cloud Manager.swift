@@ -305,25 +305,7 @@ class CloudManager {
             }
         }
     }
-    
-    
-    //This needs to be refactoered today to not exist, just pull the image from the wanderuser in the cloud manager
-    func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
-            if error != nil {
-                completion(nil, error)
-            } else if let validRecord = record,
-                let imageAsset = validRecord["profileImage"] as? CKAsset{
-                do {
-                    let data = try Data(contentsOf: imageAsset.fileURL)
-                    completion(data, nil)
-                } catch {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-    
+        
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
         var reactionIDs = [CKRecordID]()
