@@ -177,6 +177,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         } else {
             let annotationIdentifier = "AnnotationIdentifier"
             let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.profileImageView.image = nil
             mapAnnotationView.canShowCallout = true
             let postAnnotation = annotation as! PostAnnotation            
             if let thisUser = postAnnotation.wanderpost.wanderUser {

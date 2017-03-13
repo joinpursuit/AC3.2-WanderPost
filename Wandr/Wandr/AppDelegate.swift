@@ -18,10 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     var window: UIWindow?
     
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
         
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
@@ -38,18 +36,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
         application.registerForRemoteNotifications()
         
-
-        
         return true
     }
     
     func setNavigationTheme() {
-        let navigationBarAppearace = UINavigationBar.appearance()
-        navigationBarAppearace.backgroundColor = StyleManager.shared.primary
-        navigationBarAppearace.barTintColor = StyleManager.shared.primary
-        navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
+        
+        UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
+        
+        let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.barTintColor = StyleManager.shared.primary
+        navigationBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
                                                       NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
-        UIApplication.shared.statusBarStyle = .lightContent
+        let barButtonAppearance = UIBarButtonItem.appearance()
+        barButtonAppearance.tintColor = StyleManager.shared.accent
         
         let tabBarAppearance = UITabBar.appearance()
         tabBarAppearance.barTintColor = StyleManager.shared.primary
@@ -70,7 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let arViewController = UINavigationController(rootViewController: ARViewController())
         
         let profileIcon = UITabBarItem(title: "profile", image: UIImage(named: "profile_white"), selectedImage: nil)
-        let mapIcon = UITabBarItem(title: "map", image: UIImage(named: "map_white"), selectedImage: nil)
+        let mapIcon = UITabBarItem(title: "map", image: UIImage(named: "wire_icon"), selectedImage: nil)
         let arIcon = UITabBarItem(title: "a.r.", image: UIImage(named: "camera_white"), selectedImage: nil)
         
         profileViewController.tabBarItem = profileIcon
@@ -80,7 +79,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let tabController = UITabBarController()
         tabController.viewControllers = [profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
-        tabController.selectedIndex = 1
+        tabController.tabBar.unselectedItemTintColor = UIColor.white
+            tabController.selectedIndex = 1
         
         return tabController
     }

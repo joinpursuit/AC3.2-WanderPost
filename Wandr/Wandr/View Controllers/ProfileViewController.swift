@@ -90,6 +90,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func friendsButtonTapped() {
         let friendsVC = ProfileFriendsTableViewController()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         self.navigationController?.pushViewController(friendsVC, animated: true)
     }
     
@@ -182,6 +183,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
             detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
+            navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
             
         case ProfileViewFilterType.feed:
