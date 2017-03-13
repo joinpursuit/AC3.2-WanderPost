@@ -18,6 +18,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
         setupViewHierarchy()
@@ -212,8 +213,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let validReactions = self.wanderPost.reactions else { return 0 }
-        return validReactions.count
+        return self.wanderPost?.reactions?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
