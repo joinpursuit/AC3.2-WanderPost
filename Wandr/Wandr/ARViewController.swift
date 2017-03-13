@@ -316,7 +316,7 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
         let annotationView = AnnotationView()
         annotationView.annotation = viewForAnnotation
         annotationView.delegate = self
-        annotationView.frame = CGRect(x: 0, y: 0, width: 150, height: 200)
+        annotationView.frame = CGRect(x: 0, y: 0, width: 120, height: 164)
         return annotationView
     }
     
