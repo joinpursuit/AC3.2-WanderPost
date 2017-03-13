@@ -32,8 +32,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
         
-        let friendsButton = UIBarButtonItem(title: "friends", style: .done, target: self, action: #selector(friendsButtonTapped))
-        self.navigationItem.rightBarButtonItem = friendsButton
+        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(friendsButtonTapped))
+        self.navigationItem.rightBarButtonItem = searchFriendsButton
         
         setupViewHierarchy()
         configureConstraints()
