@@ -36,7 +36,7 @@ class StyleManager {
         return UIColor(hexString: "#FBFFFF")
     }
     var accent: UIColor {
-        return UIColor(hexString: "#FF8B8B")
+        return UIColor(hexString: "#FF7E98")
     }
     var primaryText: UIColor {
         return UIColor(hexString: "#212121")

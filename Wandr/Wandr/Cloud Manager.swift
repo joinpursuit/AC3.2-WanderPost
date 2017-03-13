@@ -14,6 +14,9 @@ import UIKit
 /*
  _ deleting form data base, this include comments, posts, friends
  _friend requests
+ _error handling - check with jason the best way to go about retriggering the call
+ _list of the users for friends
+ 
  */
 
 enum PostContentType: NSString {
@@ -57,7 +60,6 @@ class CloudManager {
         switch post.contentType {
         case .text:
             guard let text = post.content as? NSString else {
-                print ("invalid content")
                 return
             }
             postRecord.setObject(text, forKey: "content")
@@ -243,6 +245,15 @@ class CloudManager {
         publicDatabase.perform(query, inZoneWith: nil) { (records, error) in
             
             if error != nil {
+                if let ckError = error as? CKError {
+                    switch ckError.errorCode {
+                    default:
+                        break
+                    }
+                    if let retryTime = ckError.retryAfterSeconds {
+                        
+                    }
+                }
                 completion(nil, error)
             }
             
@@ -316,7 +327,7 @@ class CloudManager {
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
         var reactionIDs = [CKRecordID]()
-
+        
         for post in posts {
             reactionIDs += post.reactionIDs
         }
@@ -448,7 +459,7 @@ class CloudManager {
         publicDatabase.add(postRecordFetch)
         publicDatabase.add(saveCommentRecords)
     }
-
+    
     //MARK: - Helper Functions
     private func addValue(to record: CKRecord, key: String, value: String) -> CKRecord {
         let mutableRecord = record
@@ -460,6 +471,48 @@ class CloudManager {
         }
         mutableRecord[key] = ids as CKRecordValue?
         return mutableRecord
+    }
+    
+    
+    //MARK: - Deleting From Database
+    func delete(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
+        let fetchUsers = CKFetchRecordsOperation(recordIDs: [self.currentUser!.id, id])
+        let updateFriendsLists = CKModifyRecordsOperation()
+        fetchUsers.fetchRecordsCompletionBlock = {(userRecords, error) in
+            
+            if error != nil {
+                completion(error)
+            }
+            
+            if let validUserRecords = userRecords?.values,
+                validUserRecords.count == 2 {
+                let userOne = validUserRecords[validUserRecords.startIndex]
+                let userTwo = validUserRecords[validUserRecords.index(after: validUserRecords.startIndex)]
+                userOne.recordID.recordName
+                userTwo.recordID.recordName
+                
+                if let userOneFriends = userOne["friends"] as? [String],
+                    let userTwoFriends = userTwo["friends"] as? [String] {
+                    print("working---D")
+                    let userOneUpdatedFriends = userOneFriends.filter { $0 != userTwo.recordID.recordName }
+                    let userTwoUpdatedFriends = userTwoFriends.filter { $0 != userOne.recordID.recordName }
+                    
+                    userOne["friends"] = userOneUpdatedFriends as CKRecordValue?
+                    userTwo["friends"] = userTwoUpdatedFriends as CKRecordValue?
+                    
+                    updateFriendsLists.recordsToSave = [userOne, userTwo]
+                }
+            }
+        }
+        
+        updateFriendsLists.modifyRecordsCompletionBlock = {(record, recordID, error) in
+            completion(error)
+        }
+        
+        updateFriendsLists.addDependency(fetchUsers)
+        
+        publicDatabase.add(fetchUsers)
+        publicDatabase.add(updateFriendsLists)
     }
 }
 

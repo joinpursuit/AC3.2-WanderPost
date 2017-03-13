@@ -18,6 +18,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
         setupViewHierarchy()
