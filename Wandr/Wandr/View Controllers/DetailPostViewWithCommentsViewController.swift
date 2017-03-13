@@ -27,6 +27,24 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         //TableViewHeader
         self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
         
+        setUpMapViewHeader()
+        
+        //TableViewCell
+        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        
+        registerForNotifications()
+        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        
+        
+        // check to see if the post belongs to the user to enable delete functionality
+        if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
+            let deleteButton = UIBarButtonItem(image: UIImage(named: "trash_white")!, style: .done, target: self, action: #selector(deleteButtonTapped))
+            self.navigationItem.rightBarButtonItem = deleteButton
+        }
+    }
+    
+    
+    func setUpMapViewHeader() {
         //TableViewSectionHeader MKMapView
         let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
         self.mapHeaderView = MKMapView(frame: mapViewFrame)
@@ -55,12 +73,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         DispatchQueue.main.async {
             self.mapHeaderView.addAnnotation(postAnnotation)
         }
-        
-        //TableViewCell
-        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
-        registerForNotifications()
-        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+
     }
     
     //MARK: - Actions
@@ -76,6 +89,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
             //add fail alert
             print(error)
+        }
+    }
+    
+    func deleteButtonTapped() {
+        if let postToDelete = self.wanderPost {
+            // delete this post
         }
     }
     
