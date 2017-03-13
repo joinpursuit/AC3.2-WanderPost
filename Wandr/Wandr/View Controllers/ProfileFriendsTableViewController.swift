@@ -14,8 +14,11 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     
     var searchedFriends: [WanderUser]?
 
+    var dummyData = [1,2,3,4,5,6,7,8]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
 
@@ -43,24 +46,29 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 2
+        return self.dummyData.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        let user = self.dummyData[indexPath.row]
+        cell.nameLabel.text = "\(user)"
+        cell.addRemoveFriendButton.tag = indexPath.row
+        cell.addRemoveFriendButton.addTarget(self, action: #selector(addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
 
         cell.nameLabel.text = "Tom"
         
         return cell
     }
     
+    // MARK: - Button Action
+    func addOrRemoveFriend(_ sender: UIButton) {
+        let buttonTag = sender.tag
+    }
 
-   
 }

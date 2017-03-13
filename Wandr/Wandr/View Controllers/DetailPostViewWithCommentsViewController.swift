@@ -12,7 +12,7 @@ import SnapKit
 
 class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
-    var wanderPost: WanderPost?
+    var wanderPost: WanderPost!
     
     var dummyDataComments = [1,2,3,4,5,6,7]
     
@@ -41,9 +41,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         let postAnnotation = PostAnnotation()
         postAnnotation.wanderpost = self.wanderPost
-        guard let postLocation = self.wanderPost?.location else { return }
+        guard let postLocation = self.wanderPost.location else { return }
         postAnnotation.coordinate = postLocation.coordinate
-        postAnnotation.title = self.wanderPost?.content as? String
+        postAnnotation.title = self.wanderPost.content as? String
         let span = MKCoordinateSpanMake(0.01, 0.01)
         let region = MKCoordinateRegion(center: postLocation.coordinate, span: span)
         let location2D = CLLocationCoordinate2DMake(postLocation.coordinate.latitude, postLocation.coordinate.longitude)
@@ -158,7 +158,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             postHeaderFooterView.messageLabel.text = validWanderPost.content as? String
             postHeaderFooterView.dateAndTimeLabel.text = validWanderPost.dateAndTime
         }
-        postHeaderFooterView.backgroundColor = UIColor.gray
+        postHeaderFooterView.backgroundView?.backgroundColor = UIColor.white
         self.postHeaderFooterView = postHeaderFooterView
         return postHeaderFooterView
     }
@@ -213,8 +213,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return self.wanderPost!.reactions?.count ?? 0
+        return self.wanderPost?.reactions?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -236,7 +235,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     // MARK: - Lazy Vars
     
     lazy var commentTableView: UITableView = {
-       let tableView = UITableView()
+        //If it's UITableViewStyle.grouped, the section is black
+       let tableView = UITableView(frame: CGRect.zero, style: UITableViewStyle.plain)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -262,12 +262,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return textField
     }()
     
-    lazy var viewOnKeyboardView: UIView = {
-       let view = UIView()
-        view.backgroundColor = UIColor.darkGray
-        view.frame = CGRect(x: 0, y: 0, width: 10, height: 44)
-        return view
-    }()
+//    lazy var viewOnKeyboardView: UIView = {
+//       let view = UIView()
+//        view.backgroundColor = UIColor.darkGray
+//        view.frame = CGRect(x: 0, y: 0, width: 10, height: 44)
+//        return view
+//    }()
     
     lazy var textFieldOnKeyboardView: WanderTextField = {
         let textField = WanderTextField()
