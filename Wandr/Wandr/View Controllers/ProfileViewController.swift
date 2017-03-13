@@ -15,15 +15,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
-    let dummyDataPost = [1,2,3]
     let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
     let dummyDataMessage = [1,2,3,4,5]
     
+    var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
     
     var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.posts
     
     var imagePickerController: UIImagePickerController!
+    
+    var segmentedControlCurrentIndex = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +38,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         setupViewHierarchy()
         configureConstraints()
         
+        guard let validWanderUser = CloudManager.shared.currentUser else { return }
+        self.wanderUser = validWanderUser
+        
         //TabelViewCell
         self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
         self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
@@ -47,10 +52,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
         self.profileHeaderView = ProfileView(frame: profileViewFrame)
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        //Do not delete becase imageToDisplay will be the long term solution
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+        self.profileHeaderView.profileImageView.image = tempRotateSolution
+        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
         
-        CloudManager.shared.getUserPostActivity(for: CloudManager.shared.currentUser!.id) { (wanderPosts:[WanderPost]?, error: Error?) in
+        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
             if error != nil {
                 print(error?.localizedDescription)
             }
@@ -58,7 +69,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             self.wanderPosts = validWanderPosts
             self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
             self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
-            self.profileHeaderView.friendsNumberLabel.text = "\(CloudManager.shared.currentUser!.friends.count) \n friends"
+            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
             
             
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
@@ -146,12 +157,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.messageLabel.text = post.content as? String
             cell.dateAndTimeLabel.text = post.dateAndTime
             
-            //Add in logic to guard for 0
-            if post.reactions?.count == 1 {
-                cell.commentCountLabel.text = "\(post.reactions?.count) Comment"
+            let reactionsCount = post.reactions?.count ?? 0
+            if reactionsCount < 2 {
+                cell.commentCountLabel.text = "\(reactionsCount) Comment"
             } else {
-                cell.commentCountLabel.text = "\(post.reactions?.count) Comments"
+                cell.commentCountLabel.text = "\(reactionsCount) Comments"
             }
+        
             return cell
             
         case ProfileViewFilterType.feed:
@@ -213,8 +225,44 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
+        
+        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.right
+        tableView.addGestureRecognizer(rightSwipeGestureRecognizer)
+        
+        // Add left swipe gesture recognizer
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.left
+        tableView.addGestureRecognizer(leftSwipeGestureRecognizer)
         return tableView
     }()
+    
+    func updateSegmentedControl(gesture: UISwipeGestureRecognizer) {
+        print("I've been Swiped!")
+        switch gesture.direction {
+        case UISwipeGestureRecognizerDirection.right:
+            let newIndex = segmentedControlCurrentIndex + 1
+            if newIndex < self.segmentTitles.count {
+                self.segmentedControlCurrentIndex = (self.segmentedControlCurrentIndex + 1) % self.segmentTitles.count
+                self.segmentedControl.move(to: self.segmentedControlCurrentIndex)
+                didSelect(self.segmentedControlCurrentIndex)
+                self.postTableView.reloadData()
+            }
+        case UISwipeGestureRecognizerDirection.left:
+            let newIndex = segmentedControlCurrentIndex - 1
+            if newIndex >= 0 {
+                self.segmentedControlCurrentIndex = (self.segmentedControlCurrentIndex - 1) % self.segmentTitles.count
+                if self.segmentedControlCurrentIndex < 0 {
+                    self.segmentedControlCurrentIndex += 3
+                }                
+                self.segmentedControl.move(to: self.segmentedControlCurrentIndex)
+                didSelect(self.segmentedControlCurrentIndex)
+                self.postTableView.reloadData()
+            }
+        default:
+            break
+        }
+    }
 }
 
 
@@ -232,4 +280,5 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         }
         self.postTableView.reloadData()
     }
+    
 }
