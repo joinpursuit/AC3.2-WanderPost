@@ -15,7 +15,7 @@ class WanderButton: UIButton {
         self.init()
         
         self.setTitle(title.lowercased(), for: .normal)
-        self.backgroundColor = StyleManager.shared.primaryDark
+        self.backgroundColor = StyleManager.shared.primary
         self.titleLabel?.font = StyleManager.shared.comfortaaFont16
         self.setTitleColor(StyleManager.shared.accent, for: .normal)
         self.layer.borderColor = StyleManager.shared.secondaryText.cgColor
