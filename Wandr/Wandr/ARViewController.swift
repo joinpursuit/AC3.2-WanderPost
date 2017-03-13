@@ -330,6 +330,7 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
             // push on post detail VC
             let postDetailVC = DetailPostViewWithCommentsViewController()
             postDetailVC.wanderPost = wanderpost
+            navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
             self.navigationController?.pushViewController(postDetailVC, animated: true)
         }
     }
