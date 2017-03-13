@@ -10,7 +10,7 @@ import UIKit
 import TwicketSegmentedControl
 import CloudKit
 
-class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmentedControlDelegate {
+class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
@@ -24,7 +24,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         configureConstraints()
         configureTargets()
         
-        textField.becomeFirstResponder()
+        userTextField.becomeFirstResponder()
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
@@ -54,7 +54,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         self.postContainerView.addSubview(profileImageView)
         self.postContainerView.addSubview(segmentedControlContainerView)
         self.postContainerView.addSubview(userTextField)
-        self.postContainerView.addSubview(textField)
+        self.postContainerView.addSubview(postTextView)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
         
@@ -100,7 +100,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
             view.height.equalTo(1)
         }
         
-        textField.snp.makeConstraints { (view) in
+        postTextView.snp.makeConstraints { (view) in
             view.top.equalTo(userTextField.snp.bottom).offset(16.0)
             view.leading.equalToSuperview().offset(16.0)
             view.trailing.equalToSuperview().inset(16.0)
@@ -108,7 +108,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         }
         
         postButton.snp.makeConstraints { (button) in
-            button.top.equalTo(textField.snp.bottom).offset(8)
+            button.top.equalTo(postTextView.snp.bottom).offset(8)
             button.trailing.equalToSuperview().inset(16)
         }
     }
@@ -126,7 +126,14 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
     
     func postButtonPressed(_ sender: UIButton) {
         //init post, this is going to be a rough sketch of doing it
-        let content = self.textField.text as AnyObject
+        
+        guard self.postTextView.text!.characters.count > 0,
+            postTextView.textColor != StyleManager.shared.placeholderText else {
+            showOKAlert(title: "No Content", message: "Please write something to post.")
+            return
+        }
+        
+        let content = self.postTextView.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
         self.dismiss(animated: true, completion: nil)
@@ -136,21 +143,21 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
             if let error = error {
                 print("error with geocoder: \(error)")
             }
-            if let marks = placemarks, let thisMark = marks.last {
-                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
-                
-                CloudManager.shared.createPost(post: post) { (record, errors) in
-                    if errors != nil {
-                        print(errors!)
-                        //TODO Add in error handling.
-                    }
-                    //DO SOMETHING WITH THE RECORD?
-                    //dump(record)
-                }
-                
-                self.dismiss(animated: true, completion: nil)
-            }
+//            if let marks = placemarks, let thisMark = marks.last {
+//                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
+//                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
+//                
+//                CloudManager.shared.createPost(post: post) { (record, errors) in
+//                    if errors != nil {
+//                        print(errors!)
+//                        //TODO Add in error handling.
+//                    }
+//                    //DO SOMETHING WITH THE RECORD?
+//                    //dump(record)
+//                }
+//                
+//                self.dismiss(animated: true, completion: nil)
+//            }
         })
     }
     
@@ -167,7 +174,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
                 view.trailing.equalToSuperview().inset(16.0)
                 view.height.equalTo(height)
             }
-            self.textField.snp.remakeConstraints { (view) in
+            self.postTextView.snp.remakeConstraints { (view) in
                 view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
                 view.leading.equalToSuperview().offset(16.0)
                 view.trailing.equalToSuperview().inset(16.0)
@@ -185,6 +192,36 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         animator.startAnimation()
 
     }
+    
+    // MARK: - Helper Fucntions
+    
+    func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
+            if let completionAction = completion {
+                completionAction()
+            }
+        }
+        alert.addAction(okayAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK: - TextView Delegate Methods
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == StyleManager.shared.placeholderText {
+            textView.text = nil
+            textView.textColor = StyleManager.shared.primaryText
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "write something to post..."
+            textView.textColor = StyleManager.shared.placeholderText
+        }
+    }
+
     
     
     // MARK: - TwicketSegmentControl
@@ -229,23 +266,19 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         return control
     }()
     
-    lazy var textField: WanderTextField = {
-        let textField = WanderTextField()
-        //textField.tintColor = StyleManager.shared.accent
-        //textField.backgroundColor = UIColor.white
-        textField.border(placeHolder: "message")
-        textField.font = UIFont.systemFont(ofSize: 18)
-        //textField.textAlignment = NSTextAlignment.left
-        textField.contentVerticalAlignment = .top
-        textField.contentHorizontalAlignment = .left
-        return textField
+    lazy var postTextView: UITextView = {
+        let view = UITextView()
+        view.layer.borderWidth = 1
+        view.layer.borderColor = StyleManager.shared.primaryDark.cgColor
+        view.layer.cornerRadius = 10
+        view.delegate = self
+        view.font = UIFont.systemFont(ofSize: 18)
+        view.text = "write something to post..."
+        view.textColor = StyleManager.shared.placeholderText
+        view.tintColor = StyleManager.shared.accent
+        return view
     }()
-    
-    lazy var textView: UITextView = {
-       let textView = UITextView()
-        return textView
-    }()
-    
+        
     lazy var userTextField: WanderTextField = {
         let field = WanderTextField()
         field.border(placeHolder: "enter username...")
