@@ -339,9 +339,13 @@ class CloudManager {
                 completion(error)
             }
             if let validRecords = records {
+                
                 for user in users {
                     if let validUserRecord = validRecords[user],
                         let user = WanderUser(from: validUserRecord) {
+                        let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
+                        usersPosts.map { $0.wanderUser = user }
+                    } else if let user = CloudManager.shared.currentUser {
                         let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
                         usersPosts.map { $0.wanderUser = user }
                     }
@@ -488,12 +492,9 @@ class CloudManager {
                 validUserRecords.count == 2 {
                 let userOne = validUserRecords[validUserRecords.startIndex]
                 let userTwo = validUserRecords[validUserRecords.index(after: validUserRecords.startIndex)]
-                userOne.recordID.recordName
-                userTwo.recordID.recordName
                 
                 if let userOneFriends = userOne["friends"] as? [String],
                     let userTwoFriends = userTwo["friends"] as? [String] {
-                    print("working---D")
                     let userOneUpdatedFriends = userOneFriends.filter { $0 != userTwo.recordID.recordName }
                     let userTwoUpdatedFriends = userTwoFriends.filter { $0 != userOne.recordID.recordName }
                     
@@ -514,41 +515,56 @@ class CloudManager {
         publicDatabase.add(fetchUsers)
         publicDatabase.add(updateFriendsLists)
     }
+    
+    func delete(wanderpost post: WanderPost, completion: @escaping (Error?) -> Void ) {
+        let fetchPublicUsers = CKFetchRecordsOperation(recordIDs: [post.user])
+        let fetchPrivateUsers = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
+        let deletePublicPost = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [post.postID])
+        let deletePrivatePost = CKModifyRecordsOperation()
+        
+        let fetchCompletionBlock = { (database: CKModifyRecordsOperation, records: [CKRecordID: CKRecord]?, error: Error?) in
+            
+            if error != nil {
+                completion(error)
+            }
+            if let record = records?.values.first {
+                
+                guard let posts = record["posts"] as? [String],
+                    posts.contains(post.postID.recordName) else {
+                        completion(error)
+                        return
+                }
+                
+                let updatedPosts = posts.filter{ $0 != post.postID.recordName }
+                print(updatedPosts)
+                record["posts"] = updatedPosts as CKRecordValue?
+                database.recordsToSave = (database.recordsToSave ?? []) + [record]
+            }
+        }
+        
+        
+        fetchPublicUsers.fetchRecordsCompletionBlock = {(records, error) in
+            fetchCompletionBlock(deletePublicPost, records, error)
+        }
+        fetchPrivateUsers.fetchRecordsCompletionBlock = { (records: [CKRecordID: CKRecord]?, error: Error?) in
+            fetchCompletionBlock(deletePrivatePost, records, error)
+            
+        }
+        
+        deletePublicPost.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            completion(error)
+        }
+        deletePrivatePost.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            completion(error)
+        }
+        
+        fetchPrivateUsers.addDependency(fetchPublicUsers)
+        deletePublicPost.addDependency(fetchPrivateUsers)
+        deletePrivatePost.addDependency(deletePublicPost)
+        
+        privateDatabase.add(fetchPrivateUsers)
+        publicDatabase.add(fetchPublicUsers)
+        publicDatabase.add(deletePublicPost)
+        privateDatabase.add(deletePrivatePost)
+    }
 }
-
-/*
- func fixPostCount() {
- let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
- let userSave = CKModifyRecordsOperation()
- 
- userFetch.fetchRecordsCompletionBlock = { (record, error) in
- 
- 
- if error != nil {
- if let ckError = error as? CKError  {
- //TODO Add retry logic
- } else {
- print(error!.localizedDescription)
- }
- }
- if let validRecord = record?.first {
- 
- 
- //Fix this.
- //Update the posts array
- let userRecord = validRecord.value
- var posts: [NSString] =  []
- userRecord["posts"] = posts as CKRecordValue?
- 
- //Save and post the record
- userSave.recordsToSave = [userRecord]
- }
- }
- 
- userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
- }
- userSave.addDependency(userFetch)
- let queue = OperationQueue()
- queue.addOperations([userFetch, userSave], waitUntilFinished: false)
- }
- */
