@@ -143,21 +143,21 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             if let error = error {
                 print("error with geocoder: \(error)")
             }
-//            if let marks = placemarks, let thisMark = marks.last {
-//                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-//                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
-//                
-//                CloudManager.shared.createPost(post: post) { (record, errors) in
-//                    if errors != nil {
-//                        print(errors!)
-//                        //TODO Add in error handling.
-//                    }
-//                    //DO SOMETHING WITH THE RECORD?
-//                    //dump(record)
-//                }
-//                
-//                self.dismiss(animated: true, completion: nil)
-//            }
+            if let marks = placemarks, let thisMark = marks.last {
+                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
+                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
+                
+                CloudManager.shared.createPost(post: post) { (record, errors) in
+                    if errors != nil {
+                        print(errors!)
+                        //TODO Add in error handling.
+                    }
+                    //DO SOMETHING WITH THE RECORD?
+                    //dump(record)
+                }
+                
+                self.dismiss(animated: true, completion: nil)
+            }
         })
     }
     
@@ -278,7 +278,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         view.tintColor = StyleManager.shared.accent
         return view
     }()
-        
+    
     lazy var userTextField: WanderTextField = {
         let field = WanderTextField()
         field.border(placeHolder: "enter username...")
