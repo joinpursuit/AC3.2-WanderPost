@@ -41,8 +41,6 @@ class AnnotationView: ARAnnotationView {
         super.didMoveToSuperview()
         
         self.backgroundColor = .clear
-//        self.clipsToBounds = true
-//        self.layer.cornerRadius = 10
         setUpViews()
         loadUI()
     }
@@ -79,27 +77,23 @@ class AnnotationView: ARAnnotationView {
         userLabel?.numberOfLines = 1
         userLabel?.textColor = StyleManager.shared.primaryDark
         userLabel?.textAlignment = .center
-//        self.addSubview(userLabel!)
         detailContainerView?.addSubview(userLabel!)
         
         messageLabel?.font = UIFont.systemFont(ofSize: 12)
         messageLabel?.numberOfLines = 0
         messageLabel?.textColor = UIColor.white
         messageLabel?.clipsToBounds = true
-//        self.addSubview(messageLabel!)
         detailContainerView?.addSubview(messageLabel!)
         
         timeLabel?.font = UIFont.systemFont(ofSize: 8)
         timeLabel?.numberOfLines = 1
         timeLabel?.textColor = UIColor.white
-//        self.addSubview(timeLabel!)
         detailContainerView?.addSubview(timeLabel!)
         
         
         distanceLabel?.font = UIFont.systemFont(ofSize: 8)
         distanceLabel?.numberOfLines = 1
         distanceLabel?.textColor = StyleManager.shared.accent
-//        self.addSubview(distanceLabel!)
         detailContainerView?.addSubview(distanceLabel!)
         
         if let wanderPostForThisAnnotation = annotation as? WanderPost {
