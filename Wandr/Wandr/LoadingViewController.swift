@@ -15,7 +15,6 @@ class LoadingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = StyleManager.shared.primary
         setupViewHierarchy()
         configureConstraints()

@@ -65,6 +65,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             if error != nil {
                 print(error?.localizedDescription)
             }
+            
             guard let validWanderPosts = wanderPosts else { return }
             self.wanderPosts = validWanderPosts
             self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
