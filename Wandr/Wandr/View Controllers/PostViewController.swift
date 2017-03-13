@@ -29,22 +29,14 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
         
-        CloudManager.shared.getUserProfilePic { (data, error) in
-            if error != nil {
-                //add error handling
-                print(error?.localizedDescription)
-            }
-            if let validData = data {
-                DispatchQueue.main.async {
-                    guard let validOriginalImage = UIImage(data: validData) else { return }
-                    //Do not delete becase imageToDisplay will be the long term solution
-                    let imageToDisplay = validOriginalImage.fixRotatedImage()
-                    let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-                    self.profileImageView.image = tempRotateSolution
-                }
-            }
+        
+        
+        if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
+            //Do not delete becase imageToDisplay will be the long term solution
+            let imageToDisplay = validOriginalImage.fixRotatedImage()
+            let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+            self.profileImageView.image = tempRotateSolution
         }
-
         
     }
     
@@ -129,8 +121,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         
         guard self.postTextView.text!.characters.count > 0,
             postTextView.textColor != StyleManager.shared.placeholderText else {
-            showOKAlert(title: "No Content", message: "Please write something to post.")
-            return
+                showOKAlert(title: "No Content", message: "Please write something to post.")
+                return
         }
         
         let content = self.postTextView.text as AnyObject
@@ -190,7 +182,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             })
         }
         animator.startAnimation()
-
+        
     }
     
     // MARK: - Helper Fucntions
@@ -221,7 +213,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             textView.textColor = StyleManager.shared.placeholderText
         }
     }
-
+    
     
     
     // MARK: - TwicketSegmentControl
@@ -250,7 +242,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     lazy var profileImageView: WanderProfileImageView = {
         let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-                imageView.addGestureRecognizer(tapImageGesture)
+        imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
