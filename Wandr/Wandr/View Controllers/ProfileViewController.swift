@@ -25,6 +25,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var imagePickerController: UIImagePickerController!
     
+    var segmentedControlCurrentIndex = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "wanderpost"
@@ -223,8 +225,44 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
+        
+        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.right
+        tableView.addGestureRecognizer(rightSwipeGestureRecognizer)
+        
+        // Add left swipe gesture recognizer
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.left
+        tableView.addGestureRecognizer(leftSwipeGestureRecognizer)
         return tableView
     }()
+    
+    func updateSegmentedControl(gesture: UISwipeGestureRecognizer) {
+        print("I've been Swiped!")
+        switch gesture.direction {
+        case UISwipeGestureRecognizerDirection.right:
+            let newIndex = segmentedControlCurrentIndex + 1
+            if newIndex < self.segmentTitles.count {
+                self.segmentedControlCurrentIndex = (self.segmentedControlCurrentIndex + 1) % self.segmentTitles.count
+                self.segmentedControl.move(to: self.segmentedControlCurrentIndex)
+                didSelect(self.segmentedControlCurrentIndex)
+                self.postTableView.reloadData()
+            }
+        case UISwipeGestureRecognizerDirection.left:
+            let newIndex = segmentedControlCurrentIndex - 1
+            if newIndex >= 0 {
+                self.segmentedControlCurrentIndex = (self.segmentedControlCurrentIndex - 1) % self.segmentTitles.count
+                if self.segmentedControlCurrentIndex < 0 {
+                    self.segmentedControlCurrentIndex += 3
+                }                
+                self.segmentedControl.move(to: self.segmentedControlCurrentIndex)
+                didSelect(self.segmentedControlCurrentIndex)
+                self.postTableView.reloadData()
+            }
+        default:
+            break
+        }
+    }
 }
 
 
@@ -242,4 +280,5 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         }
         self.postTableView.reloadData()
     }
+    
 }

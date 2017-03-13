@@ -31,8 +31,7 @@ class LoadingViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        //animateLogo()
-        flipLogoFromFourToTwo()
+        flipLogoFromFourToTwoToRight()
     }
 
     func resetRootView() {
@@ -45,12 +44,11 @@ class LoadingViewController: UIViewController {
                 appDelegate.window?.makeKeyAndVisible()
             }
         }
-
     }
     
-    func flipLogoFromFourToTwo() {
+    func flipLogoFromFourToTwoToRight() {
         let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromRight
-        UIView.transition(with: self.logo1, duration: 1.0, options: flipTransitionOptions, animations: {
+        UIView.transition(with: self.logo1, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo1.snp.remakeConstraints({ (view) in
                 view.leading.equalTo(self.logoContainerView.snp.centerX)
                 view.trailing.top.equalToSuperview()
@@ -59,7 +57,7 @@ class LoadingViewController: UIViewController {
             self.view.layoutIfNeeded()
         }, completion: nil)
         
-        UIView.transition(with: self.logo2, duration: 1.0, options: flipTransitionOptions, animations: {
+        UIView.transition(with: self.logo2, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo2.snp.remakeConstraints { (view) in
                 view.leading.equalTo(self.logoContainerView.snp.centerX)
                 view.trailing.bottom.equalToSuperview()
@@ -67,13 +65,13 @@ class LoadingViewController: UIViewController {
             }
             self.view.layoutIfNeeded()
         }) { (completion: Bool) in
-            self.flipLogoFromTwoToOne()
+            self.flipLogoFromTwoToOneToTop()
         }
     }
     
-    func flipLogoFromTwoToOne() {
+    func flipLogoFromTwoToOneToTop() {
         let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromBottom
-        UIView.transition(with: self.logo2, duration: 1.0, options: flipTransitionOptions, animations: {
+        UIView.transition(with: self.logo2, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo2.snp.remakeConstraints({ (view) in
                 view.leading.equalTo(self.logoContainerView.snp.centerX)
                 view.trailing.top.equalToSuperview()
@@ -82,44 +80,21 @@ class LoadingViewController: UIViewController {
             self.view.layoutIfNeeded()
         }, completion: nil)
         
-        UIView.transition(with: self.logo3, duration: 1.0, options: flipTransitionOptions, animations: {
+        UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo3.snp.remakeConstraints { (view) in
                 view.leading.equalTo(self.logoContainerView.snp.centerX)
                 view.trailing.top.equalToSuperview()
                 view.bottom.equalTo(self.logoContainerView.snp.centerY)
             }
             self.view.layoutIfNeeded()
-            }){ (completion: Bool) in
-                self.flipLogoFromOneToTwo()
+        }) { (completion: Bool) in
+            self.flipLogoFromOneToOne()
         }
     }
     
-    func flipLogoFromOneToTwo() {
-        let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromTop
-        UIView.transition(with: self.logo2, duration: 1.0, options: flipTransitionOptions, animations: {
-            self.logo2.snp.remakeConstraints({ (view) in
-                view.leading.equalTo(self.logoContainerView.snp.centerX)
-                view.trailing.bottom.equalToSuperview()
-                view.top.equalTo(self.logoContainerView.snp.centerY)
-            })
-            self.view.layoutIfNeeded()
-        }, completion: nil)
-        
-        UIView.transition(with: self.logo3, duration: 1.0, options: flipTransitionOptions, animations: {
-            self.logo3.snp.remakeConstraints { (view) in
-                view.leading.equalTo(self.logoContainerView.snp.centerX)
-                view.trailing.bottom.equalToSuperview()
-                view.top.equalTo(self.logoContainerView.snp.centerY)
-            }
-            self.view.layoutIfNeeded()
-        }){ (completion: Bool) in
-            self.flipLogoFromTwoToFour()
-        }
-    }
-    
-    func flipLogoFromTwoToFour() {
-        let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromLeft
-        UIView.transition(with: self.logo1, duration: 1.0, options: flipTransitionOptions, animations: {
+    func flipLogoFromOneToOne() { //
+        let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromRight
+        UIView.transition(with: self.logo1, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo1.snp.remakeConstraints({ (view) in
                 view.leading.top.equalToSuperview()
                 view.trailing.equalTo(self.logoContainerView.snp.centerX)
@@ -128,26 +103,81 @@ class LoadingViewController: UIViewController {
             self.view.layoutIfNeeded()
         }, completion: nil)
         
-        UIView.transition(with: self.logo2, duration: 1.0, options: flipTransitionOptions, animations: {
+        UIView.transition(with: self.logo2, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo2.snp.remakeConstraints { (view) in
+                view.leading.top.equalToSuperview()
+                view.trailing.equalTo(self.logoContainerView.snp.centerX)
+                view.bottom.equalTo(self.logoContainerView.snp.centerY)
+            }
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+        
+        UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo3.snp.remakeConstraints({ (view) in
+                view.leading.top.equalToSuperview()
+                view.trailing.equalTo(self.logoContainerView.snp.centerX)
+                view.bottom.equalTo(self.logoContainerView.snp.centerY)
+            })
+            self.view.layoutIfNeeded()
+        }, completion: nil)
+        
+        UIView.transition(with: self.logo4, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo4.snp.remakeConstraints { (view) in
+                view.leading.top.equalToSuperview()
+                view.trailing.equalTo(self.logoContainerView.snp.centerX)
+                view.bottom.equalTo(self.logoContainerView.snp.centerY)
+            }
+            self.view.layoutIfNeeded()
+        }){ (completion: Bool) in
+            self.flipLogoFromTwoToOneToBottom()
+        }
+    }
+    
+    func flipLogoFromTwoToOneToBottom() {
+        let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromTop
+        UIView.transition(with: self.logo2, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo2.snp.remakeConstraints({ (view) in
+                view.leading.bottom.equalToSuperview()
+                view.trailing.equalTo(self.logoContainerView.snp.centerX)
+                view.top.equalTo(self.logoContainerView.snp.centerY)
+            })
+
+        }, completion: nil)
+        UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo3.snp.remakeConstraints { (view) in
                 view.leading.bottom.equalToSuperview()
                 view.trailing.equalTo(self.logoContainerView.snp.centerX)
                 view.top.equalTo(self.logoContainerView.snp.centerY)
             }
-            self.view.layoutIfNeeded()
-        }) { (completion: Bool) in
-            self.flipLogoFromFourToTwo()
-        }
 
+        }) { (completion: Bool) in
+          self.flipLogoFromTwoToFourToRight()
+        }
     }
     
-    func animateLogo() {
-        let animator = UIViewPropertyAnimator(duration: 2.0, curve: .linear) {
-            self.logo1.transform = CGAffineTransform(rotationAngle: 360)
-            self.view.layoutIfNeeded()
+    func flipLogoFromTwoToFourToRight() {
+        let flipTransitionOptions = UIViewAnimationOptions.transitionFlipFromRight
+        UIView.transition(with: self.logo4, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo4.snp.remakeConstraints({ (view) in
+                view.leading.equalTo(self.logoContainerView.snp.centerX)
+                view.trailing.top.equalToSuperview()
+                view.bottom.equalTo(self.logoContainerView.snp.centerY)
+            })
+
+        }, completion: nil)
+        UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
+            self.logo3.snp.remakeConstraints({ (view) in
+                view.leading.equalTo(self.logoContainerView.snp.centerX)
+                view.trailing.bottom.equalToSuperview()
+                view.top.equalTo(self.logoContainerView.snp.centerY)
+            })
+        }) { (completion: Bool) in
+            self.flipLogoFromFourToTwoToRight()
         }
-        animator.startAnimation()
     }
+    
+    
+    
     
     private func setupViewHierarchy() {
         self.view.addSubview(logoContainerView)
