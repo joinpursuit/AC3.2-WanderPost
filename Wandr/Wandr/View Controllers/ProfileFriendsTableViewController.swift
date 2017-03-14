@@ -88,6 +88,15 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     }
     
     func addOrRemoveFriend(_ sender: UIButton) {
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                        sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        },
+                       completion: { _ in
+                        UIView.animate(withDuration: 0.1) {
+                            sender.transform = CGAffineTransform.identity
+                        }
+        })
         let buttonTag = sender.tag
     }
 

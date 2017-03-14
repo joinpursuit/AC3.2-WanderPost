@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class PostHeaderFooterView: UITableViewHeaderFooterView {
+class PostView: UIView {
     static let identifier = "postHeaderFooterViewIdentifier"
     
     // Only override draw() if you perform custom drawing.
@@ -65,6 +65,7 @@ class PostHeaderFooterView: UITableViewHeaderFooterView {
         label.text = "Location"
         label.font = StyleManager.shared.comfortaaFont16
         label.textColor = StyleManager.shared.primary
+        label.numberOfLines = 0
         return label
     }()
     
