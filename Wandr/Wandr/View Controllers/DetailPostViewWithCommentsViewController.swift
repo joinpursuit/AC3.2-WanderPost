@@ -141,6 +141,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     self.present(errorAlertController, animated: true, completion: nil)
                     print(error!.localizedDescription)
                 }
+                DispatchQueue.main.async {
+                    self.commentTableView.reloadData()
+                }
             }
         }
         else {

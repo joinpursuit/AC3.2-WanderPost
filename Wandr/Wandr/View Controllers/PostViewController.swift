@@ -122,8 +122,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func postButtonPressed(_ sender: UIButton) {
-        //init post, this is going to be a rough sketch of doing it
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                        sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        },
+                       completion: { _ in
+                        UIView.animate(withDuration: 0.1) {
+                            sender.transform = CGAffineTransform.identity
+                        }
+        })
         
+        //init post, this is going to be a rough sketch of doing it
         guard self.postTextView.text!.characters.count > 0,
             postTextView.textColor != StyleManager.shared.placeholderText else {
                 showOKAlert(title: "No Content", message: "Please write something to post.")
