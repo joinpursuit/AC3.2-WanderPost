@@ -151,6 +151,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                     }
                     
                     if let validRecord = record, let thisPost = WanderPost(withCKRecord: validRecord) {
+                        thisPost.wanderUser = CloudManager.shared.currentUser
                         self.newPostDelegate.addNewPost(post: thisPost)
                     }
                     //DO SOMETHING WITH THE RECORD?

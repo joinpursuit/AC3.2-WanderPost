@@ -143,9 +143,17 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - AddNewWanderPostDelegate
     
     func addNewPost(post: WanderPost) {
-        if let _ = self.allWanderPosts {
-            self.allWanderPosts!.append(post)
+//        if let _ = self.allWanderPosts {
+//            self.allWanderPosts!.append(post)
+//        }
+        let myAnnotaton = PostAnnotation()
+        myAnnotaton.wanderpost = post
+        guard let postLocation = post.location else { return }
+        myAnnotaton.coordinate = postLocation.coordinate
+        if let user = post.wanderUser {
+            myAnnotaton.title = user.username
         }
+        mapView.addAnnotation(myAnnotaton)
     }
 
     
