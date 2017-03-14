@@ -153,11 +153,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 self.present(errorAlertController, animated: true, completion: nil)
             return
         }
-        let reaction = Reaction(type: .comment, content: content, postID: post.postID)
-        CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
-            //add fail alert
-            print(error)
-        }
         commentTextField.text = nil
     }
     
