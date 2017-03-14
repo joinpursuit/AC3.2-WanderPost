@@ -35,41 +35,35 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
         self.addSubview(profileImageView)
         self.addSubview(nameLabel)
         self.addSubview(dateAndTimeLabel)
-        self.addSubview(locationLabel)
+//        self.addSubview(locationLabel)
         self.addSubview(messageLabel)
     }
     
     private func configureConstraints() {
         profileImageView.snp.makeConstraints{ (view) in
             view.top.equalToSuperview().offset(16.0)
-            view.leading.equalToSuperview().offset(16.0)
+            view.leading.equalToSuperview().offset(22.0)
             view.height.equalTo(50)
             view.width.equalTo(50)
         }
         
         nameLabel.snp.makeConstraints { (label) in
             label.top.equalToSuperview().offset(16.0)
-            label.leading.equalTo(self.profileImageView.snp.trailing).offset(16.0)
+            label.leading.equalTo(self.profileImageView.snp.trailing).offset(22.0)
             label.trailing.equalTo(self.dateAndTimeLabel.snp.leading)
-            label.height.equalTo(30)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
-            label.top.equalToSuperview().offset(8.0)
-            label.trailing.equalToSuperview().inset(8.0)
-            label.height.equalTo(30)
-        }
-        
-        locationLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(4.0)
-            label.trailing.equalToSuperview().inset(8.0)
-            label.height.equalTo(30)
+            label.bottom.equalTo(nameLabel.snp.bottom)
+            label.trailing.equalToSuperview().offset(-16)
+            
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(8.0)
+            label.top.equalTo(self.nameLabel.snp.bottom).offset(11.0)
             label.leading.equalTo(self.nameLabel.snp.leading)
-            label.trailing.bottom.equalToSuperview().inset(8.0)
+            label.trailing.equalToSuperview().inset(16.0)
+            label.bottom.equalToSuperview().offset(-22)
         }
     }
     
@@ -80,33 +74,33 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Name"
-        label.font = StyleManager.shared.comfortaaFont14
-        label.tintColor = StyleManager.shared.secondaryText
+        label.text = ""
+        label.font = StyleManager.shared.comfortaaFont18
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
     
     lazy var dateAndTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = "Date & Time"
+        label.text = ""
         label.font = StyleManager.shared.comfortaaFont14
-        label.tintColor = StyleManager.shared.secondaryText
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
     
-    lazy var locationLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Location"
-        label.font = StyleManager.shared.comfortaaFont14
-        label.tintColor = StyleManager.shared.secondaryText
-        return label
-    }()
+//    lazy var locationLabel: UILabel = {
+//        let label = UILabel()
+//        label.text = "Location"
+//        label.font = StyleManager.shared.comfortaaFont14
+//        label.tintColor = StyleManager.shared.secondaryText
+//        return label
+//    }()
     
     lazy var messageLabel: UILabel = {
         let label = UILabel()
-        label.text = "Message"
-        label.font = StyleManager.shared.comfortaaFont14
-        label.tintColor = StyleManager.shared.secondaryText
+        label.text = ""
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.tintColor = StyleManager.shared.primaryText
         label.numberOfLines = 0
         return label
     }()
