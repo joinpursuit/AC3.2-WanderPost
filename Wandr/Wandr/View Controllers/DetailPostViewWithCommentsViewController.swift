@@ -265,11 +265,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         }
         let currentReaction = reactions[indexPath.row]
-        cell.locationLabel.text = "Location:"
         cell.messageLabel.text = currentReaction.content
         cell.dateAndTimeLabel.text = currentReaction.time.description
         cell.nameLabel.text = currentReaction.userID.recordName
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     

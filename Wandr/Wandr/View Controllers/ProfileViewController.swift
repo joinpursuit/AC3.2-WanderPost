@@ -27,7 +27,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var segmentedControlCurrentIndex = 0
     
-    let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 82, bottom: 0, right: 16)
+    let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
     let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     
     override func viewDidLoad() {
@@ -144,17 +144,27 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.dateAndTimeLabel.text = post.dateAndTime
             
             let reactionsCount = post.reactions?.count ?? 0
-            if reactionsCount < 2 {
-                cell.commentCountLabel.text = "\(reactionsCount) Comment"
+            if reactionsCount < 1 {
+                cell.commentCountLabel.text = "no comments"
+            } else if reactionsCount < 2 {
+                cell.commentCountLabel.text = "\(reactionsCount) comment"
             } else {
-                cell.commentCountLabel.text = "\(reactionsCount) Comments"
+                cell.commentCountLabel.text = "\(reactionsCount) comments"
             }
         
             return cell
             
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            cell.locationLabel.text = "Location: \(self.friendFeedPosts[indexPath.row].locationDescription)"
+            
+            let post = self.friendFeedPosts[indexPath.row]
+            cell.messageLabel.text = "Left a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            if let user = post.wanderUser {
+                cell.profileImageView.image = UIImage(data: user.userImageData)
+                cell.nameLabel.text = user.username
+                
+            }
             return cell
             
         case ProfileViewFilterType.messages:
@@ -179,6 +189,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         case ProfileViewFilterType.messages:
             print(ProfileViewFilterType.messages.rawValue)
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Layout
