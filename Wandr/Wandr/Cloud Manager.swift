@@ -127,15 +127,13 @@ class CloudManager {
             }
             
             if let validRecord = record?.first {
-                //Fix this.
-                //Update the posts array
                 let userRecord = self.addValue(to: validRecord.value, key: "posts", value: postRecord.recordID.recordName)
                 //Save and post the record
                 publicPostsToSave.recordsToSave = [userRecord, postRecord]
             }
         }
         
-        //Init the userSave (to save the post)
+        //Init the userSave (to save the postID to the private user, this might just be a mistake at this point, because the users aren't accessible, this is only used for logging in privacy. the rest of the user data is public. I think we might not need this. I'll talk to them about it)
         privateUserSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
             if error != nil {
                 completionError?.append(error!)
@@ -238,7 +236,7 @@ class CloudManager {
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 100", currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
         query.sortDescriptors = [locationSorter]
         
@@ -268,7 +266,7 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        privateDatabase.fetch(withRecordID: id) { (record, error) in
+        publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
@@ -409,11 +407,8 @@ class CloudManager {
     }
     
     //MARK:  - Adding a comment
-    
     func addReaction(to post: WanderPost, comment: Reaction, completion: @escaping (Error?) -> Void) {
-        
-        //create the comment
-        //Tom needs the userID, the the comment, the time,
+
         let commentRecord = CKRecord(recordType: "comment")
         
         commentRecord.setObject(comment.type.rawValue, forKey: "type")
@@ -429,7 +424,6 @@ class CloudManager {
             }
             
             if let postRecord = record?[post.postID] {
-                //let parentReference = CKReference(record: postRecord, action: .deleteSelf)
                 commentRecord.setObject(comment.postID, forKey: "postID")
                 
                 let modifiedRecord = self.addValue(to: postRecord, key: "reactions", value: commentRecord.recordID.recordName)
@@ -458,7 +452,6 @@ class CloudManager {
         mutableRecord[key] = ids as CKRecordValue?
         return mutableRecord
     }
-    
     
     //MARK: - Deleting From Database
     func delete(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
@@ -509,8 +502,8 @@ class CloudManager {
             if error != nil {
                 completion(error)
             }
+            
             if let record = records?.values.first {
-                
                 guard let posts = record["posts"] as? [String],
                     posts.contains(post.postID.recordName) else {
                         completion(error)
@@ -524,13 +517,11 @@ class CloudManager {
             }
         }
         
-        
         fetchPublicUsers.fetchRecordsCompletionBlock = {(records, error) in
             fetchCompletionBlock(deletePublicPost, records, error)
         }
         fetchPrivateUsers.fetchRecordsCompletionBlock = { (records: [CKRecordID: CKRecord]?, error: Error?) in
             fetchCompletionBlock(deletePrivatePost, records, error)
-            
         }
         
         deletePublicPost.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
@@ -548,5 +539,13 @@ class CloudManager {
         publicDatabase.add(fetchPublicUsers)
         publicDatabase.add(deletePublicPost)
         privateDatabase.add(deletePrivatePost)
+    }
+    
+    func delete(reaction: Reaction, completion: @escaping (Error?) -> Void ) {
+        let deleteReaction = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [reaction.id])
+        deleteReaction.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            completion(error)
+        }
+        publicDatabase.add(deleteReaction)
     }
 }

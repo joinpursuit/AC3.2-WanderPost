@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
-    let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
+    var friendFeedPosts = [WanderPost]()
     let dummyDataMessage = [1,2,3,4,5]
     
     var wanderUser: WanderUser!
@@ -61,26 +61,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
         
-        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            
-            guard let validWanderPosts = wanderPosts else { return }
-            self.wanderPosts = validWanderPosts
-            self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
-            self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
-            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
-            
-            
-            CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
-                print(error)
-                
-                DispatchQueue.main.async {
-                    self.postTableView.reloadData()
-                }
-            })
-        }
+        self.setUpUserHistory()
+        self.setUpFriendsFeed()
         
     }
     
@@ -143,7 +125,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let posts = self.wanderPosts else { return 0 }
             return posts.count
         case ProfileViewFilterType.feed:
-            return self.dummyDataFeed.count
+            return self.friendFeedPosts.count
         case ProfileViewFilterType.messages:
             return self.dummyDataMessage.count
         }
@@ -169,7 +151,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            cell.locationLabel.text = "Location: \(self.dummyDataFeed[indexPath.row])"
+            cell.locationLabel.text = "Location: \(self.friendFeedPosts[indexPath.row].locationDescription)"
             return cell
             
         case ProfileViewFilterType.messages:
@@ -262,6 +244,53 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         default:
             break
+        }
+    }
+    
+    //CloudManager Methods
+    
+    func setUpUserHistory() {
+        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            
+            guard let validWanderPosts = wanderPosts else { return }
+            self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
+            self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
+            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
+            
+            
+            CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
+                print(error)
+                
+                DispatchQueue.main.async {
+                    self.postTableView.reloadData()
+                }
+            })
+        }
+    }
+    
+    func setUpFriendsFeed() {
+        for friend in self.wanderUser.friends {
+            CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
+                if error != nil {
+                    print(error?.localizedDescription)
+                }
+                
+                guard let validWanderPosts = wanderPosts else { return }
+                
+                self.friendFeedPosts.append(contentsOf: validWanderPosts)
+                self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
+                
+                CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
+                    print(error)
+                    
+                    DispatchQueue.main.async {
+                        self.postTableView.reloadData()
+                    }
+                })
+            }
         }
     }
 }
