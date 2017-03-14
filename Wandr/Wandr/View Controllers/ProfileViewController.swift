@@ -27,6 +27,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var segmentedControlCurrentIndex = 0
     
+    let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 82, bottom: 0, right: 16)
+    let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "wanderpost"
@@ -49,7 +52,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
         
         //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
         self.profileHeaderView = ProfileView(frame: profileViewFrame)
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
         guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
@@ -111,7 +114,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30.0
+        return 38
     }
     
     // MARK: - TableViewDelegate and TableViewDataSource Methods
@@ -208,6 +211,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
         rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.right
@@ -301,10 +305,14 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         switch segmentIndex {
         case 0:
             self.profileViewFilterType = ProfileViewFilterType.posts
+            self.postTableView.separatorInset = postCellSeparatorInsets
         case 1:
             self.profileViewFilterType = ProfileViewFilterType.feed
+            self.postTableView.separatorInset = feedCellSeparatorInsets
         case 2:
             self.profileViewFilterType = ProfileViewFilterType.messages
+            self.postTableView.separatorInset = postCellSeparatorInsets
+
         default:
             print("Can not make a decision")
         }
