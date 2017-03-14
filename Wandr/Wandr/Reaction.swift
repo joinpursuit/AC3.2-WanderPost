@@ -21,6 +21,13 @@ class Reaction {
     let postID: CKReference
     let content: String
     
+    var dateAndTime: String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter.string(from: time)
+    }
+    
     init (type: ReactionType, id: CKRecordID, content: String, time: Date, userID: CKRecordID, postID: CKReference) {
         self.type = type
         self.id = id

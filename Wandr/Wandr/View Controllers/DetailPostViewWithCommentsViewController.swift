@@ -46,6 +46,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         // get all reactions
         guard let validReactions = self.wanderPost.reactions else { return }
         self.reactions = validReactions
+
     }
     
     
@@ -269,11 +270,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
         let currentReaction = self.reactions[indexPath.row]
         cell.messageLabel.text = currentReaction.content
-        cell.dateAndTimeLabel.text = currentReaction.time.description
+        cell.dateAndTimeLabel.text = currentReaction.dateAndTime
         CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
             guard let validUser = user else { return }
             DispatchQueue.main.async {
                 cell.nameLabel.text = validUser.username
+                cell.profileImageView.image = UIImage(data: validUser.userImageData)
                 print(validUser.username)
             }
         }
