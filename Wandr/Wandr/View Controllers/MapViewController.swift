@@ -118,10 +118,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         
         segmentedControlContainerView.snp.makeConstraints { (view) in
-            view.top.equalTo(self.topLayoutGuide.snp.bottom)
-            view.leading.equalToSuperview().offset(16.0)
-            view.trailing.equalToSuperview().inset(16.0)
-            view.height.equalTo(30)
+            view.top.equalTo(self.topLayoutGuide.snp.bottom).offset(16)
+            view.leading.equalToSuperview().offset(22.0)
+            view.trailing.equalToSuperview().inset(22.0)
+            view.height.equalTo(34)
         }
         
         segmentedControl.snp.makeConstraints { (control) in
@@ -143,9 +143,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - AddNewWanderPostDelegate
     
     func addNewPost(post: WanderPost) {
-//        if let _ = self.allWanderPosts {
-//            self.allWanderPosts!.append(post)
-//        }
         let myAnnotaton = PostAnnotation()
         myAnnotaton.wanderpost = post
         guard let postLocation = post.location else { return }
@@ -263,7 +260,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     lazy var segmentedControlContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.lightGray
+        view.backgroundColor = UIColor.yellow
         return view
     }()
     

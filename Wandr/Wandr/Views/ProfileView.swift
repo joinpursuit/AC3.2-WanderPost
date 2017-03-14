@@ -47,13 +47,13 @@ class ProfileView: UIView {
         
         postNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.centerX.equalToSuperview().offset(-self.frame.width / 4)
+            label.centerX.equalToSuperview().offset(-self.frame.width / 6)
             label.height.equalTo(30)
         }
         
         friendsNumberLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.userNameLabel.snp.bottom).offset(8)
-            label.centerX.equalToSuperview().offset(self.frame.width / 4)
+            label.centerX.equalToSuperview().offset(self.frame.width / 6)
             label.height.equalTo(30)
         }
     }
@@ -74,24 +74,29 @@ class ProfileView: UIView {
     
     lazy var userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "User Name"
-        label.font = StyleManager.shared.comfortaaFont18
+        label.text = ""
+        label.font = StyleManager.shared.comfortaaFont20
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
     
     lazy var postNumberLabel: UILabel = {
         let label = UILabel()
-        label.text = "#Posts"
+        label.text = ""
         label.numberOfLines = 0
+        label.textAlignment = .center
         label.font = StyleManager.shared.comfortaaFont14
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
     
     lazy var friendsNumberLabel: UILabel = {
         let label = UILabel()
-        label.text = "#Friends"
+        label.text = ""
         label.numberOfLines = 0
         label.font = StyleManager.shared.comfortaaFont14
+        label.textColor = StyleManager.shared.primaryDark
+        label.textAlignment = .center
         return label
     }()
     
@@ -123,6 +128,7 @@ class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
         configureConstraints()
         //let frame = CGRect(x: 5, y: 5, width: self.frame.width - 10, height: 40)
         //self.segmentedControl = TwicketSegmentedControl(frame: frame)
+        self.contentView.backgroundColor = StyleManager.shared.primaryLight
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
     }
@@ -134,10 +140,10 @@ class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     private func configureConstraints() {
         segmentedControl.snp.makeConstraints { (control) in
             control.top.equalToSuperview()
-            control.leading.equalToSuperview().offset(16)
-            control.trailing.equalToSuperview().inset(16)
+            control.leading.equalToSuperview().offset(22)
+            control.trailing.equalToSuperview().inset(22)
             control.bottom.equalToSuperview()
-            control.height.equalTo(40.0)
+            control.height.equalTo(44.0)
         }
     }
     
