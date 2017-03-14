@@ -50,14 +50,14 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.dummyData.count
+        return self.searchedFriends?.count ?? 0
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
-        let user = self.dummyData[indexPath.row]
-        cell.nameLabel.text = "\(user)"
+        let user = self.searchedFriends![indexPath.row]
+        cell.nameLabel.text = "\(user.username)"
         cell.addRemoveFriendButton.tag = indexPath.row
         cell.addRemoveFriendButton.addTarget(self, action: #selector(addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
 
@@ -71,6 +71,22 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     }
     
     // MARK: - Button Action
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        CloudManager.shared.search(for: searchText) { (wanderUsers, error) in
+            if error != nil {
+                //error handle
+            }
+            
+            if let validWanderUsers = wanderUsers {
+                self.searchedFriends = validWanderUsers
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+        }
+    }
+    
     func addOrRemoveFriend(_ sender: UIButton) {
         let buttonTag = sender.tag
     }

@@ -48,7 +48,7 @@ class CloudManager {
     
     //MARK: - Creating a Post and a User
     
-    func createPost (post: WanderPost, to: WanderUser? = nil,  completion: @escaping (CKRecord?, [Error]?) -> Void) {
+    func createPost (post: WanderPost, to: WanderUser?,  completion: @escaping (CKRecord?, [Error]?) -> Void) {
         //Update user at the same time
         var completionRecord: CKRecord? = nil
         var completionError: [Error]? = nil
@@ -84,8 +84,8 @@ class CloudManager {
         postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
         postRecord.setObject(post.locationDescription as CKRecordValue?, forKey: "locationDescription")
         postRecord.setObject(post.read as CKRecordValue?, forKey: "read")
-        if let recipient = to {
-            postRecord.setObject(post.recipient, forKey: "recipient")
+        if let validRecipient = to {
+            postRecord.setObject(validRecipient.id.recordName as CKRecordValue?, forKey: "recipient")
         }
         
         let privateUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
@@ -274,9 +274,13 @@ class CloudManager {
                 completion(nil, error)
             }
             
-            if let validRecords = records {
+            if let validRecords = records,
+                    validRecords.count > 0 {
+                
                 let users = validRecords.map { WanderUser(from: $0)! }
                 completion(users, nil)
+            } else {
+                completion(nil, nil)
             }
         }
     }
@@ -367,10 +371,7 @@ class CloudManager {
                 completion(nil)
             }
         }
-        
-        
         self.publicDatabase.add(fetchPostsOperation)
-        
     }
     
     //MARK: - Friend Adding and Notifications

@@ -370,9 +370,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     fallthrough
                 }
             case .message:
+                print("hi!")
                 //I see this as not working. We'll see though.
-                for post in validWanderPosts where post.recipient! == CloudManager.shared.currentUser?.id {
-                    
+                for post in validWanderPosts where post.recipient == CloudManager.shared.currentUser?.id {
                     body = "\(post.wanderUser?.username ?? "Someone") left you a message!"
                 }
             case .everyone:

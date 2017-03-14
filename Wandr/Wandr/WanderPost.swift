@@ -64,12 +64,7 @@ class WanderPost: ARAnnotation {
                      contentType: PostContentType,
                      privacyLevel: PrivacyLevel,
                      locationDescription: String,
-                     recipientString: String? = nil) {
-        
-        var recipient: CKRecordID? = nil
-        if let validRecipient = recipientString {
-            recipient = CKRecordID(recordName: validRecipient)
-        }
+                     recipient: CKRecordID? = nil) {
         
         self.init(location: location,
                   content: content,

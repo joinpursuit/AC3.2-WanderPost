@@ -21,6 +21,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     var location: CLLocation!
     var newPostDelegate: AddNewWanderPostDelegate!
+    var recipient: WanderUser? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +31,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         configureTargets()
         
         userTextField.becomeFirstResponder()
+        userTextField.delegate = self
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
@@ -133,6 +135,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         let content = self.postTextView.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
+        switch privacy {
+        case .message:
+            
+            if self.recipient == nil {
+                print("you need to send this to someone yo")
+                return
+            }
+        default:
+            self.recipient = nil
+        }
+        
         self.dismiss(animated: true, completion: nil)
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: {
@@ -140,9 +153,9 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             if let error = error {
                 print("error with geocoder: \(error)")
             }
+            
             if let marks = placemarks, let thisMark = marks.last {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-                var recipientString: String? = nil
                 
                 if privacy == .message {
                     //add in recipient username as a string here.
@@ -153,10 +166,10 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                                       contentType: .text,
                                       privacyLevel: privacy,
                                       locationDescription: locationDescription,
-                                      recipientString: recipientString)
+                                      recipient: self.recipient?.id)
                 
                 
-                CloudManager.shared.createPost(post: post) { (record, errors) in
+                CloudManager.shared.createPost(post: post, to: self.recipient) { (record, errors) in
                     if errors != nil {
                         print(errors!)
                         //TODO Add in error handling.
@@ -229,6 +242,21 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         }
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        
+        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            if let validUsers = wanderUsers {
+                print(validUsers.count)
+                self.recipient = validUsers[0]
+            }
+        }
+        return true
+    }
+    
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.text = "write something to post..."
@@ -296,6 +324,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         field.border(placeHolder: "enter username...")
         field.textColor = StyleManager.shared.primaryText
         field.font = UIFont.systemFont(ofSize: 18)
+        field.accessibilityIdentifier = "username"
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
         field.isHidden = true
