@@ -17,8 +17,6 @@ import UIKit
  _list of the users for friends
  _searching for friends (by username?) - make usernames completely unique
  _personal post working? - basic implementation at least
- _fill in delete with alert
- 
  */
 
 enum PostContentType: NSString {
@@ -50,8 +48,7 @@ class CloudManager {
     
     //MARK: - Creating a Post and a User
     
-    func createPost (post: WanderPost, completion: @escaping (CKRecord?, [Error]?) -> Void) {
-        
+    func createPost (post: WanderPost, to: WanderUser? = nil,  completion: @escaping (CKRecord?, [Error]?) -> Void) {
         //Update user at the same time
         var completionRecord: CKRecord? = nil
         var completionError: [Error]? = nil
@@ -87,6 +84,9 @@ class CloudManager {
         postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
         postRecord.setObject(post.locationDescription as CKRecordValue?, forKey: "locationDescription")
         postRecord.setObject(post.read as CKRecordValue?, forKey: "read")
+        if let recipient = to {
+            postRecord.setObject(post.recipient, forKey: "recipient")
+        }
         
         let privateUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
         let publicUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])

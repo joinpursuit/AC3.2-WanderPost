@@ -35,7 +35,11 @@ class WanderUser {
         
         let postStrings = record["posts"] as? [String] ?? []
         let posts = postStrings.map { CKRecordID(recordName: $0) }
-        
-        self.init(id: id, username: username, userImageData: userImageData, friends: friends, posts: posts)
+                
+        self.init(id: id,
+                  username: username,
+                  userImageData: userImageData,
+                  friends: friends,
+                  posts: posts)
     }
 }

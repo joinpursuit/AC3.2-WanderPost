@@ -142,7 +142,19 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             }
             if let marks = placemarks, let thisMark = marks.last {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
+                var recipientString: String? = nil
+                
+                if privacy == .message {
+                    //add in recipient username as a string here.
+                }
+                
+                let post = WanderPost(location: self.location,
+                                      content: content,
+                                      contentType: .text,
+                                      privacyLevel: privacy,
+                                      locationDescription: locationDescription,
+                                      recipientString: recipientString)
+                
                 
                 CloudManager.shared.createPost(post: post) { (record, errors) in
                     if errors != nil {
