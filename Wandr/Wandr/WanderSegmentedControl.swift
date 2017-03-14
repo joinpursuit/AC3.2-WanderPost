@@ -15,6 +15,7 @@ class WanderSegmentedControl: TwicketSegmentedControl {
         self.sliderBackgroundColor = StyleManager.shared.accent
         self.font = StyleManager.shared.comfortaaFont14
         self.segmentsBackgroundColor = StyleManager.shared.primary
+        self.defaultTextColor = StyleManager.shared.primaryLight
     }
     
     required init?(coder aDecoder: NSCoder) {

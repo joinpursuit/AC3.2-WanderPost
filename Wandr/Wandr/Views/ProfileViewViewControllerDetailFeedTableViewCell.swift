@@ -50,7 +50,6 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
         nameLabel.snp.makeConstraints { (label) in
             label.top.equalToSuperview().offset(16.0)
             label.leading.equalTo(self.profileImageView.snp.trailing).offset(22.0)
-            label.trailing.equalTo(self.dateAndTimeLabel.snp.leading)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
