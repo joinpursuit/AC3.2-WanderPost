@@ -268,7 +268,7 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        privateDatabase.fetch(withRecordID: id) { (record, error) in
+        publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
