@@ -66,6 +66,10 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     // MARK: - Button Action
     func addOrRemoveFriend(_ sender: UIButton) {
         let buttonTag = sender.tag
