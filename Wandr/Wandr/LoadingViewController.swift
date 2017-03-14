@@ -20,11 +20,14 @@ class LoadingViewController: UIViewController {
         configureConstraints()
         CloudManager.shared.getCurrentUser { (error) in
             //Error handling
-            CloudManager.shared.addSubscriptionToCurrentuser { (error) in
+            CloudManager.shared.addSubscriptionToCurrentUser { (error) in
                 //Error handling
-                DispatchQueue.main.async {
-                    self.resetRootView()
-                }
+//                CloudManager.shared.checkForPersonalPosts(completion: { (error) in
+                    //Error handling
+                    DispatchQueue.main.async {
+                        self.resetRootView()
+                    }
+//                })
             }
         }
     }

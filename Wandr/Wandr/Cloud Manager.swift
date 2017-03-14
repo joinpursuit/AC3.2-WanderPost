@@ -391,19 +391,36 @@ class CloudManager {
         publicDatabase.add(saveFriendsToBothUsersOperation)
     }
     
-    func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
+    func addSubscriptionToCurrentUser(completion: @escaping (Error?) -> Void ) {
         let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.id.recordName)
         
-        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
+        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordUpdate)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertBody = "\(self.currentUser)"
+        notificationInfo.alertBody = "\(self.currentUser!.username) has added you as a friend!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
         friendAddedSubscription.notificationInfo = notificationInfo
         
         publicDatabase.save(friendAddedSubscription) { (subscription, error) in
+            completion(error)
+        }
+    }
+    
+    func checkForPersonalPosts (completion: @escaping (Error?) -> Void ) {
+        let predicate = NSPredicate(format: "recipient == %@", self.currentUser!.id.recordName)
+        
+        let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
+        
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.alertBody = "\(self.currentUser!.username) has left you a message!"
+        notificationInfo.shouldBadge = true
+        notificationInfo.shouldSendContentAvailable = true
+        
+        personalPostSubscription.notificationInfo = notificationInfo
+        
+        publicDatabase.save(personalPostSubscription) { (subscription, error) in
             completion(error)
         }
     }
