@@ -34,7 +34,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
         
         registerForNotifications()
-        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
         
         // check to see if the post belongs to the user to enable delete functionality
         if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
@@ -154,6 +153,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 self.present(errorAlertController, animated: true, completion: nil)
             return
         }
+        let reaction = Reaction(type: .comment, content: content, postID: post.postID)
+        CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
+            //add fail alert
+            print(error)
+        }
+        commentTextField.text = nil
     }
     
     func deleteButtonTapped() {
@@ -176,15 +181,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return true
     }
     
-    // MARK: - Actions
-    func addCommentDoneTapped() {
-        if let commentText = commentTextField.text {
-            print(commentText)
-            
-            // this is where we put up the comment
-        }
-        commentTextField.text = nil
-    }
     
     // MARK: - Keyboard Notification
     private func registerForNotifications() {
@@ -333,20 +329,13 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let textField = UITextField()
         textField.backgroundColor = UIColor.clear
         textField.delegate = self
-        textField.placeholder = "Comment"
-        return textField
-    }()
-    
-    lazy var textFieldOnKeyboardView: WanderTextField = {
-        let textField = WanderTextField()
-        textField.delegate = self
-        textField.placeholder = "Comment"
+        textField.placeholder = "tom"
         return textField
     }()
     
     lazy var doneButton: WanderButton = {
         let button = WanderButton(title: "done")
-        button.addTarget(self, action: #selector(addCommentDoneTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
         return button
     }()
     
