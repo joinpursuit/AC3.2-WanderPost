@@ -45,7 +45,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         // get all reactions
         guard let validReactions = self.wanderPost.reactions else { return }
         self.reactions = validReactions
-
+    }
+    
+    func getUpdatedPostReactions() {
+        CloudManager.shared.getUserPostActivity(for: self.wanderPost.postID) { (posts: [WanderPost]?, error: Error?) in
+            dump(posts)
+        }
     }
     
     
@@ -125,7 +130,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     
     //MARK: - Actions
-    func doneButtonPressed () {
+    func doneButtonPressed (sender: UIButton) {
+        sender.animate()
         if let content = self.commentTextField.text,
             let post = self.wanderPost,
             content != "" {
@@ -141,6 +147,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     print(error!.localizedDescription)
                 }
                 DispatchQueue.main.async {
+                    self.commentTextField.text = nil
+                    self.getUpdatedPostReactions()
+                    self.viewDidLoad()
                     self.commentTableView.reloadData()
                 }
             }
@@ -153,12 +162,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 self.present(errorAlertController, animated: true, completion: nil)
             return
         }
-        let reaction = Reaction(type: .comment, content: content, postID: post.postID)
-        CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
-            //add fail alert
-            print(error)
-        }
-        commentTextField.text = nil
     }
     
     func deleteButtonTapped() {
@@ -335,7 +338,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     lazy var doneButton: WanderButton = {
         let button = WanderButton(title: "done")
-        button.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(doneButtonPressed(sender:)), for: .touchUpInside)
         return button
     }()
     
