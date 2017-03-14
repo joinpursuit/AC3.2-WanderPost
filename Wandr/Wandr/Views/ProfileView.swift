@@ -119,7 +119,7 @@ class ProfileView: UIView {
 class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     static let identifier = "segmentedControlHeaderFooterViewIdentifier"
     
-    let segmentTitles = [ProfileViewFilterType.posts.rawValue, ProfileViewFilterType.feed.rawValue, ProfileViewFilterType.messages.rawValue]
+    let segmentTitles = [ProfileViewFilterType.feed.rawValue, ProfileViewFilterType.posts.rawValue, ProfileViewFilterType.messages.rawValue]
     
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
