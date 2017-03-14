@@ -10,12 +10,17 @@ import UIKit
 import TwicketSegmentedControl
 import CloudKit
 
+protocol AddNewWanderPostDelegate {
+    func addNewPost(post: WanderPost)
+}
+
 class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
     
     var location: CLLocation!
+    var newPostDelegate: AddNewWanderPostDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,6 +148,11 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                     if errors != nil {
                         print(errors!)
                         //TODO Add in error handling.
+                    }
+                    
+                    if let validRecord = record, let thisPost = WanderPost(withCKRecord: validRecord) {
+                        thisPost.wanderUser = CloudManager.shared.currentUser
+                        self.newPostDelegate.addNewPost(post: thisPost)
                     }
                     //DO SOMETHING WITH THE RECORD?
                     //dump(record)

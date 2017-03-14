@@ -17,8 +17,7 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
-
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -38,6 +37,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
+            DispatchQueue.main.async {
+                self.reloadMapView()
+            }
         }
     }
     
@@ -125,7 +127,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         segmentedControl.snp.makeConstraints { (control) in
             control.top.leading.trailing.bottom.equalToSuperview()
         }
-        
     }
     
     // MARK: - Setup
@@ -138,6 +139,23 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.startUpdatingLocation()
     }
     
+    
+    // MARK: - AddNewWanderPostDelegate
+    
+    func addNewPost(post: WanderPost) {
+//        if let _ = self.allWanderPosts {
+//            self.allWanderPosts!.append(post)
+//        }
+        let myAnnotaton = PostAnnotation()
+        myAnnotaton.wanderpost = post
+        guard let postLocation = post.location else { return }
+        myAnnotaton.coordinate = postLocation.coordinate
+        if let user = post.wanderUser {
+            myAnnotaton.title = user.username
+        }
+        mapView.addAnnotation(myAnnotaton)
+    }
+
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -173,7 +191,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
         // this is to check to see if the annotation is for the users location, the else block sets the post pins
         if annotation is MKUserLocation {
             return nil
@@ -194,6 +211,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
         let postVC = PostViewController()
+        postVC.newPostDelegate = self
         postVC.location = locationManager.location
         self.navigationController?.present(postVC, animated: true, completion: nil)
     }

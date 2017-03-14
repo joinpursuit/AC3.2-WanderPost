@@ -40,6 +40,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
             let deleteButton = UIBarButtonItem(image: UIImage(named: "trash_white")!, style: .done, target: self, action: #selector(deleteButtonTapped))
             self.navigationItem.rightBarButtonItem = deleteButton
+            self.wanderPost?.wanderUser = CloudManager.shared.currentUser
         }
     }
     
@@ -75,6 +76,27 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
 
     }
+    
+    // MARK: - MKMapView
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.profileImageView.image = nil
+            let postAnnotation = annotation as! PostAnnotation
+            
+            if let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
+            return mapAnnotationView
+        }
+    }
+
     
     //MARK: - Actions
     
