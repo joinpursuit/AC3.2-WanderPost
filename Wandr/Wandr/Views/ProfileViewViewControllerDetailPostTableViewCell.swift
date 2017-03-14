@@ -50,22 +50,22 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.locationLabel.snp.bottom).offset(8.0)
+            label.top.equalTo(self.locationLabel.snp.bottom).offset(11.0)
             label.leading.equalToSuperview().offset(16.0)
             label.trailing.equalToSuperview().inset(16.0)
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(16.0)
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(11.0)
             label.leading.equalToSuperview().offset(16.0)
             label.trailing.equalToSuperview().inset(16.0)
-            label.bottom.equalTo(self.commentCountLabel.snp.top).inset(8.0)
         }
         
         commentCountLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.messageLabel.snp.bottom).offset(11)
             label.leading.equalToSuperview().offset(16.0)
             label.trailing.equalToSuperview().inset(16.0)
-            label.bottom.equalToSuperview().inset(16.0)
+            label.bottom.equalToSuperview().inset(11.0)
         }
     }
     
@@ -73,22 +73,22 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
         let label = UILabel()
         label.text = "Location"
         label.font = StyleManager.shared.comfortaaFont16
-        label.textColor = StyleManager.shared.primary
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
 
     lazy var dateAndTimeLabel: UILabel = {
         let label = UILabel()
         label.text = "Date & Time"
-        label.font = StyleManager.shared.comfortaaFont14
-        label.textColor = StyleManager.shared.primary
+        label.font = StyleManager.shared.comfortaaFont12
+        label.textColor = StyleManager.shared.primaryDark
         return label
     }()
 
     lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Message"
-        label.font = StyleManager.shared.comfortaaFont14
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = StyleManager.shared.primaryText
         label.numberOfLines = 0
         return label
@@ -102,4 +102,5 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
         label.textAlignment = .right
         return label
     }()
+    
 }

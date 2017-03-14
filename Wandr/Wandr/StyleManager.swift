@@ -64,6 +64,11 @@ class StyleManager {
         return UIFont.Comfortaa.regular(size: 18)!
     }
     
+    var comfortaaFont20: UIFont {
+        return UIFont.Comfortaa.regular(size: 20)!
+    }
+
+    
 }
 
 extension UIColor {
