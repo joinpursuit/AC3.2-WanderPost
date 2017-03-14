@@ -21,7 +21,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
     
-    var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.posts
+    var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.feed
     
     var imagePickerController: UIImagePickerController!
     
@@ -315,11 +315,11 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         switch segmentIndex {
         case 0:
-            self.profileViewFilterType = ProfileViewFilterType.posts
-            self.postTableView.separatorInset = postCellSeparatorInsets
-        case 1:
             self.profileViewFilterType = ProfileViewFilterType.feed
             self.postTableView.separatorInset = feedCellSeparatorInsets
+        case 1:
+            self.profileViewFilterType = ProfileViewFilterType.posts
+            self.postTableView.separatorInset = postCellSeparatorInsets
         case 2:
             self.profileViewFilterType = ProfileViewFilterType.messages
             self.postTableView.separatorInset = postCellSeparatorInsets
