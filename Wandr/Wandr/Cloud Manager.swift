@@ -12,10 +12,12 @@ import UIKit
 //TODO List
 
 /*
- _ deleting form data base, this include comments, posts, friends
  _friend requests
  _error handling - check with jason the best way to go about retriggering the call
  _list of the users for friends
+ _searching for friends (by username?) - make usernames completely unique
+ _personal post working? - basic implementation at least
+ _fill in delete with alert
  
  */
 

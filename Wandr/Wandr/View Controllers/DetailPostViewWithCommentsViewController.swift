@@ -117,6 +117,26 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     func deleteButtonTapped() {
         if let postToDelete = self.wanderPost {
             // delete this post
+            let deleteAlert = UIAlertController(title: "Delete", message: "Are you sure you want to delete this post?", preferredStyle: .alert)
+            let yesAlertAction = UIAlertAction(title: "Yes", style: .default, handler: { (actionAlert) in
+                CloudManager.shared.delete(wanderpost: postToDelete, completion: { (error) in
+                    if error != nil {
+                        //handle error
+                        print(error)
+                    }
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                })
+            })
+            let noAlertAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+            
+            deleteAlert.addAction(noAlertAction)
+            deleteAlert.addAction(yesAlertAction)
+            
+            self.present(deleteAlert, animated: true, completion: { 
+                print("completion handler for alert triggered")
+            })
         }
     }
     
