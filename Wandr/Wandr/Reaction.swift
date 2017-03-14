@@ -23,6 +23,7 @@ class Reaction {
     
     init (type: ReactionType, id: CKRecordID, content: String, time: Date, userID: CKRecordID, postID: CKReference) {
         self.type = type
+        self.id = id
         self.content = content
         self.time = time
         self.userID = userID
