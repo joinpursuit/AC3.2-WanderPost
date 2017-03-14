@@ -13,6 +13,8 @@ import SnapKit
 class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var wanderPost: WanderPost!
+    var wanderUser: WanderUser!
+    var reactions: [Reaction] = [Reaction]()
     
     var dummyDataComments = [1,2,3,4,5,6,7]
     
@@ -24,8 +26,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         setupViewHierarchy()
         configureConstraints()
         
-        //TableViewHeader
-        self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
+        self.wanderUser = CloudManager.shared.currentUser
         
         setUpMapViewHeader()
         
@@ -35,28 +36,55 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         registerForNotifications()
         doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
         
-        
         // check to see if the post belongs to the user to enable delete functionality
         if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
             let deleteButton = UIBarButtonItem(image: UIImage(named: "trash_white")!, style: .done, target: self, action: #selector(deleteButtonTapped))
             self.navigationItem.rightBarButtonItem = deleteButton
             self.wanderPost?.wanderUser = CloudManager.shared.currentUser
         }
+        
+        // get all reactions
+        guard let validReactions = self.wanderPost.reactions else { return }
+        self.reactions = validReactions
+
     }
     
     
     func setUpMapViewHeader() {
         //TableViewSectionHeader MKMapView
-        let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
-        self.mapHeaderView = MKMapView(frame: mapViewFrame)
-        self.mapHeaderView.mapType = .standard
-        self.mapHeaderView.isScrollEnabled = false
-        self.mapHeaderView.isZoomEnabled = false
-        self.mapHeaderView.showsBuildings = false
-        self.mapHeaderView.showsUserLocation = false
-        self.mapHeaderView.tintColor = StyleManager.shared.accent
-        commentTableView.tableHeaderView = self.mapHeaderView
-        self.mapHeaderView.delegate = self
+        self.mapHeaderContainerView.addSubview(self.mapView)
+        self.mapHeaderContainerView.addSubview(self.postView)
+        
+        self.mapView.snp.makeConstraints { (view) in
+            view.top.equalToSuperview()
+            view.leading.trailing.equalToSuperview()
+            view.height.equalToSuperview().multipliedBy(0.6)
+        }
+        self.postView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.mapView.snp.bottom)
+            view.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        //PostView
+        self.postView.locationLabel.numberOfLines = 0
+        self.postView.locationLabel.text = self.wanderPost.locationDescription
+        self.postView.messageLabel.text = self.wanderPost.content as? String
+        self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
+        self.postView.commentCountLabel.text = ""
+        
+        self.mapHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * 0.5)
+        
+        //MapView
+        //let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
+        //self.mapView = MKMapView(frame: mapViewFrame)
+        self.mapView.mapType = .standard
+        self.mapView.isScrollEnabled = false
+        self.mapView.isZoomEnabled = false
+        self.mapView.showsBuildings = false
+        self.mapView.showsUserLocation = false
+        self.mapView.tintColor = StyleManager.shared.accent
+        commentTableView.tableHeaderView = self.mapHeaderContainerView
+        self.mapView.delegate = self
         
         let postAnnotation = PostAnnotation()
         postAnnotation.wanderpost = self.wanderPost
@@ -69,14 +97,13 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
         mapCamera.altitude = 500 // example altitude
         mapCamera.pitch = 45
-        self.mapHeaderView.camera = mapCamera
-        self.mapHeaderView.setRegion(region, animated: false)
+        self.mapView.camera = mapCamera
+        self.mapView.setRegion(region, animated: false)
         DispatchQueue.main.async {
-            self.mapHeaderView.addAnnotation(postAnnotation)
+            self.mapView.addAnnotation(postAnnotation)
         }
-
     }
-    
+
     // MARK: - MKMapView
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -99,7 +126,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     
     //MARK: - Actions
-    
     func doneButtonPressed () {
         guard let content = self.commentTextField.text,
               let post = self.wanderPost else {
@@ -134,8 +160,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return true
     }
     
-    // MARK: - Actions 
-    
+    // MARK: - Actions
     func addCommentDoneTapped() {
         if let commentText = commentTextField.text {
             print(commentText)
@@ -190,24 +215,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
     }
 
-    // MARK: - TableView Header And Footer Customizations
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let postHeaderFooterView = (self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: PostHeaderFooterView.identifier) as? PostHeaderFooterView)!
-        if let validWanderPost = self.wanderPost {
-            postHeaderFooterView.locationLabel.text = validWanderPost.locationDescription
-            postHeaderFooterView.messageLabel.text = validWanderPost.content as? String
-            postHeaderFooterView.dateAndTimeLabel.text = validWanderPost.dateAndTime
-        }
-        postHeaderFooterView.backgroundView?.backgroundColor = UIColor.white
-        self.postHeaderFooterView = postHeaderFooterView
-        return postHeaderFooterView
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 100.0
-    }
-    
+    // Mark: - Setup View Hierarchy
     private func setupViewHierarchy() {
         self.view.addSubview(commentTableView)
         self.view.addSubview(textFieldContainerView)
@@ -217,7 +225,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.textFieldContainerView.addSubview(doneButton)
         
     }
-    
+
+    // Mark: - Configure Constraints
     private func configureConstraints() {
         commentTableView.snp.makeConstraints { (tableView) in
             tableView.top.leading.trailing.equalToSuperview()
@@ -254,20 +263,22 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.wanderPost?.reactions?.count ?? 0
+        return self.reactions.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-        guard let reactions = self.wanderPost?.reactions else {
-            
-            return cell
-        
-        }
-        let currentReaction = reactions[indexPath.row]
+        let currentReaction = self.reactions[indexPath.row]
         cell.messageLabel.text = currentReaction.content
-        cell.dateAndTimeLabel.text = currentReaction.time.description
-        cell.nameLabel.text = currentReaction.userID.recordName
+        cell.dateAndTimeLabel.text = currentReaction.dateAndTime
+        CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
+            guard let validUser = user else { return }
+            DispatchQueue.main.async {
+                cell.nameLabel.text = validUser.username
+                cell.profileImageView.image = UIImage(data: validUser.userImageData)
+                print(validUser.username)
+            }
+        }
         return cell
     }
     
@@ -275,9 +286,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    
     // MARK: - Lazy Vars
-    
     lazy var commentTableView: UITableView = {
         //If it's UITableViewStyle.grouped, the section is black
        let tableView = UITableView(frame: CGRect.zero, style: UITableViewStyle.plain)
@@ -288,13 +297,19 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return tableView
     }()
     
-    lazy var mapHeaderView: MKMapView = {
+    lazy var mapHeaderContainerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    lazy var mapView: MKMapView = {
         let mapView = MKMapView()
         return mapView
     }()
 
-    lazy var postHeaderFooterView: PostHeaderFooterView = {
-        let view = PostHeaderFooterView()
+    lazy var postView: PostView = {
+        let view = PostView()
+        view.backgroundColor = UIColor.white
         return view
     }()
     
@@ -305,13 +320,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         textField.placeholder = "Comment"
         return textField
     }()
-    
-//    lazy var viewOnKeyboardView: UIView = {
-//       let view = UIView()
-//        view.backgroundColor = UIColor.darkGray
-//        view.frame = CGRect(x: 0, y: 0, width: 10, height: 44)
-//        return view
-//    }()
     
     lazy var textFieldOnKeyboardView: WanderTextField = {
         let textField = WanderTextField()
@@ -336,4 +344,5 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         view.backgroundColor = StyleManager.shared.accent
         return view
     }()
+    
 }
