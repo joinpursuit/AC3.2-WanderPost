@@ -16,6 +16,7 @@ import UIKit
  _error handling - check with jason the best way to go about retriggering the call
  _list of the users for friends
  _searching for friends (by username?) - make usernames completely unique
+ _make username node for querying. this is dumb.
  _personal post working? - basic implementation at least
  */
 
@@ -180,6 +181,9 @@ class CloudManager {
         let id = CKRecordID(recordName: currentUser!.id.recordName)
         let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
         
+        let usernameRecord = CKRecord(recordType: "username")
+        usernameRecord.setObject(userName as CKRecordValue, forKey: "username")
+        
         publicDatabase.fetch(withRecordID: self.currentUser!.id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
@@ -187,9 +191,15 @@ class CloudManager {
                 validUserRecord["username"] = validUsername
                 validUserRecord["profileImage"] = imageAsset
                 
-                self.publicDatabase.save(validUserRecord) { (record, error) in
+                let saveUser = CKModifyRecordsOperation()
+                
+                saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
                     completion(error)
                 }
+                
+                saveUser.recordsToSave = [validUserRecord, usernameRecord]
+                
+                self.publicDatabase.add(saveUser)
             }
         }
     }
@@ -266,8 +276,9 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
-        let predicate = NSPredicate(format: "username CONTAINS %@", user)
-        let usernameQuery = CKQuery(recordType: "Users", predicate: predicate)
+        let predicate = NSPredicate(format: "self contains %@", user)
+        let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
+        let fetchUserInfo = CKFetchRecordsOperation()
         
         publicDatabase.perform(usernameQuery, inZoneWith: nil) { (records, error) in
             if error != nil {
@@ -276,9 +287,19 @@ class CloudManager {
             
             if let validRecords = records,
                     validRecords.count > 0 {
+                let userRecordIDs: [CKRecordID] = validRecords.map { $0.creatorUserRecordID! }
                 
-                let users = validRecords.map { WanderUser(from: $0)! }
-                completion(users, nil)
+                fetchUserInfo.recordIDs = userRecordIDs
+                fetchUserInfo.fetchRecordsCompletionBlock = {(recordsDictionary, error) in
+                    if error != nil {
+                        completion(nil, error)
+                    }
+                    if let records = recordsDictionary?.values {
+                        let users: [WanderUser] = records.map { WanderUser(from: $0)! }
+                        completion(users, nil)
+                    }
+                }
+                self.publicDatabase.add(fetchUserInfo)
             } else {
                 completion(nil, nil)
             }
