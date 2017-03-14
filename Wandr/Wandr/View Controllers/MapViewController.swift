@@ -236,11 +236,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         button.setImage(UIImage(named: "compose_white"), for: .normal)
         button.backgroundColor = StyleManager.shared.accent
         button.layer.cornerRadius = 26
-        button.layer.cornerRadius = 26
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOpacity = 0.8
-        button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 8
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
         return button
     }()
     
