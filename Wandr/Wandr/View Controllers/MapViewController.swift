@@ -176,7 +176,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         if lastUpdatedLocation.distance(from: location) > 100 {
             lastUpdatedLocation = location
             getWanderPosts(location)
-            makeNotification(withBody: "hello")
+            makeNotificationsFor(privacyLevel: .friends)
+            makeNotificationsFor(privacyLevel: .message)
             print("new location")
         }
     }
@@ -338,7 +339,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     //MARK: - Helper Functions
     
     func makeNotification(withBody body: String) {
-        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
         let content = UNMutableNotificationContent()
         content.title = "New Wanderposts"
         content.body = body
@@ -356,13 +357,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
     }
     
-    func checkForNewWanderPosts(ofType type: PrivacyLevel) {
-        if let validWanderPosts = self.allWanderPosts?.filter({ $0.privacyLevel == type }),
+    func makeNotificationsFor(privacyLevel level: PrivacyLevel) {
+        if let validWanderPosts = self.allWanderPosts?.filter({ $0.privacyLevel == level }),
             !validWanderPosts.isEmpty {
-            //figure this out
             let count = validWanderPosts.count
             var body: String = ""
-            switch type {
+            switch level {
             case .friends:
                 if count > 1 {
                     body = "\(count) of your friends have left messages here!"
@@ -370,11 +370,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     fallthrough
                 }
             case .message:
-                CloudManager.shared
-
-                body = "\(validWanderPosts[0])"
+                for post in validWanderPosts {
+                    body = "\(post.wanderUser?.username ?? "Someone") left you a message!"
+                }
             case .everyone:
-                break
+               return
             }
             makeNotification(withBody: body)
         }
