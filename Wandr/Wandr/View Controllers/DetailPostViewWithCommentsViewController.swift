@@ -13,6 +13,7 @@ import SnapKit
 class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var wanderPost: WanderPost!
+    var wanderUser: WanderUser!
     
     var dummyDataComments = [1,2,3,4,5,6,7]
     
@@ -23,6 +24,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.view.backgroundColor = UIColor.white
         setupViewHierarchy()
         configureConstraints()
+        
+        self.wanderUser = CloudManager.shared.currentUser
         
         //TableViewHeader
         self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
@@ -227,7 +230,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         cell.locationLabel.text = "Location:"
         cell.messageLabel.text = currentReaction.content
         cell.dateAndTimeLabel.text = currentReaction.time.description
-        cell.nameLabel.text = currentReaction.userID.recordName
+        cell.nameLabel.text = self.wanderUser.username
         return cell
     }
     
