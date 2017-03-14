@@ -234,7 +234,7 @@ class CloudManager {
         }
     }
     
-    //MARK: - Get Posts in Location
+    //MARK: - Search data base for users, posts
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
@@ -261,6 +261,22 @@ class CloudManager {
                 
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
                 
+            }
+        }
+    }
+    
+    func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
+        let predicate = NSPredicate(format: "username CONTAINS %@", user)
+        let usernameQuery = CKQuery(recordType: "Users", predicate: predicate)
+        
+        publicDatabase.perform(usernameQuery, inZoneWith: nil) { (records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            
+            if let validRecords = records {
+                let users = validRecords.map { WanderUser(from: $0)! }
+                completion(users, nil)
             }
         }
     }
@@ -408,7 +424,7 @@ class CloudManager {
         }
     }
     
-    func checkForPersonalPosts (completion: @escaping (Error?) -> Void ) {
+    func addSubscriptionForPersonalPosts (completion: @escaping (Error?) -> Void ) {
         let predicate = NSPredicate(format: "recipient == %@", self.currentUser!.id.recordName)
         
         let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
