@@ -207,10 +207,20 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
-        let postVC = PostViewController()
-        postVC.newPostDelegate = self
-        postVC.location = locationManager.location
-        self.navigationController?.present(postVC, animated: true, completion: nil)
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                        sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        },
+                       completion: { _ in
+                        UIView.animate(withDuration: 0.1) {
+                            sender.transform = CGAffineTransform.identity
+                            let postVC = PostViewController()
+                            postVC.newPostDelegate = self
+                            postVC.location = self.locationManager.location
+                            self.navigationController?.present(postVC, animated: true, completion: nil)
+                        }
+        })
+        
     }
     
     //MARK: - Lazy Vars

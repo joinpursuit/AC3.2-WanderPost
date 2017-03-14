@@ -126,12 +126,33 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     //MARK: - Actions
     func doneButtonPressed () {
-        guard let content = self.commentTextField.text,
-              let post = self.wanderPost else {
+        if let content = self.commentTextField.text,
+            let post = self.wanderPost,
+            content != "" {
+            print("Content: \(content)")
+            let reaction = Reaction(type: .comment, content: content, postID: post.postID)
+            CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
+                //add fail alert
+                if error != nil {
+                    let errorAlertController = UIAlertController(title: "Opps!", message: "Error while posting", preferredStyle: .alert)
+                    let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
+                    errorAlertController.addAction(okayAction)
+                    self.present(errorAlertController, animated: true, completion: nil)
+                    print(error!.localizedDescription)
+                }
+                DispatchQueue.main.async {
+                    self.commentTableView.reloadData()
+                }
+            }
+        }
+        else {
             //add alert to say empty comment
+                let errorAlertController = UIAlertController(title: "Opps!", message: "Your comment is empty/ no valid post present", preferredStyle: .alert)
+                let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
+                errorAlertController.addAction(okayAction)
+                self.present(errorAlertController, animated: true, completion: nil)
             return
         }
-        
         let reaction = Reaction(type: .comment, content: content, postID: post.postID)
         CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
             //add fail alert
