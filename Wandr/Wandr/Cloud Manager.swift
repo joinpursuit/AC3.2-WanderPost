@@ -14,6 +14,9 @@ import UIKit
 /*
  _ deleting form data base, this include comments, posts, friends
  _friend requests
+ _error handling - check with jason the best way to go about retriggering the call
+ _list of the users for friends
+ 
  */
 
 enum PostContentType: NSString {
@@ -57,7 +60,6 @@ class CloudManager {
         switch post.contentType {
         case .text:
             guard let text = post.content as? NSString else {
-                print ("invalid content")
                 return
             }
             postRecord.setObject(text, forKey: "content")
@@ -125,15 +127,13 @@ class CloudManager {
             }
             
             if let validRecord = record?.first {
-                //Fix this.
-                //Update the posts array
                 let userRecord = self.addValue(to: validRecord.value, key: "posts", value: postRecord.recordID.recordName)
                 //Save and post the record
                 publicPostsToSave.recordsToSave = [userRecord, postRecord]
             }
         }
         
-        //Init the userSave (to save the post)
+        //Init the userSave (to save the postID to the private user, this might just be a mistake at this point, because the users aren't accessible, this is only used for logging in privacy. the rest of the user data is public. I think we might not need this. I'll talk to them about it)
         privateUserSave.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
             if error != nil {
                 completionError?.append(error!)
@@ -236,13 +236,22 @@ class CloudManager {
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
-        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 200", currentLocation)
+        let locationPredicate = NSPredicate(format: "distanceToLocation:fromLocation:(location, %@) < 100", currentLocation)
         let query = CKQuery(recordType: "post", predicate: locationPredicate)
         query.sortDescriptors = [locationSorter]
         
         publicDatabase.perform(query, inZoneWith: nil) { (records, error) in
             
             if error != nil {
+                if let ckError = error as? CKError {
+                    switch ckError.errorCode {
+                    default:
+                        break
+                    }
+                    if let retryTime = ckError.retryAfterSeconds {
+                        
+                    }
+                }
                 completion(nil, error)
             }
             
@@ -257,7 +266,7 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        privateDatabase.fetch(withRecordID: id) { (record, error) in
+        publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
@@ -294,29 +303,11 @@ class CloudManager {
             }
         }
     }
-    
-    
-    //This needs to be refactoered today to not exist, just pull the image from the wanderuser in the cloud manager
-    func getUserProfilePic(completion: @escaping (Data?, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
-            if error != nil {
-                completion(nil, error)
-            } else if let validRecord = record,
-                let imageAsset = validRecord["profileImage"] as? CKAsset{
-                do {
-                    let data = try Data(contentsOf: imageAsset.fileURL)
-                    completion(data, nil)
-                } catch {
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-    
+        
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
         var reactionIDs = [CKRecordID]()
-
+        
         for post in posts {
             reactionIDs += post.reactionIDs
         }
@@ -328,9 +319,13 @@ class CloudManager {
                 completion(error)
             }
             if let validRecords = records {
+                
                 for user in users {
                     if let validUserRecord = validRecords[user],
                         let user = WanderUser(from: validUserRecord) {
+                        let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
+                        usersPosts.map { $0.wanderUser = user }
+                    } else if let user = CloudManager.shared.currentUser {
                         let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
                         usersPosts.map { $0.wanderUser = user }
                     }
@@ -406,19 +401,14 @@ class CloudManager {
         
         friendAddedSubscription.notificationInfo = notificationInfo
         
-        
-        
         publicDatabase.save(friendAddedSubscription) { (subscription, error) in
             completion(error)
         }
     }
     
     //MARK:  - Adding a comment
-    
     func addReaction(to post: WanderPost, comment: Reaction, completion: @escaping (Error?) -> Void) {
-        
-        //create the comment
-        //Tom needs the userID, the the comment, the time,
+
         let commentRecord = CKRecord(recordType: "comment")
         
         commentRecord.setObject(comment.type.rawValue, forKey: "type")
@@ -434,9 +424,7 @@ class CloudManager {
             }
             
             if let postRecord = record?[post.postID] {
-                //let parentReference = CKReference(record: postRecord, action: .deleteSelf)
                 commentRecord.setObject(comment.postID, forKey: "postID")
-                
                 
                 let modifiedRecord = self.addValue(to: postRecord, key: "reactions", value: commentRecord.recordID.recordName)
                 saveCommentRecords.recordsToSave = [modifiedRecord, commentRecord]
@@ -451,7 +439,7 @@ class CloudManager {
         publicDatabase.add(postRecordFetch)
         publicDatabase.add(saveCommentRecords)
     }
-
+    
     //MARK: - Helper Functions
     private func addValue(to record: CKRecord, key: String, value: String) -> CKRecord {
         let mutableRecord = record
@@ -464,41 +452,100 @@ class CloudManager {
         mutableRecord[key] = ids as CKRecordValue?
         return mutableRecord
     }
+    
+    //MARK: - Deleting From Database
+    func delete(friend id: CKRecordID, completion: @escaping (Error?) -> Void ) {
+        let fetchUsers = CKFetchRecordsOperation(recordIDs: [self.currentUser!.id, id])
+        let updateFriendsLists = CKModifyRecordsOperation()
+        fetchUsers.fetchRecordsCompletionBlock = {(userRecords, error) in
+            
+            if error != nil {
+                completion(error)
+            }
+            
+            if let validUserRecords = userRecords?.values,
+                validUserRecords.count == 2 {
+                let userOne = validUserRecords[validUserRecords.startIndex]
+                let userTwo = validUserRecords[validUserRecords.index(after: validUserRecords.startIndex)]
+                
+                if let userOneFriends = userOne["friends"] as? [String],
+                    let userTwoFriends = userTwo["friends"] as? [String] {
+                    let userOneUpdatedFriends = userOneFriends.filter { $0 != userTwo.recordID.recordName }
+                    let userTwoUpdatedFriends = userTwoFriends.filter { $0 != userOne.recordID.recordName }
+                    
+                    userOne["friends"] = userOneUpdatedFriends as CKRecordValue?
+                    userTwo["friends"] = userTwoUpdatedFriends as CKRecordValue?
+                    
+                    updateFriendsLists.recordsToSave = [userOne, userTwo]
+                }
+            }
+        }
+        
+        updateFriendsLists.modifyRecordsCompletionBlock = {(record, recordID, error) in
+            completion(error)
+        }
+        
+        updateFriendsLists.addDependency(fetchUsers)
+        
+        publicDatabase.add(fetchUsers)
+        publicDatabase.add(updateFriendsLists)
+    }
+    
+    func delete(wanderpost post: WanderPost, completion: @escaping (Error?) -> Void ) {
+        let fetchPublicUsers = CKFetchRecordsOperation(recordIDs: [post.user])
+        let fetchPrivateUsers = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
+        let deletePublicPost = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [post.postID])
+        let deletePrivatePost = CKModifyRecordsOperation()
+        
+        let fetchCompletionBlock = { (database: CKModifyRecordsOperation, records: [CKRecordID: CKRecord]?, error: Error?) in
+            
+            if error != nil {
+                completion(error)
+            }
+            
+            if let record = records?.values.first {
+                guard let posts = record["posts"] as? [String],
+                    posts.contains(post.postID.recordName) else {
+                        completion(error)
+                        return
+                }
+                
+                let updatedPosts = posts.filter{ $0 != post.postID.recordName }
+                print(updatedPosts)
+                record["posts"] = updatedPosts as CKRecordValue?
+                database.recordsToSave = (database.recordsToSave ?? []) + [record]
+            }
+        }
+        
+        fetchPublicUsers.fetchRecordsCompletionBlock = {(records, error) in
+            fetchCompletionBlock(deletePublicPost, records, error)
+        }
+        fetchPrivateUsers.fetchRecordsCompletionBlock = { (records: [CKRecordID: CKRecord]?, error: Error?) in
+            fetchCompletionBlock(deletePrivatePost, records, error)
+        }
+        
+        deletePublicPost.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            completion(error)
+        }
+        deletePrivatePost.modifyRecordsCompletionBlock = { (records, recordIDs, error) in
+            completion(error)
+        }
+        
+        fetchPrivateUsers.addDependency(fetchPublicUsers)
+        deletePublicPost.addDependency(fetchPrivateUsers)
+        deletePrivatePost.addDependency(deletePublicPost)
+        
+        privateDatabase.add(fetchPrivateUsers)
+        publicDatabase.add(fetchPublicUsers)
+        publicDatabase.add(deletePublicPost)
+        privateDatabase.add(deletePrivatePost)
+    }
+    
+    func delete(reaction: Reaction, completion: @escaping (Error?) -> Void ) {
+        let deleteReaction = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [reaction.id])
+        deleteReaction.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+            completion(error)
+        }
+        publicDatabase.add(deleteReaction)
+    }
 }
-
-/*
- func fixPostCount() {
- let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!])
- let userSave = CKModifyRecordsOperation()
- 
- userFetch.fetchRecordsCompletionBlock = { (record, error) in
- 
- 
- if error != nil {
- if let ckError = error as? CKError  {
- //TODO Add retry logic
- } else {
- print(error!.localizedDescription)
- }
- }
- if let validRecord = record?.first {
- 
- 
- //Fix this.
- //Update the posts array
- let userRecord = validRecord.value
- var posts: [NSString] =  []
- userRecord["posts"] = posts as CKRecordValue?
- 
- //Save and post the record
- userSave.recordsToSave = [userRecord]
- }
- }
- 
- userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
- }
- userSave.addDependency(userFetch)
- let queue = OperationQueue()
- queue.addOperations([userFetch, userSave], waitUntilFinished: false)
- }
- */

@@ -10,12 +10,17 @@ import UIKit
 import TwicketSegmentedControl
 import CloudKit
 
-class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmentedControlDelegate {
+protocol AddNewWanderPostDelegate {
+    func addNewPost(post: WanderPost)
+}
+
+class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
     
     var location: CLLocation!
+    var newPostDelegate: AddNewWanderPostDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,27 +29,19 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         configureConstraints()
         configureTargets()
         
-        textField.becomeFirstResponder()
+        userTextField.becomeFirstResponder()
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
         
-        CloudManager.shared.getUserProfilePic { (data, error) in
-            if error != nil {
-                //add error handling
-                print(error?.localizedDescription)
-            }
-            if let validData = data {
-                DispatchQueue.main.async {
-                    guard let validOriginalImage = UIImage(data: validData) else { return }
-                    //Do not delete becase imageToDisplay will be the long term solution
-                    let imageToDisplay = validOriginalImage.fixRotatedImage()
-                    let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-                    self.profileImageView.image = tempRotateSolution
-                }
-            }
+        
+        
+        if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
+            //Do not delete becase imageToDisplay will be the long term solution
+            let imageToDisplay = validOriginalImage.fixRotatedImage()
+            let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+            self.profileImageView.image = tempRotateSolution
         }
-
         
     }
     
@@ -54,7 +51,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         self.postContainerView.addSubview(profileImageView)
         self.postContainerView.addSubview(segmentedControlContainerView)
         self.postContainerView.addSubview(userTextField)
-        self.postContainerView.addSubview(textField)
+        self.postContainerView.addSubview(postTextView)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
         
@@ -100,7 +97,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
             view.height.equalTo(1)
         }
         
-        textField.snp.makeConstraints { (view) in
+        postTextView.snp.makeConstraints { (view) in
             view.top.equalTo(userTextField.snp.bottom).offset(16.0)
             view.leading.equalToSuperview().offset(16.0)
             view.trailing.equalToSuperview().inset(16.0)
@@ -108,7 +105,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         }
         
         postButton.snp.makeConstraints { (button) in
-            button.top.equalTo(textField.snp.bottom).offset(8)
+            button.top.equalTo(postTextView.snp.bottom).offset(8)
             button.trailing.equalToSuperview().inset(16)
         }
     }
@@ -126,7 +123,14 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
     
     func postButtonPressed(_ sender: UIButton) {
         //init post, this is going to be a rough sketch of doing it
-        let content = self.textField.text as AnyObject
+        
+        guard self.postTextView.text!.characters.count > 0,
+            postTextView.textColor != StyleManager.shared.placeholderText else {
+                showOKAlert(title: "No Content", message: "Please write something to post.")
+                return
+        }
+        
+        let content = self.postTextView.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
         self.dismiss(animated: true, completion: nil)
@@ -144,6 +148,11 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
                     if errors != nil {
                         print(errors!)
                         //TODO Add in error handling.
+                    }
+                    
+                    if let validRecord = record, let thisPost = WanderPost(withCKRecord: validRecord) {
+                        thisPost.wanderUser = CloudManager.shared.currentUser
+                        self.newPostDelegate.addNewPost(post: thisPost)
                     }
                     //DO SOMETHING WITH THE RECORD?
                     //dump(record)
@@ -167,7 +176,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
                 view.trailing.equalToSuperview().inset(16.0)
                 view.height.equalTo(height)
             }
-            self.textField.snp.remakeConstraints { (view) in
+            self.postTextView.snp.remakeConstraints { (view) in
                 view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
                 view.leading.equalToSuperview().offset(16.0)
                 view.trailing.equalToSuperview().inset(16.0)
@@ -183,9 +192,37 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
             })
         }
         animator.startAnimation()
-
+        
     }
     
+    // MARK: - Helper Fucntions
+    
+    func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
+            if let completionAction = completion {
+                completionAction()
+            }
+        }
+        alert.addAction(okayAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK: - TextView Delegate Methods
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == StyleManager.shared.placeholderText {
+            textView.text = nil
+            textView.textColor = StyleManager.shared.primaryText
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "write something to post..."
+            textView.textColor = StyleManager.shared.placeholderText
+        }
+    }
     
     // MARK: - TwicketSegmentControl
     
@@ -213,7 +250,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
     lazy var profileImageView: WanderProfileImageView = {
         let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-                imageView.addGestureRecognizer(tapImageGesture)
+        imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
@@ -229,21 +266,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         return control
     }()
     
-    lazy var textField: WanderTextField = {
-        let textField = WanderTextField()
-        //textField.tintColor = StyleManager.shared.accent
-        //textField.backgroundColor = UIColor.white
-        textField.border(placeHolder: "message")
-        textField.font = UIFont.systemFont(ofSize: 18)
-        //textField.textAlignment = NSTextAlignment.left
-        textField.contentVerticalAlignment = .top
-        textField.contentHorizontalAlignment = .left
-        return textField
-    }()
-    
-    lazy var textView: UITextView = {
-       let textView = UITextView()
-        return textView
+    lazy var postTextView: UITextView = {
+        let view = UITextView()
+        view.layer.borderWidth = 1
+        view.layer.borderColor = StyleManager.shared.primaryDark.cgColor
+        view.layer.cornerRadius = 10
+        view.delegate = self
+        view.font = UIFont.systemFont(ofSize: 18)
+        view.text = "write something to post..."
+        view.textColor = StyleManager.shared.placeholderText
+        view.tintColor = StyleManager.shared.accent
+        return view
     }()
     
     lazy var userTextField: WanderTextField = {
@@ -268,5 +301,4 @@ class PostViewController: UIViewController, UITextFieldDelegate, TwicketSegmente
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
     }()
-    
 }

@@ -30,6 +30,25 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         //TableViewHeader
         self.commentTableView.register(PostHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: PostHeaderFooterView.identifier)
         
+        setUpMapViewHeader()
+        
+        //TableViewCell
+        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        
+        registerForNotifications()
+        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        
+        
+        // check to see if the post belongs to the user to enable delete functionality
+        if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
+            let deleteButton = UIBarButtonItem(image: UIImage(named: "trash_white")!, style: .done, target: self, action: #selector(deleteButtonTapped))
+            self.navigationItem.rightBarButtonItem = deleteButton
+            self.wanderPost?.wanderUser = CloudManager.shared.currentUser
+        }
+    }
+    
+    
+    func setUpMapViewHeader() {
         //TableViewSectionHeader MKMapView
         let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
         self.mapHeaderView = MKMapView(frame: mapViewFrame)
@@ -58,13 +77,29 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         DispatchQueue.main.async {
             self.mapHeaderView.addAnnotation(postAnnotation)
         }
-        
-        //TableViewCell
-        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
-        registerForNotifications()
-        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+
     }
+    
+    // MARK: - MKMapView
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.profileImageView.image = nil
+            let postAnnotation = annotation as! PostAnnotation
+            
+            if let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
+            return mapAnnotationView
+        }
+    }
+
     
     //MARK: - Actions
     
@@ -79,6 +114,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
             //add fail alert
             print(error)
+        }
+    }
+    
+    func deleteButtonTapped() {
+        if let postToDelete = self.wanderPost {
+            // delete this post
         }
     }
     
@@ -227,11 +268,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         }
         let currentReaction = reactions[indexPath.row]
-        cell.locationLabel.text = "Location:"
         cell.messageLabel.text = currentReaction.content
         cell.dateAndTimeLabel.text = currentReaction.time.description
         cell.nameLabel.text = self.wanderUser.username
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     

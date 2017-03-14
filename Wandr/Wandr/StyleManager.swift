@@ -44,6 +44,9 @@ class StyleManager {
     var secondaryText: UIColor {
         return UIColor(hexString: "#727272")
     }
+    var placeholderText: UIColor {
+        return UIColor(hexString: "#C7C7CD")
+    }
     
     var comfortaaFont12: UIFont {
         return UIFont.Comfortaa.regular(size: 12)!
@@ -60,6 +63,11 @@ class StyleManager {
     var comfortaaFont18: UIFont {
         return UIFont.Comfortaa.regular(size: 18)!
     }
+    
+    var comfortaaFont20: UIFont {
+        return UIFont.Comfortaa.regular(size: 20)!
+    }
+
     
 }
 

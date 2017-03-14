@@ -15,7 +15,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
-    let dummyDataFeed = [1,2,3,4,5,6,7,8,9,10,11,12,13]
+    var friendFeedPosts = [WanderPost]()
     let dummyDataMessage = [1,2,3,4,5]
     
     var wanderUser: WanderUser!
@@ -27,13 +27,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var segmentedControlCurrentIndex = 0
     
+    let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
+    let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
         
-        let friendsButton = UIBarButtonItem(title: "friends", style: .done, target: self, action: #selector(friendsButtonTapped))
-        self.navigationItem.rightBarButtonItem = friendsButton
+        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(friendsButtonTapped))
+        self.navigationItem.rightBarButtonItem = searchFriendsButton
         
         setupViewHierarchy()
         configureConstraints()
@@ -49,7 +52,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
         
         //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 275.0)
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
         self.profileHeaderView = ProfileView(frame: profileViewFrame)
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
         guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
@@ -61,25 +64,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
         
-        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            guard let validWanderPosts = wanderPosts else { return }
-            self.wanderPosts = validWanderPosts
-            self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
-            self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
-            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
-            
-            
-            CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
-                print(error)
-                
-                DispatchQueue.main.async {
-                    self.postTableView.reloadData()
-                }
-            })
-        }
+        self.setUpUserHistory()
+        self.setUpFriendsFeed()
         
     }
     
@@ -128,7 +114,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 30.0
+        return 38
     }
     
     // MARK: - TableViewDelegate and TableViewDataSource Methods
@@ -142,7 +128,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let posts = self.wanderPosts else { return 0 }
             return posts.count
         case ProfileViewFilterType.feed:
-            return self.dummyDataFeed.count
+            return self.friendFeedPosts.count
         case ProfileViewFilterType.messages:
             return self.dummyDataMessage.count
         }
@@ -158,17 +144,27 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.dateAndTimeLabel.text = post.dateAndTime
             
             let reactionsCount = post.reactions?.count ?? 0
-            if reactionsCount < 2 {
-                cell.commentCountLabel.text = "\(reactionsCount) Comment"
+            if reactionsCount < 1 {
+                cell.commentCountLabel.text = "no comments"
+            } else if reactionsCount < 2 {
+                cell.commentCountLabel.text = "\(reactionsCount) comment"
             } else {
-                cell.commentCountLabel.text = "\(reactionsCount) Comments"
+                cell.commentCountLabel.text = "\(reactionsCount) comments"
             }
         
             return cell
             
         case ProfileViewFilterType.feed:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            cell.locationLabel.text = "Location: \(self.dummyDataFeed[indexPath.row])"
+            
+            let post = self.friendFeedPosts[indexPath.row]
+            cell.messageLabel.text = "Left a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            if let user = post.wanderUser {
+                cell.profileImageView.image = UIImage(data: user.userImageData)
+                cell.nameLabel.text = user.username
+                
+            }
             return cell
             
         case ProfileViewFilterType.messages:
@@ -193,6 +189,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         case ProfileViewFilterType.messages:
             print(ProfileViewFilterType.messages.rawValue)
         }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Layout
@@ -225,6 +222,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
         let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
         rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.right
@@ -263,6 +261,53 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             break
         }
     }
+    
+    //CloudManager Methods
+    
+    func setUpUserHistory() {
+        CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            
+            guard let validWanderPosts = wanderPosts else { return }
+            self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
+            self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
+            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
+            
+            
+            CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
+                print(error)
+                
+                DispatchQueue.main.async {
+                    self.postTableView.reloadData()
+                }
+            })
+        }
+    }
+    
+    func setUpFriendsFeed() {
+        for friend in self.wanderUser.friends {
+            CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
+                if error != nil {
+                    print(error?.localizedDescription)
+                }
+                
+                guard let validWanderPosts = wanderPosts else { return }
+                
+                self.friendFeedPosts.append(contentsOf: validWanderPosts)
+                self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
+                
+                CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
+                    print(error)
+                    
+                    DispatchQueue.main.async {
+                        self.postTableView.reloadData()
+                    }
+                })
+            }
+        }
+    }
 }
 
 
@@ -271,10 +316,14 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         switch segmentIndex {
         case 0:
             self.profileViewFilterType = ProfileViewFilterType.posts
+            self.postTableView.separatorInset = postCellSeparatorInsets
         case 1:
             self.profileViewFilterType = ProfileViewFilterType.feed
+            self.postTableView.separatorInset = feedCellSeparatorInsets
         case 2:
             self.profileViewFilterType = ProfileViewFilterType.messages
+            self.postTableView.separatorInset = postCellSeparatorInsets
+
         default:
             print("Can not make a decision")
         }

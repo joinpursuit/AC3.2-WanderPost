@@ -257,8 +257,8 @@
 				DEA80B341E6863C0001E0747 /* DebugMapViewController.swift */,
 				DEA80B281E685D1D001E0747 /* AnnotationView.swift */,
 				DEA80B291E685D1D001E0747 /* ARAnnotation.swift */,
-				DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */,
 				DEA80B2B1E685D1D001E0747 /* ARConfiguration.swift */,
+				DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */,
 				DEA80B2C1E685D1D001E0747 /* ARTrackingManager.swift */,
 				DEA80B2D1E685D1D001E0747 /* ARViewController.swift */,
 			);
