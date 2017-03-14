@@ -15,12 +15,13 @@ import CloudKit
 
 class Reaction {
     let type: ReactionType
+    let id: CKRecordID
     let time: Date
     let userID: CKRecordID
     let postID: CKReference
     let content: String
     
-    init (type: ReactionType, content: String, time: Date, userID: CKRecordID, postID: CKReference) {
+    init (type: ReactionType, id: CKRecordID, content: String, time: Date, userID: CKRecordID, postID: CKReference) {
         self.type = type
         self.content = content
         self.time = time
@@ -34,6 +35,7 @@ class Reaction {
         
         let postID = CKReference(recordID: postID, action: .deleteSelf)
         self.init(type: type,
+                  id: CKRecordID(recordName: "foobar"),
                   content: content,
                   time: Date(),
                   userID: userID,
@@ -48,7 +50,10 @@ class Reaction {
             let userID = record.creatorUserRecordID,
             let postID = record["postID"] as? CKReference,
             let content = record["content"] as? String else { return nil }
+        let id = record.recordID
+
         self.init(type: type,
+                  id: id,
                   content: content,
                   time: time,
                   userID: userID,

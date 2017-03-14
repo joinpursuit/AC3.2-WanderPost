@@ -224,8 +224,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         }
     }
     
-    
-    
     // MARK: - TwicketSegmentControl
     
     func didSelect(_ segmentIndex: Int) {
@@ -303,5 +301,4 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
     }()
-    
 }
