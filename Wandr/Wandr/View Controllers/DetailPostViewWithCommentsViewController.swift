@@ -100,18 +100,18 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     }
                     print(error!.localizedDescription)
                 }
+                // adding the reaction to the post so that it will appear on profileView
+                if let _ = self.wanderPost.reactions {
+                    self.wanderPost.reactions!.append(reaction)
+                } else {
+                    self.wanderPost.reactions = [reaction]
+                }
                 DispatchQueue.main.async {
                     self.reactions.append(reaction)
-                    
-                    if let _ = self.wanderPost.reactions {
-                        self.wanderPost.reactions!.append(reaction)
-                    } else {
-                        self.wanderPost.reactions = [reaction]
-                    }
-                    
                     self.commentTextField.text = nil
                     self.view.endEditing(true)
                     self.commentTableView.reloadData()
+                    //need to scroll tableView to bottom
                 }
             }
         }
