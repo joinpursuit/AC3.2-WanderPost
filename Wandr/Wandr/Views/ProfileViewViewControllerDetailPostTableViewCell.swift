@@ -18,6 +18,7 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
         self.locationLabel.accessibilityIdentifier = "locationLabel"
         self.dateAndTimeLabel.accessibilityIdentifier = "dateAndTimeLabel"
         self.messageLabel.accessibilityIdentifier = "messageLabel"
+        self.backgroundColor = StyleManager.shared.primaryLight
         setupViewHierarchy()
         configureConstraints()
     }

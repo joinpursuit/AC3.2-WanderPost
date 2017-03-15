@@ -18,21 +18,24 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     var dummyDataComments = [1,2,3,4,5,6,7]
     
+    var mapHeaderFrameHeightMultiplier: CGFloat = 0.4
+    let textFieldContainerHeight: CGFloat = 52
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
+        setUpMapViewHeader()
         setupViewHierarchy()
         configureConstraints()
         
         self.wanderUser = CloudManager.shared.currentUser
         
-        setUpMapViewHeader()
         
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
+
         registerForNotifications()
         
         // check to see if the post belongs to the user to enable delete functionality
@@ -43,9 +46,11 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
         
         // get all reactions
-        guard let validReactions = self.wanderPost.reactions else { return }
-        self.reactions = validReactions
-
+        
+        if let validReactions = self.wanderPost.reactions  {
+            self.reactions = validReactions
+        }
+        toggleNoCommentsLabel(comments: self.reactions)
     }
     
     
@@ -71,7 +76,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
         self.postView.commentCountLabel.text = ""
         
-        self.mapHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * 0.5)
+        self.mapHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * mapHeaderFrameHeightMultiplier)
         
         //MapView
         //let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
@@ -122,6 +127,19 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             return mapAnnotationView
         }
     }
+    
+    // MARK: - Helper Functions
+    
+    func toggleNoCommentsLabel(comments: [Reaction]) {
+        if comments.isEmpty {
+            noCommentsLabel.isHidden = false
+            commentTableView.isScrollEnabled = false
+        } else {
+            noCommentsLabel.isHidden = true
+            commentTableView.isScrollEnabled = true
+        }
+    }
+
 
     
     //MARK: - Actions
@@ -137,7 +155,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     let errorAlertController = UIAlertController(title: "Opps!", message: "Error while posting", preferredStyle: .alert)
                     let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
                     errorAlertController.addAction(okayAction)
-                    self.present(errorAlertController, animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        self.present(errorAlertController, animated: true, completion: nil)
+                    }
                     print(error!.localizedDescription)
                 }
                 DispatchQueue.main.async {
@@ -246,6 +266,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     private func setupViewHierarchy() {
         self.view.addSubview(commentTableView)
         self.view.addSubview(textFieldContainerView)
+        self.view.addSubview(noCommentsLabel)
         
         self.textFieldContainerView.addSubview(accentBarView)
         self.textFieldContainerView.addSubview(commentTextField)
@@ -263,7 +284,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             view.top.equalTo(self.commentTableView.snp.bottom)
             view.leading.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-            view.height.equalTo(52)
+            view.height.equalTo(self.textFieldContainerHeight)
         }
         
         accentBarView.snp.makeConstraints { (view) in
@@ -282,11 +303,26 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.leading.equalTo(self.commentTextField.snp.trailing).offset(8.0)
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
+        
+        noCommentsLabel.snp.makeConstraints { (view) in
+            view.bottom.equalTo(self.commentTableView.snp.bottom)
+            view.leading.trailing.equalToSuperview()
+            
+            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
+            
+            //let height = (self.view.frame.height * (1 - self.mapHeaderFrameHeightMultiplier)) - self.textFieldContainerHeight
+            view.height.equalTo(x)
+        }
+        
     }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Methods
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Comments"
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -300,6 +336,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         cell.dateAndTimeLabel.text = currentReaction.dateAndTime
         CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
             guard let validUser = user else { return }
+            dump(validUser)
             DispatchQueue.main.async {
                 cell.nameLabel.text = validUser.username
                 cell.profileImageView.image = UIImage(data: validUser.userImageData)
@@ -321,6 +358,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 150
+        tableView.backgroundColor = StyleManager.shared.primaryLight
+        tableView.separatorInset = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
         return tableView
     }()
     
@@ -336,7 +375,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     lazy var postView: PostView = {
         let view = PostView()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = StyleManager.shared.primaryLight
         return view
     }()
     
@@ -344,7 +383,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let textField = UITextField()
         textField.backgroundColor = UIColor.clear
         textField.delegate = self
-        textField.placeholder = "tom"
+        textField.placeholder = "add a comment..."
         return textField
     }()
     
@@ -364,5 +403,18 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         view.backgroundColor = StyleManager.shared.accent
         return view
     }()
+    
+    lazy var noCommentsLabel: UILabel = {
+        let view = UILabel()
+        view.text = "No comments to display\n"
+        view.numberOfLines = 3
+        view.backgroundColor = StyleManager.shared.primaryLight
+        view.textColor = StyleManager.shared.primaryDark
+        view.font = StyleManager.shared.comfortaaFont16
+        view.textAlignment = .center
+        view.isHidden = true
+        return view
+    }()
+
     
 }

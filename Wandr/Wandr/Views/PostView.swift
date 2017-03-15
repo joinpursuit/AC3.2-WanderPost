@@ -36,27 +36,27 @@ class PostView: UIView {
     
     private func configureConstraints() {
         locationLabel.snp.makeConstraints { (label) in
-            label.top.leading.equalToSuperview().offset(8.0)
-            label.trailing.equalToSuperview().inset(8.0)
+            label.top.leading.equalToSuperview().offset(11.0)
+            label.trailing.equalToSuperview().inset(11.0)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.locationLabel.snp.bottom).offset(8.0)
-            label.leading.equalToSuperview().offset(8.0)
-            label.trailing.equalToSuperview().inset(8.0)
+            label.top.equalTo(self.locationLabel.snp.bottom).offset(11.0)
+            label.leading.equalToSuperview().offset(11.0)
+            label.trailing.equalToSuperview().inset(11.0)
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(8.0)
-            label.leading.equalToSuperview().offset(8.0)
-            label.trailing.equalToSuperview().inset(8.0)
-            label.bottom.equalTo(self.commentCountLabel.snp.top).inset(8.0)
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(11.0)
+            label.leading.equalToSuperview().offset(11.0)
+            label.trailing.equalToSuperview().inset(11.0)
+            label.bottom.equalTo(self.commentCountLabel.snp.top).inset(11.0)
         }
         
         commentCountLabel.snp.makeConstraints { (label) in
-            label.leading.equalToSuperview().offset(8.0)
-            label.trailing.equalToSuperview().inset(8.0)
-            label.bottom.equalToSuperview().inset(8.0)
+            label.leading.equalToSuperview().offset(11.0)
+            label.trailing.equalToSuperview().inset(11.0)
+            label.bottom.equalToSuperview().inset(11.0)
         }
     }
     
@@ -80,7 +80,7 @@ class PostView: UIView {
     lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.text = "Message"
-        label.font = StyleManager.shared.comfortaaFont14
+        label.font = UIFont.systemFont(ofSize: 16)
         label.textColor = StyleManager.shared.primaryText
         label.numberOfLines = 0
         return label
