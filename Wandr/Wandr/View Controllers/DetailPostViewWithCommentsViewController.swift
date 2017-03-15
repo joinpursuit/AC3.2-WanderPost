@@ -53,8 +53,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     func setUpMapViewHeader() {
         //TableViewSectionHeader MKMapView
-        self.mapHeaderContainerView.addSubview(self.mapView)
-        self.mapHeaderContainerView.addSubview(self.postView)
+        self.tableHeaderContainerView.addSubview(self.mapView)
+        self.tableHeaderContainerView.addSubview(self.postView)
         
         self.mapView.snp.makeConstraints { (view) in
             view.top.equalToSuperview()
@@ -73,7 +73,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
         self.postView.commentCountLabel.text = ""
         
-        self.mapHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * mapHeaderFrameHeightMultiplier)
+        self.tableHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * mapHeaderFrameHeightMultiplier)
         
         //MapView
         //let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
@@ -84,7 +84,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.mapView.showsBuildings = false
         self.mapView.showsUserLocation = false
         self.mapView.tintColor = StyleManager.shared.accent
-        commentTableView.tableHeaderView = self.mapHeaderContainerView
+        commentTableView.tableHeaderView = self.tableHeaderContainerView
         self.mapView.delegate = self
         
         let postAnnotation = PostAnnotation()
@@ -160,8 +160,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 }
                 DispatchQueue.main.async {
                     self.commentTextField.text = nil
-                    self.getUpdatedPostReactions()
-                    self.viewDidLoad()
                     self.commentTableView.reloadData()
                 }
             }
