@@ -398,7 +398,6 @@ class CloudManager {
                 
                 for post in posts {
                     if let postReactions = reactions[post.postID] {
-                        
                         post.reactions = postReactions
                     }
                 }
@@ -449,7 +448,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = "\(currentUsername) has added you as a friend!"
+        notificationInfo.alertBody = currentUsername + " has added you as a friend!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -466,8 +465,10 @@ class CloudManager {
         let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
         
         let notificationInfo = CKNotificationInfo()
+        
         let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = "\(currentUsername) has left you a message!"
+        notificationInfo.alertBody = currentUsername + " has left you a message!"
+        print(currentUsername)
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
