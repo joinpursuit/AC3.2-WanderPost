@@ -27,6 +27,7 @@
 		A7686F861E67626E00402053 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7686F851E67626E00402053 /* ProfileView.swift */; };
 		A7686F881E6876E100402053 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A7686F871E6876E000402053 /* MapKit.framework */; };
 		A7A087991E7277DA00FF9BF9 /* Extension UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A087981E7277DA00FF9BF9 /* Extension UIImage.swift */; };
+		A7A087A91E78A64600FF9BF9 /* Extension UIButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7A087A81E78A64600FF9BF9 /* Extension UIButton.swift */; };
 		A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86001E68B11D0046487F /* OnBoardViewController.swift */; };
 		A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86021E68CFA70046487F /* Extension UITextField.swift */; };
 		A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86041E68D6B80046487F /* WanderButton.swift */; };
@@ -80,6 +81,7 @@
 		A7686F851E67626E00402053 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileView.swift; path = Views/ProfileView.swift; sourceTree = "<group>"; };
 		A7686F871E6876E000402053 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		A7A087981E7277DA00FF9BF9 /* Extension UIImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UIImage.swift"; path = "Views/Extension UIImage.swift"; sourceTree = "<group>"; };
+		A7A087A81E78A64600FF9BF9 /* Extension UIButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UIButton.swift"; path = "Views/Extension UIButton.swift"; sourceTree = "<group>"; };
 		A7AF86001E68B11D0046487F /* OnBoardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnBoardViewController.swift; path = "View Controllers/OnBoardViewController.swift"; sourceTree = "<group>"; };
 		A7AF86021E68CFA70046487F /* Extension UITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Extension UITextField.swift"; path = "Views/Extension UITextField.swift"; sourceTree = "<group>"; };
 		A7AF86041E68D6B80046487F /* WanderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderButton.swift; path = Views/WanderButton.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 				DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */,
 				A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */,
 				A7D046811E6FB1CC002D2F24 /* PostView.swift */,
+				A7A087A81E78A64600FF9BF9 /* Extension UIButton.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -427,6 +430,7 @@
 				A743DF091E6DF67400BB43B8 /* WanderProfileImageView.swift in Sources */,
 				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
 				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,
+				A7A087A91E78A64600FF9BF9 /* Extension UIButton.swift in Sources */,
 				DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */,
 				A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */,
 				A7AF86031E68CFA70046487F /* Extension UITextField.swift in Sources */,

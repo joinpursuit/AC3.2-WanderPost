@@ -21,6 +21,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     var location: CLLocation!
     var newPostDelegate: AddNewWanderPostDelegate!
+    var recipient: WanderUser? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +31,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         configureTargets()
         
         userTextField.becomeFirstResponder()
+        userTextField.delegate = self
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
@@ -101,7 +103,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             view.top.equalTo(userTextField.snp.bottom).offset(16.0)
             view.leading.equalToSuperview().offset(16.0)
             view.trailing.equalToSuperview().inset(16.0)
-            view.height.equalTo(150)
+            view.height.equalToSuperview().multipliedBy(0.25)
         }
         
         postButton.snp.makeConstraints { (button) in
@@ -122,8 +124,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func postButtonPressed(_ sender: UIButton) {
-        //init post, this is going to be a rough sketch of doing it
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                        sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+        },
+                       completion: { _ in
+                        UIView.animate(withDuration: 0.1) {
+                            sender.transform = CGAffineTransform.identity
+                        }
+        })
         
+        //init post, this is going to be a rough sketch of doing it
         guard self.postTextView.text!.characters.count > 0,
             postTextView.textColor != StyleManager.shared.placeholderText else {
                 showOKAlert(title: "No Content", message: "Please write something to post.")
@@ -133,6 +144,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         let content = self.postTextView.text as AnyObject
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
+        switch privacy {
+        case .message:
+            
+            if self.recipient == nil {
+                print("you need to send this to someone yo")
+                return
+            }
+        default:
+            self.recipient = nil
+        }
+        
         self.dismiss(animated: true, completion: nil)
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: {
@@ -140,11 +162,23 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             if let error = error {
                 print("error with geocoder: \(error)")
             }
+            
             if let marks = placemarks, let thisMark = marks.last {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
-                let post = WanderPost(location: self.location, content: content, contentType: .text, privacyLevel: privacy, locationDescription: locationDescription)
                 
-                CloudManager.shared.createPost(post: post) { (record, errors) in
+                if privacy == .message {
+                    //add in recipient username as a string here.
+                }
+                
+                let post = WanderPost(location: self.location,
+                                      content: content,
+                                      contentType: .text,
+                                      privacyLevel: privacy,
+                                      locationDescription: locationDescription,
+                                      recipient: self.recipient?.id)
+                
+                
+                CloudManager.shared.createPost(post: post, to: self.recipient) { (record, errors) in
                     if errors != nil {
                         print(errors!)
                         //TODO Add in error handling.
@@ -169,6 +203,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     func toggleUserTextField(show: Bool) {
         let height = show ? 44 : 1
+        let multipler = show ? 0.2 : 0.25
         let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut) {
             self.userTextField.snp.remakeConstraints { (view) in
                 view.leading.equalToSuperview().offset(16.0)
@@ -180,7 +215,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
                 view.leading.equalToSuperview().offset(16.0)
                 view.trailing.equalToSuperview().inset(16.0)
-                view.height.equalTo(150)
+                view.height.equalToSuperview().multipliedBy(multipler)
             }
             self.postContainerView.layoutIfNeeded()
         }
@@ -215,6 +250,21 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             textView.text = nil
             textView.textColor = StyleManager.shared.primaryText
         }
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        
+        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            if let validUsers = wanderUsers {
+                print(validUsers.count)
+                self.recipient = validUsers[0]
+            }
+        }
+        return true
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -284,6 +334,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         field.border(placeHolder: "enter username...")
         field.textColor = StyleManager.shared.primaryText
         field.font = UIFont.systemFont(ofSize: 18)
+        field.accessibilityIdentifier = "username"
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
         field.isHidden = true
@@ -291,7 +342,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }()
     
     lazy var postButton: WanderButton = {
-        let button = WanderButton(title: "post")
+        let button = WanderButton(title: "post", spacing: 22)
         return button
     }()
     

@@ -16,7 +16,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
     var friendFeedPosts = [WanderPost]()
-    let dummyDataMessage = [1,2,3,4,5]
+    
+    var personalPosts = [WanderPost]()
     
     var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
@@ -29,6 +30,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
     let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    private let heightForSectionHeader: CGFloat = 38
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,31 +40,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(friendsButtonTapped))
         self.navigationItem.rightBarButtonItem = searchFriendsButton
         
-        setupViewHierarchy()
-        configureConstraints()
-        
         guard let validWanderUser = CloudManager.shared.currentUser else { return }
         self.wanderUser = validWanderUser
         
-        //TabelViewCell
-        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
-        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        setupTableView()
         
-        //TableViewHeader
-        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
-        
-        //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
-        self.profileHeaderView = ProfileView(frame: profileViewFrame)
-        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
-        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
-        //Do not delete becase imageToDisplay will be the long term solution
-        let imageToDisplay = validOriginalImage.fixRotatedImage()
-        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-        self.profileHeaderView.profileImageView.image = tempRotateSolution
-        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
-        postTableView.tableHeaderView = self.profileHeaderView
-        self.profileHeaderView.delegate = self
+        setupViewHierarchy()
+        configureConstraints()
         
         self.setUpUserHistory()
         self.setUpFriendsFeed()
@@ -103,7 +87,29 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.dismiss(animated: true, completion: nil)
     }
     
-    // MARK: - TableView Header And Footer Customizations
+    // MARK: - TableView Cell, Header and Section Customizations
+    func setupTableView() {
+        //TabelViewCell
+        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
+        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        
+        //TableViewHeader
+        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
+        
+        //TableViewSectionHeader
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
+        self.profileHeaderView = ProfileView(frame: profileViewFrame)
+        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        //Do not delete becase imageToDisplay will be the long term solution
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+        self.profileHeaderView.profileImageView.image = tempRotateSolution
+        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
+        postTableView.tableHeaderView = self.profileHeaderView
+        self.profileHeaderView.delegate = self
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let segmentedControlHeaderFooterView = (self.postTableView.dequeueReusableHeaderFooterView(withIdentifier: SegmentedControlHeaderFooterView.identifier) as? SegmentedControlHeaderFooterView)!
@@ -114,7 +120,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 38
+        return self.heightForSectionHeader
     }
     
     // MARK: - TableViewDelegate and TableViewDataSource Methods
@@ -126,11 +132,14 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType {
         case ProfileViewFilterType.posts:
             guard let posts = self.wanderPosts else { return 0 }
+            toggleNoPostsLabel(posts: posts)
             return posts.count
         case ProfileViewFilterType.feed:
+            toggleNoPostsLabel(posts: self.friendFeedPosts)
             return self.friendFeedPosts.count
         case ProfileViewFilterType.messages:
-            return self.dummyDataMessage.count
+            toggleNoPostsLabel(posts: self.personalPosts)
+            return self.personalPosts.count
         }
     }
     
@@ -169,7 +178,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case ProfileViewFilterType.messages:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
-            cell.locationLabel.text = "Location: \(self.dummyDataMessage[indexPath.row])"
             return cell
         }
     }
@@ -192,16 +200,36 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    
+    // MARK: - Helper Functions
+    
+    func toggleNoPostsLabel(posts: [WanderPost]) {
+        if posts.isEmpty {
+            noPostsLabel.isHidden = false
+            postTableView.isScrollEnabled = false
+        } else {
+            noPostsLabel.isHidden = true
+            postTableView.isScrollEnabled = true
+        }
+    }
+    
     // MARK: - Layout
     private func setupViewHierarchy() {
         self.view.addSubview(postTableView)
+        self.view.addSubview(noPostsLabel)
     }
     
     private func configureConstraints() {
+        self.edgesForExtendedLayout = []
         postTableView.snp.makeConstraints { (view) in
             view.top.equalToSuperview()
             view.leading.trailing.equalToSuperview()
             view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
+        }
+        noPostsLabel.snp.makeConstraints { (view) in
+            view.bottom.leading.trailing.equalToSuperview()
+            let height = self.view.frame.height - (self.profileHeaderView.frame.height + ((self.tabBarController?.tabBar.frame.height)! + (self.navigationController?.navigationBar.frame.height)! * 2) + self.heightForSectionHeader)
+            view.height.equalTo(height)
         }
     }
     
@@ -234,6 +262,26 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.addGestureRecognizer(leftSwipeGestureRecognizer)
         return tableView
     }()
+    
+    lazy var noPostsLabel: UILabel = {
+        let view = UILabel()
+        view.text = "No posts to display\n"
+        view.numberOfLines = 3
+        view.backgroundColor = StyleManager.shared.primaryLight
+        view.textColor = StyleManager.shared.primaryDark
+        view.font = StyleManager.shared.comfortaaFont16
+        view.textAlignment = .center
+        view.isHidden = true
+        
+        let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        rightSwipeGestureRecognizer.direction =  UISwipeGestureRecognizerDirection.right
+        view.addGestureRecognizer(rightSwipeGestureRecognizer)
+        let leftSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
+        leftSwipeGestureRecognizer.direction = UISwipeGestureRecognizerDirection.left
+        view.addGestureRecognizer(leftSwipeGestureRecognizer)
+        return view
+    }()
+
     
     func updateSegmentedControl(gesture: UISwipeGestureRecognizer) {
         print("I've been Swiped!")

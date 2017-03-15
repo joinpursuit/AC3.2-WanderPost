@@ -28,13 +28,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         self.wanderUser = CloudManager.shared.currentUser
         
-        setUpMapViewHeader()
-        
-        //TableViewCell
-        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
         registerForNotifications()
-        doneButton.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        setupTableView()
         
         // check to see if the post belongs to the user to enable delete functionality
         if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
@@ -48,58 +43,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         self.reactions = validReactions
     }
     
-    
-    func setUpMapViewHeader() {
-        //TableViewSectionHeader MKMapView
-        self.mapHeaderContainerView.addSubview(self.mapView)
-        self.mapHeaderContainerView.addSubview(self.postView)
-        
-        self.mapView.snp.makeConstraints { (view) in
-            view.top.equalToSuperview()
-            view.leading.trailing.equalToSuperview()
-            view.height.equalToSuperview().multipliedBy(0.6)
-        }
-        self.postView.snp.makeConstraints { (view) in
-            view.top.equalTo(self.mapView.snp.bottom)
-            view.leading.trailing.bottom.equalToSuperview()
-        }
-        
-        //PostView
-        self.postView.locationLabel.numberOfLines = 0
-        self.postView.locationLabel.text = self.wanderPost.locationDescription
-        self.postView.messageLabel.text = self.wanderPost.content as? String
-        self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
-        self.postView.commentCountLabel.text = ""
-        
-        self.mapHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * 0.5)
-        
-        //MapView
-        //let mapViewFrame = CGRect(x: 0, y: 0, width: commentTableView.frame.size.width, height: 150.0)
-        //self.mapView = MKMapView(frame: mapViewFrame)
-        self.mapView.mapType = .standard
-        self.mapView.isScrollEnabled = false
-        self.mapView.isZoomEnabled = false
-        self.mapView.showsBuildings = false
-        self.mapView.showsUserLocation = false
-        self.mapView.tintColor = StyleManager.shared.accent
-        commentTableView.tableHeaderView = self.mapHeaderContainerView
-        self.mapView.delegate = self
-        
-        let postAnnotation = PostAnnotation()
-        postAnnotation.wanderpost = self.wanderPost
-        guard let postLocation = self.wanderPost.location else { return }
-        postAnnotation.coordinate = postLocation.coordinate
-        postAnnotation.title = self.wanderPost.content as? String
-        let span = MKCoordinateSpanMake(0.01, 0.01)
-        let region = MKCoordinateRegion(center: postLocation.coordinate, span: span)
-        let location2D = CLLocationCoordinate2DMake(postLocation.coordinate.latitude, postLocation.coordinate.longitude)
-        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
-        mapCamera.altitude = 500 // example altitude
-        mapCamera.pitch = 45
-        self.mapView.camera = mapCamera
-        self.mapView.setRegion(region, animated: false)
-        DispatchQueue.main.async {
-            self.mapView.addAnnotation(postAnnotation)
+    func getUpdatedPostReactions() {
+        CloudManager.shared.getUserPostActivity(for: self.wanderPost.postID) { (posts: [WanderPost]?, error: Error?) in
+            dump(posts)
         }
     }
 
@@ -125,23 +71,63 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     
     //MARK: - Actions
-    func doneButtonPressed () {
-        guard let content = self.commentTextField.text,
-              let post = self.wanderPost else {
-            //add alert to say empty comment
-            return
+    func doneButtonPressed (sender: UIButton) {
+        sender.animate()
+        if let content = self.commentTextField.text,
+            let post = self.wanderPost,
+            content != "" {
+            print("Content: \(content)")
+            let reaction = Reaction(type: .comment, content: content, postID: post.postID)
+            CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
+                //add fail alert
+                if error != nil {
+                    let errorAlertController = UIAlertController(title: "Opps!", message: "Error while posting", preferredStyle: .alert)
+                    let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
+                    errorAlertController.addAction(okayAction)
+                    self.present(errorAlertController, animated: true, completion: nil)
+                    print(error!.localizedDescription)
+                }
+                DispatchQueue.main.async {
+                    self.commentTextField.text = nil
+                    self.getUpdatedPostReactions()
+                    self.viewDidLoad()
+                    self.commentTableView.reloadData()
+                }
+            }
         }
-        
-        let reaction = Reaction(type: .comment, content: content, postID: post.postID)
-        CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
-            //add fail alert
-            print(error)
+        else {
+            //add alert to say empty comment
+                let errorAlertController = UIAlertController(title: "Opps!", message: "Your comment is empty/ no valid post present", preferredStyle: .alert)
+                let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
+                errorAlertController.addAction(okayAction)
+                self.present(errorAlertController, animated: true, completion: nil)
+            return
         }
     }
     
     func deleteButtonTapped() {
         if let postToDelete = self.wanderPost {
             // delete this post
+            let deleteAlert = UIAlertController(title: "Delete", message: "Are you sure you want to delete this post?", preferredStyle: .alert)
+            let yesAlertAction = UIAlertAction(title: "Yes", style: .default, handler: { (actionAlert) in
+                CloudManager.shared.delete(wanderpost: postToDelete, completion: { (error) in
+                    if error != nil {
+                        //handle error
+                        print(error)
+                    }
+                    DispatchQueue.main.async {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                })
+            })
+            let noAlertAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+            
+            deleteAlert.addAction(noAlertAction)
+            deleteAlert.addAction(yesAlertAction)
+            
+            self.present(deleteAlert, animated: true, completion: { 
+                print("completion handler for alert triggered")
+            })
         }
     }
     
@@ -159,15 +145,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return true
     }
     
-    // MARK: - Actions
-    func addCommentDoneTapped() {
-        if let commentText = commentTextField.text {
-            print(commentText)
-            
-            // this is where we put up the comment
-        }
-        commentTextField.text = nil
-    }
     
     // MARK: - Keyboard Notification
     private func registerForNotifications() {
@@ -255,6 +232,65 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
     }
+    // MARK: - TableView Cell and Header Customizations
+    func setupTableView() {
+        //TableViewCell
+        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+
+        //TableViewSectionHeader MKMapView
+        self.tableHeaderContainerView.addSubview(self.mapView)
+        self.tableHeaderContainerView.addSubview(self.postView)
+        
+        self.mapView.snp.makeConstraints { (view) in
+            view.top.equalToSuperview()
+            view.leading.trailing.equalToSuperview()
+            view.height.equalToSuperview().multipliedBy(0.6)
+        }
+        self.postView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.mapView.snp.bottom)
+            view.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        
+        //TableViewHeader
+        self.tableHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * 0.5)
+        
+        //PostView in tableHeaderContainerView
+        self.postView.locationLabel.numberOfLines = 0
+        self.postView.locationLabel.text = self.wanderPost.locationDescription
+        self.postView.messageLabel.text = self.wanderPost.content as? String
+        self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
+        self.postView.commentCountLabel.text = ""
+        
+        
+        //MapView in tableHeaderContainerView
+        self.mapView.mapType = .standard
+        self.mapView.isScrollEnabled = false
+        self.mapView.isZoomEnabled = false
+        self.mapView.showsBuildings = false
+        self.mapView.showsUserLocation = false
+        self.mapView.tintColor = StyleManager.shared.accent
+        self.mapView.delegate = self
+        commentTableView.tableHeaderView = self.tableHeaderContainerView
+        
+        //Annotation in MapView
+        let postAnnotation = PostAnnotation()
+        postAnnotation.wanderpost = self.wanderPost
+        guard let postLocation = self.wanderPost.location else { return }
+        postAnnotation.coordinate = postLocation.coordinate
+        postAnnotation.title = self.wanderPost.content as? String
+        let span = MKCoordinateSpanMake(0.01, 0.01)
+        let region = MKCoordinateRegion(center: postLocation.coordinate, span: span)
+        let location2D = CLLocationCoordinate2DMake(postLocation.coordinate.latitude, postLocation.coordinate.longitude)
+        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
+        mapCamera.altitude = 500 // example altitude
+        mapCamera.pitch = 45
+        self.mapView.camera = mapCamera
+        self.mapView.setRegion(region, animated: false)
+        DispatchQueue.main.async {
+            self.mapView.addAnnotation(postAnnotation)
+        }
+    }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Methods
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -269,11 +305,12 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
         let currentReaction = self.reactions[indexPath.row]
         cell.messageLabel.text = currentReaction.content
-        cell.dateAndTimeLabel.text = currentReaction.time.description
+        cell.dateAndTimeLabel.text = currentReaction.dateAndTime
         CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
             guard let validUser = user else { return }
             DispatchQueue.main.async {
                 cell.nameLabel.text = validUser.username
+                cell.profileImageView.image = UIImage(data: validUser.userImageData)
                 print(validUser.username)
             }
         }
@@ -295,7 +332,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return tableView
     }()
     
-    lazy var mapHeaderContainerView: UIView = {
+    lazy var tableHeaderContainerView: UIView = {
         let view = UIView()
         return view
     }()
@@ -315,20 +352,13 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         let textField = UITextField()
         textField.backgroundColor = UIColor.clear
         textField.delegate = self
-        textField.placeholder = "Comment"
-        return textField
-    }()
-    
-    lazy var textFieldOnKeyboardView: WanderTextField = {
-        let textField = WanderTextField()
-        textField.delegate = self
-        textField.placeholder = "Comment"
+        textField.placeholder = "tom"
         return textField
     }()
     
     lazy var doneButton: WanderButton = {
         let button = WanderButton(title: "done")
-        button.addTarget(self, action: #selector(addCommentDoneTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(doneButtonPressed(sender:)), for: .touchUpInside)
         return button
     }()
     

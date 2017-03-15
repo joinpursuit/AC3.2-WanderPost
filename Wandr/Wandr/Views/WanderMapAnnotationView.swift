@@ -24,7 +24,7 @@ class WanderMapAnnotationView: MKAnnotationView {
         
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        self.image = UIImage(named: "wanderPin1")!
+        self.image = UIImage(named: "wanderPin4")!
         setupView()
         setConstraints()
     }
@@ -47,7 +47,7 @@ class WanderMapAnnotationView: MKAnnotationView {
     func setConstraints() {
         self.profileImageView.snp.makeConstraints { (view) in
             view.centerX.equalToSuperview()
-            view.centerY.equalToSuperview().offset(-13)
+            view.centerY.equalToSuperview().offset(-10)
             view.width.height.equalTo(33)
         }
     }

@@ -12,11 +12,12 @@ import UIKit
 //TODO List
 
 /*
- _ deleting form data base, this include comments, posts, friends
  _friend requests
  _error handling - check with jason the best way to go about retriggering the call
  _list of the users for friends
- 
+ _searching for friends (by username?) - make usernames completely unique
+ _make username node for querying. this is dumb.
+ _personal post working? - basic implementation at least
  */
 
 enum PostContentType: NSString {
@@ -48,8 +49,7 @@ class CloudManager {
     
     //MARK: - Creating a Post and a User
     
-    func createPost (post: WanderPost, completion: @escaping (CKRecord?, [Error]?) -> Void) {
-        
+    func createPost (post: WanderPost, to: WanderUser?,  completion: @escaping (CKRecord?, [Error]?) -> Void) {
         //Update user at the same time
         var completionRecord: CKRecord? = nil
         var completionError: [Error]? = nil
@@ -85,6 +85,9 @@ class CloudManager {
         postRecord.setObject(post.privacyLevel.rawValue, forKey: "privacyLevel")
         postRecord.setObject(post.locationDescription as CKRecordValue?, forKey: "locationDescription")
         postRecord.setObject(post.read as CKRecordValue?, forKey: "read")
+        if let validRecipient = to {
+            postRecord.setObject(validRecipient.id.recordName as CKRecordValue?, forKey: "recipient")
+        }
         
         let privateUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
         let publicUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
@@ -178,6 +181,9 @@ class CloudManager {
         let id = CKRecordID(recordName: currentUser!.id.recordName)
         let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
         
+        let usernameRecord = CKRecord(recordType: "username")
+        usernameRecord.setObject(userName as CKRecordValue, forKey: "username")
+        
         publicDatabase.fetch(withRecordID: self.currentUser!.id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
@@ -185,9 +191,15 @@ class CloudManager {
                 validUserRecord["username"] = validUsername
                 validUserRecord["profileImage"] = imageAsset
                 
-                self.publicDatabase.save(validUserRecord) { (record, error) in
+                let saveUser = CKModifyRecordsOperation()
+                
+                saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
                     completion(error)
                 }
+                
+                saveUser.recordsToSave = [validUserRecord, usernameRecord]
+                
+                self.publicDatabase.add(saveUser)
             }
         }
     }
@@ -232,7 +244,7 @@ class CloudManager {
         }
     }
     
-    //MARK: - Get Posts in Location
+    //MARK: - Search data base for users, posts
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
         let locationSorter = CKLocationSortDescriptor(key: "location", relativeLocation: currentLocation)
@@ -259,6 +271,37 @@ class CloudManager {
                 
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
                 
+            }
+        }
+    }
+    
+    func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
+        let predicate = NSPredicate(format: "self contains %@", user)
+        let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
+        let fetchUserInfo = CKFetchRecordsOperation()
+        
+        publicDatabase.perform(usernameQuery, inZoneWith: nil) { (records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            
+            if let validRecords = records,
+                    validRecords.count > 0 {
+                let userRecordIDs: [CKRecordID] = validRecords.map { $0.creatorUserRecordID! }
+                
+                fetchUserInfo.recordIDs = userRecordIDs
+                fetchUserInfo.fetchRecordsCompletionBlock = {(recordsDictionary, error) in
+                    if error != nil {
+                        completion(nil, error)
+                    }
+                    if let records = recordsDictionary?.values {
+                        let users: [WanderUser] = records.map { WanderUser(from: $0)! }
+                        completion(users, nil)
+                    }
+                }
+                self.publicDatabase.add(fetchUserInfo)
+            } else {
+                completion(nil, nil)
             }
         }
     }
@@ -349,10 +392,7 @@ class CloudManager {
                 completion(nil)
             }
         }
-        
-        
         self.publicDatabase.add(fetchPostsOperation)
-        
     }
     
     //MARK: - Friend Adding and Notifications
@@ -389,19 +429,36 @@ class CloudManager {
         publicDatabase.add(saveFriendsToBothUsersOperation)
     }
     
-    func addSubscriptionToCurrentuser(completion: @escaping (Error?) -> Void ) {
+    func addSubscriptionToCurrentUser(completion: @escaping (Error?) -> Void ) {
         let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.id.recordName)
         
-        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, options: .firesOnRecordUpdate)
+        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordUpdate)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertBody = "\(self.currentUser)"
+        notificationInfo.alertBody = "\(self.currentUser!.username) has added you as a friend!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
         friendAddedSubscription.notificationInfo = notificationInfo
         
         publicDatabase.save(friendAddedSubscription) { (subscription, error) in
+            completion(error)
+        }
+    }
+    
+    func addSubscriptionForPersonalPosts (completion: @escaping (Error?) -> Void ) {
+        let predicate = NSPredicate(format: "recipient == %@", self.currentUser!.id.recordName)
+        
+        let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
+        
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.alertBody = "\(self.currentUser!.username) has left you a message!"
+        notificationInfo.shouldBadge = true
+        notificationInfo.shouldSendContentAvailable = true
+        
+        personalPostSubscription.notificationInfo = notificationInfo
+        
+        publicDatabase.save(personalPostSubscription) { (subscription, error) in
             completion(error)
         }
     }

@@ -20,6 +20,7 @@ class WanderPost: ARAnnotation {
     let time: Date
     let locationDescription: String
     var read: Bool
+    let recipient: CKRecordID?
     
     var wanderUser: WanderUser?
     var reactions: [Reaction]?
@@ -31,7 +32,18 @@ class WanderPost: ARAnnotation {
         return formatter.string(from: time)
     }
 
-    init (location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, reactionIDs: [CKRecordID], postID: CKRecordID, time: Date, user: CKRecordID, locationDescription: String, read: Bool) {
+    init (location: CLLocation,
+          content: AnyObject,
+          contentType: PostContentType,
+          privacyLevel: PrivacyLevel,
+          reactionIDs: [CKRecordID],
+          postID: CKRecordID,
+          time: Date,
+          user: CKRecordID,
+          locationDescription: String,
+          read: Bool,
+          recipient: CKRecordID?) {
+        
         self.content = content
         self.contentType = contentType
         self.privacyLevel = privacyLevel
@@ -41,14 +53,30 @@ class WanderPost: ARAnnotation {
         self.user = user
         self.locationDescription = locationDescription
         self.read = read
+        self.recipient = recipient
         
         super.init()
             self.location = location
     }
     
-    convenience init(location: CLLocation, content: AnyObject, contentType: PostContentType, privacyLevel: PrivacyLevel, locationDescription: String) {
+    convenience init(location: CLLocation,
+                     content: AnyObject,
+                     contentType: PostContentType,
+                     privacyLevel: PrivacyLevel,
+                     locationDescription: String,
+                     recipient: CKRecordID? = nil) {
         
-        self.init(location: location, content: content, contentType: contentType, privacyLevel: privacyLevel, reactionIDs: [], postID: CKRecordID(recordName: "foobar"), time: Date(), user: CloudManager.shared.currentUser!.id, locationDescription: locationDescription, read: false)
+        self.init(location: location,
+                  content: content,
+                  contentType: contentType,
+                  privacyLevel: privacyLevel,
+                  reactionIDs: [],
+                  postID: CKRecordID(recordName: "foobar"),
+                  time: Date(),
+                  user: CloudManager.shared.currentUser!.id,
+                  locationDescription: locationDescription,
+                  read: false,
+                  recipient: recipient)
     }
     
     convenience init?(withCKRecord record: CKRecord) {
@@ -69,7 +97,24 @@ class WanderPost: ARAnnotation {
         
         let reactionIDStrings = record.object(forKey: "reactions") as? [String] ?? []
         let reactionIDs = reactionIDStrings.map { CKRecordID(recordName: $0) }
-        self.init(location: location, content: content as AnyObject, contentType: contentType, privacyLevel: privacyLevel, reactionIDs: reactionIDs, postID: postID, time: time, user: user, locationDescription: locationDescription, read: read)
+        
+        var recipient: CKRecordID? = nil
+        if let recipientID = record["recipient"] as? String {
+            recipient = CKRecordID(recordName: recipientID)
+        }
+
+        
+        self.init(location: location,
+                  content: content as AnyObject,
+                  contentType: contentType,
+                  privacyLevel: privacyLevel,
+                  reactionIDs: reactionIDs,
+                  postID: postID,
+                  time: time,
+                  user: user,
+                  locationDescription: locationDescription,
+                  read: read,
+                  recipient: recipient)
     }
     
     static func descriptionForPlaceMark(_ mark: CLPlacemark) -> String {
