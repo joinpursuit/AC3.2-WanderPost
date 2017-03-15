@@ -159,7 +159,16 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     print(error!.localizedDescription)
                 }
                 DispatchQueue.main.async {
+                    self.reactions.append(reaction)
+                    
+                    if let _ = self.wanderPost.reactions {
+                        self.wanderPost.reactions!.append(reaction)
+                    } else {
+                        self.wanderPost.reactions = [reaction]
+                    }
+                    
                     self.commentTextField.text = nil
+                    self.view.endEditing(true)
                     self.commentTableView.reloadData()
                 }
             }
