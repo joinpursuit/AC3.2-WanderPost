@@ -278,7 +278,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        self.userTextField.text = "\(self.dummyFriends[indexPath.row])"
         self.searchFriendTableView.isHidden = true
     }
     
@@ -330,10 +330,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         switch segmentIndex {
         case 0:
             toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
         case 1:
             toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
         case 2:
             toggleUserTextField(show: true)
+            self.searchFriendTableView.isHidden = true
         default:
             print("Can not make a decision")
         }
