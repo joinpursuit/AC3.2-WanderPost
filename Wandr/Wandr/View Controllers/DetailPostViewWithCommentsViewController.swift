@@ -50,7 +50,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         if let validReactions = self.wanderPost.reactions  {
             self.reactions = validReactions
         }
-        toggleNoCommentsLabel(comments: self.reactions)
     }
     
     
@@ -276,6 +275,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     // Mark: - Configure Constraints
     private func configureConstraints() {
+        
         commentTableView.snp.makeConstraints { (tableView) in
             tableView.top.leading.trailing.equalToSuperview()
         }
@@ -304,15 +304,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
         
-        noCommentsLabel.snp.makeConstraints { (view) in
-            view.bottom.equalTo(self.commentTableView.snp.bottom)
-            view.leading.trailing.equalToSuperview()
-            
-            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
-            
-            //let height = (self.view.frame.height * (1 - self.mapHeaderFrameHeightMultiplier)) - self.textFieldContainerHeight
-            view.height.equalTo(x)
-        }
+//        noCommentsLabel.snp.makeConstraints { (view) in
+//            view.bottom.equalTo(self.commentTableView.snp.bottom)
+//            view.leading.trailing.equalToSuperview()
+//            
+//            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
+//            
+//            view.height.equalTo(x)
+//        }
         
     }
     
