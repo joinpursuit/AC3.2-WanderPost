@@ -143,7 +143,7 @@ class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
             control.leading.equalToSuperview().offset(22)
             control.trailing.equalToSuperview().inset(22)
             control.bottom.equalToSuperview()
-            control.height.equalTo(44.0)
+            //control.height.equalTo(44.0)
         }
     }
     
