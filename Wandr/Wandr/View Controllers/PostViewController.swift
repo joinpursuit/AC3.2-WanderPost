@@ -132,6 +132,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     // MARK: - Actions
     func dismissButtonPressed(_ sender: UIButton) {
+        self.resignFirstResponder()
+        self.view.endEditing(true)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -280,16 +282,10 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.searchFriendTableView.isHidden = true
     }
     
-    //MARK: - TextView Delegate Methods
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == StyleManager.shared.placeholderText {
-            textView.text = nil
-            textView.textColor = StyleManager.shared.primaryText
-        }
-    }
+    //MARK: - TextField Delegate Methods
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        self.searchFriendTableView.isHidden = false
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
                 print(error?.localizedDescription)
@@ -300,6 +296,25 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             }
         }
         return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.searchFriendTableView.isHidden = true
+    }
+    
+    
+    
+    //MARK: - TextView Delegate Methods
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == StyleManager.shared.placeholderText {
+            textView.text = nil
+            textView.textColor = StyleManager.shared.primaryText
+        }
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
