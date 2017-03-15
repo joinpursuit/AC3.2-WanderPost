@@ -103,7 +103,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             view.top.equalTo(userTextField.snp.bottom).offset(16.0)
             view.leading.equalToSuperview().offset(16.0)
             view.trailing.equalToSuperview().inset(16.0)
-            view.height.equalTo(150)
+            view.height.equalToSuperview().multipliedBy(0.25)
         }
         
         postButton.snp.makeConstraints { (button) in
@@ -203,6 +203,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     func toggleUserTextField(show: Bool) {
         let height = show ? 44 : 1
+        let multipler = show ? 0.2 : 0.25
         let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut) {
             self.userTextField.snp.remakeConstraints { (view) in
                 view.leading.equalToSuperview().offset(16.0)
@@ -214,7 +215,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
                 view.leading.equalToSuperview().offset(16.0)
                 view.trailing.equalToSuperview().inset(16.0)
-                view.height.equalTo(150)
+                view.height.equalToSuperview().multipliedBy(multipler)
             }
             self.postContainerView.layoutIfNeeded()
         }
@@ -341,7 +342,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }()
     
     lazy var postButton: WanderButton = {
-        let button = WanderButton(title: "post")
+        let button = WanderButton(title: "post", spacing: 22)
         return button
     }()
     

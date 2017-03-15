@@ -32,11 +32,10 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         
         self.wanderUser = CloudManager.shared.currentUser
         
-        
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-
         registerForNotifications()
+        setupTableView()
         
         // check to see if the post belongs to the user to enable delete functionality
         if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
@@ -46,7 +45,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
         
         // get all reactions
-        
         if let validReactions = self.wanderPost.reactions  {
             self.reactions = validReactions
         }
@@ -142,7 +140,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     
     //MARK: - Actions
-    func doneButtonPressed () {
+    func doneButtonPressed (sender: UIButton) {
+        sender.animate()
         if let content = self.commentTextField.text,
             let post = self.wanderPost,
             content != "" {
@@ -160,6 +159,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     print(error!.localizedDescription)
                 }
                 DispatchQueue.main.async {
+                    self.commentTextField.text = nil
+                    self.getUpdatedPostReactions()
+                    self.viewDidLoad()
                     self.commentTableView.reloadData()
                 }
             }
@@ -172,7 +174,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 self.present(errorAlertController, animated: true, completion: nil)
             return
         }
-        commentTextField.text = nil
     }
     
     func deleteButtonTapped() {
@@ -314,6 +315,65 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 //        }
         
     }
+    // MARK: - TableView Cell and Header Customizations
+    func setupTableView() {
+        //TableViewCell
+        self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+
+        //TableViewSectionHeader MKMapView
+        self.tableHeaderContainerView.addSubview(self.mapView)
+        self.tableHeaderContainerView.addSubview(self.postView)
+        
+        self.mapView.snp.makeConstraints { (view) in
+            view.top.equalToSuperview()
+            view.leading.trailing.equalToSuperview()
+            view.height.equalToSuperview().multipliedBy(0.6)
+        }
+        self.postView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.mapView.snp.bottom)
+            view.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        
+        //TableViewHeader
+        self.tableHeaderContainerView.frame = CGRect(x: 0, y: 0, width: self.commentTableView.frame.size.width, height: self.view.frame.size.height * 0.5)
+        
+        //PostView in tableHeaderContainerView
+        self.postView.locationLabel.numberOfLines = 0
+        self.postView.locationLabel.text = self.wanderPost.locationDescription
+        self.postView.messageLabel.text = self.wanderPost.content as? String
+        self.postView.dateAndTimeLabel.text = self.wanderPost.dateAndTime
+        self.postView.commentCountLabel.text = ""
+        
+        
+        //MapView in tableHeaderContainerView
+        self.mapView.mapType = .standard
+        self.mapView.isScrollEnabled = false
+        self.mapView.isZoomEnabled = false
+        self.mapView.showsBuildings = false
+        self.mapView.showsUserLocation = false
+        self.mapView.tintColor = StyleManager.shared.accent
+        self.mapView.delegate = self
+        commentTableView.tableHeaderView = self.tableHeaderContainerView
+        
+        //Annotation in MapView
+        let postAnnotation = PostAnnotation()
+        postAnnotation.wanderpost = self.wanderPost
+        guard let postLocation = self.wanderPost.location else { return }
+        postAnnotation.coordinate = postLocation.coordinate
+        postAnnotation.title = self.wanderPost.content as? String
+        let span = MKCoordinateSpanMake(0.01, 0.01)
+        let region = MKCoordinateRegion(center: postLocation.coordinate, span: span)
+        let location2D = CLLocationCoordinate2DMake(postLocation.coordinate.latitude, postLocation.coordinate.longitude)
+        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
+        mapCamera.altitude = 500 // example altitude
+        mapCamera.pitch = 45
+        self.mapView.camera = mapCamera
+        self.mapView.setRegion(region, animated: false)
+        DispatchQueue.main.async {
+            self.mapView.addAnnotation(postAnnotation)
+        }
+    }
     
     // MARK: - UITableViewDelegate and UITableViewDataSource Methods
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -362,7 +422,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return tableView
     }()
     
-    lazy var mapHeaderContainerView: UIView = {
+    lazy var tableHeaderContainerView: UIView = {
         let view = UIView()
         return view
     }()
@@ -388,7 +448,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     lazy var doneButton: WanderButton = {
         let button = WanderButton(title: "done")
-        button.addTarget(self, action: #selector(doneButtonPressed), for: .touchUpInside)
+        button.addTarget(self, action: #selector(doneButtonPressed(sender:)), for: .touchUpInside)
         return button
     }()
     

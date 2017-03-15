@@ -24,12 +24,12 @@ class LoadingViewController: UIViewController {
             
             CloudManager.shared.addSubscriptionToCurrentUser { (error) in
                 //Error handling
-//                CloudManager.shared.checkForPersonalPosts(completion: { (error) in
-                    //Error handling
+                CloudManager.shared.addSubscriptionForPersonalPosts(completion: { (error) in
                     DispatchQueue.main.async {
                         self.resetRootView()
                     }
-//                })
+
+                })
             }
         }
     }

@@ -197,6 +197,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
             mapAnnotationView.profileImageView.image = nil
             mapAnnotationView.canShowCallout = true
+            
             let postAnnotation = annotation as! PostAnnotation            
             if let thisUser = postAnnotation.wanderpost.wanderUser {
                 mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
@@ -205,6 +206,16 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
+    // MARK: - Map View Delegate Methods
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        for view in views {
+            let endFrame = view.frame
+            view.frame = endFrame.offsetBy(dx: 0, dy: -500)
+            UIView.animate(withDuration: 0.5, animations: { 
+                view.frame = endFrame
+            })
+        }
+    }
     
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {

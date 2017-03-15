@@ -40,30 +40,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(friendsButtonTapped))
         self.navigationItem.rightBarButtonItem = searchFriendsButton
         
-       
-        
         guard let validWanderUser = CloudManager.shared.currentUser else { return }
         self.wanderUser = validWanderUser
         
-        //TabelViewCell
-        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
-        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
-        //TableViewHeader
-        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
-        
-        //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
-        self.profileHeaderView = ProfileView(frame: profileViewFrame)
-        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
-        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
-        //Do not delete becase imageToDisplay will be the long term solution
-        let imageToDisplay = validOriginalImage.fixRotatedImage()
-        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-        self.profileHeaderView.profileImageView.image = tempRotateSolution
-        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
-        postTableView.tableHeaderView = self.profileHeaderView
-        self.profileHeaderView.delegate = self
+        setupTableView()
         
         setupViewHierarchy()
         configureConstraints()
@@ -107,7 +87,29 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.dismiss(animated: true, completion: nil)
     }
     
-    // MARK: - TableView Header And Footer Customizations
+    // MARK: - TableView Cell, Header and Section Customizations
+    func setupTableView() {
+        //TabelViewCell
+        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
+        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        
+        //TableViewHeader
+        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
+        
+        //TableViewSectionHeader
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
+        self.profileHeaderView = ProfileView(frame: profileViewFrame)
+        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        //Do not delete becase imageToDisplay will be the long term solution
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+        self.profileHeaderView.profileImageView.image = tempRotateSolution
+        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
+        postTableView.tableHeaderView = self.profileHeaderView
+        self.profileHeaderView.delegate = self
+    }
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         let segmentedControlHeaderFooterView = (self.postTableView.dequeueReusableHeaderFooterView(withIdentifier: SegmentedControlHeaderFooterView.identifier) as? SegmentedControlHeaderFooterView)!
