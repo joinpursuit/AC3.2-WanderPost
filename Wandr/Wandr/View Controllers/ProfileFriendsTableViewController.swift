@@ -98,6 +98,7 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
                         }
         })
         let buttonTag = sender.tag
+        print(buttonTag)
     }
 
 }
