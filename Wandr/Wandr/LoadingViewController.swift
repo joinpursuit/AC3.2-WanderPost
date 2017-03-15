@@ -28,7 +28,6 @@ class LoadingViewController: UIViewController {
                     DispatchQueue.main.async {
                         self.resetRootView()
                     }
-
                 })
             }
         }
