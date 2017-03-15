@@ -53,6 +53,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        self.postTableView.reloadData()
+    }
+    
     // MARK: - Actions
     func imageViewTapped() {
         //Able to change profile picture

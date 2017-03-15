@@ -45,7 +45,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         if let validReactions = self.wanderPost.reactions  {
             self.reactions = validReactions
         }
-        toggleNoCommentsLabel(comments: self.reactions)
     }
 
     // MARK: - MKMapView
@@ -101,9 +100,18 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                     }
                     print(error!.localizedDescription)
                 }
+                // adding the reaction to the post so that it will appear on profileView
+                if let _ = self.wanderPost.reactions {
+                    self.wanderPost.reactions!.append(reaction)
+                } else {
+                    self.wanderPost.reactions = [reaction]
+                }
                 DispatchQueue.main.async {
+                    self.reactions.append(reaction)
                     self.commentTextField.text = nil
+                    self.view.endEditing(true)
                     self.commentTableView.reloadData()
+                    //need to scroll tableView to bottom
                 }
             }
         }
@@ -217,6 +225,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
 
     // Mark: - Configure Constraints
     private func configureConstraints() {
+        
         commentTableView.snp.makeConstraints { (tableView) in
             tableView.top.leading.trailing.equalToSuperview()
         }
@@ -245,15 +254,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
         
-        noCommentsLabel.snp.makeConstraints { (view) in
-            view.bottom.equalTo(self.commentTableView.snp.bottom)
-            view.leading.trailing.equalToSuperview()
-            
-            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
-            
-            //let height = (self.view.frame.height * (1 - self.mapHeaderFrameHeightMultiplier)) - self.textFieldContainerHeight
-            view.height.equalTo(x)
-        }
+//        noCommentsLabel.snp.makeConstraints { (view) in
+//            view.bottom.equalTo(self.commentTableView.snp.bottom)
+//            view.leading.trailing.equalToSuperview()
+//            
+//            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
+//            
+//            view.height.equalTo(x)
+//        }
         
     }
     // MARK: - TableView Cell and Header Customizations
