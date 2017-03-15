@@ -24,6 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
         
+        //Set the Badge to 0
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = LoadingViewController()
         self.window?.makeKeyAndVisible()

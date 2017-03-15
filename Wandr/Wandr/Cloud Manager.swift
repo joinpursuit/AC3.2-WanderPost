@@ -14,7 +14,6 @@ import UIKit
 /*
  _friend requests
  _error handling - check with jason the best way to go about retriggering the call
- _searching for friends (by username?) - make usernames completely unique
  _personal post working? - basic implementation at least
  */
 
@@ -239,6 +238,24 @@ class CloudManager {
         }
     }
     
+    func checkUsernameAvailability (_ username: String, completion: @escaping (Bool, Error?) -> Void ) {
+        let predicate = NSPredicate(format: "username == %@", username)
+        let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
+        
+        publicDatabase.perform(usernameQuery, inZoneWith: nil) { (records, error) in
+            
+            if error != nil {
+                completion(false, error)
+            }
+            if records?.count == 0 {
+                completion(true, nil)
+            } else {
+                completion(false, nil)
+            }
+        }
+
+    }
+    
     //MARK: - Search data base for users, posts
     
     func getWanderpostsForMap (_ currentLocation: CLLocation, completion: @escaping ([WanderPost]?, Error?) -> Void) {
@@ -363,10 +380,10 @@ class CloudManager {
                     if let validUserRecord = validRecords[user],
                         let user = WanderUser(from: validUserRecord) {
                         let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
-                        usersPosts.map { $0.wanderUser = user }
+                        _ = usersPosts.map { $0.wanderUser = user }
                     } else if user.recordName == "__defaultOwner__", let currentUser = CloudManager.shared.currentUser {
                         let usersPosts = posts.filter { $0.user.recordName == "__defaultOwner__" }
-                        usersPosts.map { $0.wanderUser = currentUser }
+                        _ = usersPosts.map { $0.wanderUser = currentUser }
                     }
                 }
                 
@@ -428,10 +445,11 @@ class CloudManager {
     func addSubscriptionToCurrentUser(completion: @escaping (Error?) -> Void ) {
         let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.id.recordName)
         
-        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordUpdate)
+        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordDeletion)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertBody = "\(self.currentUser!.username) has added you as a friend!"
+        let currentUsername = self.currentUser!.username
+        notificationInfo.alertBody = "\(currentUsername) has added you as a friend!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -448,7 +466,8 @@ class CloudManager {
         let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertBody = "\(self.currentUser!.username) has left you a message!"
+        let currentUsername = self.currentUser!.username
+        notificationInfo.alertBody = "\(currentUsername) has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
