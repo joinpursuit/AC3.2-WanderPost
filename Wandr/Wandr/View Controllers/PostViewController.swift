@@ -14,7 +14,7 @@ protocol AddNewWanderPostDelegate {
     func addNewPost(post: WanderPost)
 }
 
-class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, TwicketSegmentedControlDelegate {
+class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
@@ -23,9 +23,12 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     var newPostDelegate: AddNewWanderPostDelegate!
     var recipient: WanderUser? = nil
     
+    var dummyFriends = [1,2,3,4,5,6]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = StyleManager.shared.primaryDark
+        setupTableView()
         setupViewHierarchy()
         configureConstraints()
         configureTargets()
@@ -56,11 +59,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.postContainerView.addSubview(postTextView)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
+        self.postContainerView.addSubview(searchFriendTableView)
         
         self.segmentedControlContainerView.addSubview(segmentedControl)
     }
     
     private func configureConstraints() {
+        
         postContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.trailing.equalToSuperview()
@@ -109,6 +114,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         postButton.snp.makeConstraints { (button) in
             button.top.equalTo(postTextView.snp.bottom).offset(8)
             button.trailing.equalToSuperview().inset(16)
+        }
+        
+        searchFriendTableView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.userTextField.snp.bottom)
+            view.leading.equalTo(self.userTextField.snp.leading)
+            view.trailing.equalTo(self.userTextField.snp.trailing)
+            view.bottom.equalTo(self.postButton.snp.bottom)
         }
     }
     
@@ -243,6 +255,31 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.present(alert, animated: true, completion: nil)
     }
     
+    //MARK: - Setup TableView And TableView Delegate Methods
+    func setupTableView() {
+        self.searchFriendTableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.dummyFriends.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        cell.addRemoveFriendButton.isHidden = true
+        cell.nameLabel.text = "\(self.dummyFriends[indexPath.row])"
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        self.searchFriendTableView.isHidden = true
+    }
+    
     //MARK: - TextView Delegate Methods
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -351,8 +388,11 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         return button
     }()
     
-    lazy var searchFriendToPrivatePostTableView: UITableView = {
+    lazy var searchFriendTableView: UITableView = {
         let tableView = UITableView()
+        tableView.isHidden = true
+        tableView.dataSource = self
+        tableView.delegate = self
         return tableView
     }()
 }
