@@ -253,8 +253,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
                 print(error?.localizedDescription)

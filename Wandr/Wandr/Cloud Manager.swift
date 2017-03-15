@@ -204,7 +204,6 @@ class CloudManager {
     
     //MARK: - Checking User existance and pulling current User
     
-    
     //Refactor this into one functions that gets the current user, make it a Wanderuser. if that fails, present the error, if the error is no user found, present the onboard screen
     func getCurrentUser(completion: @escaping (Error?)-> Void ) {
         
@@ -232,11 +231,9 @@ class CloudManager {
                     completion(false, error)
                     return
                 }
-                print("\n\n error info \n\n")
                 dump(ckError.userInfo)
             }
             if let record = record {
-                print("\n\n record \n\n")
                 completion(true, nil)
             }
         }
@@ -367,9 +364,9 @@ class CloudManager {
                         let user = WanderUser(from: validUserRecord) {
                         let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
                         usersPosts.map { $0.wanderUser = user }
-                    } else if let user = CloudManager.shared.currentUser {
-                        let usersPosts = posts.filter { $0.user.recordName == user.id.recordName }
-                        usersPosts.map { $0.wanderUser = user }
+                    } else if user.recordName == "__defaultOwner__", let currentUser = CloudManager.shared.currentUser {
+                        let usersPosts = posts.filter { $0.user.recordName == "__defaultOwner__" }
+                        usersPosts.map { $0.wanderUser = currentUser }
                     }
                 }
                 
