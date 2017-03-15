@@ -25,8 +25,8 @@ class WanderUser {
     }
     
     convenience init?(from record: CKRecord) {
-        guard let id = record.creatorUserRecordID,
-            let username = record["username"] as? String,
+        
+        guard let username = record["username"] as? String,
             let userImageAsset = record["profileImage"] as? CKAsset,
             let userImageData = try? Data(contentsOf: userImageAsset.fileURL) else { return nil }
         
@@ -35,7 +35,9 @@ class WanderUser {
         
         let postStrings = record["posts"] as? [String] ?? []
         let posts = postStrings.map { CKRecordID(recordName: $0) }
-                
+        
+        let id = record.recordID
+        
         self.init(id: id,
                   username: username,
                   userImageData: userImageData,
