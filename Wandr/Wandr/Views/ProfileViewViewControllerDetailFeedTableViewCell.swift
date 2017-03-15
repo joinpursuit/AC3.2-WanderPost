@@ -13,6 +13,7 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = StyleManager.shared.primaryLight
         setupViewHierarchy()
         configureConstraints()
     }
@@ -35,7 +36,6 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
         self.addSubview(profileImageView)
         self.addSubview(nameLabel)
         self.addSubview(dateAndTimeLabel)
-//        self.addSubview(locationLabel)
         self.addSubview(messageLabel)
     }
     
@@ -73,7 +73,7 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     
     lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
+        label.text = "..."
         label.font = StyleManager.shared.comfortaaFont18
         label.textColor = StyleManager.shared.primaryDark
         return label
@@ -81,23 +81,15 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     
     lazy var dateAndTimeLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
+        label.text = "..."
         label.font = StyleManager.shared.comfortaaFont14
         label.textColor = StyleManager.shared.primaryDark
         return label
     }()
     
-//    lazy var locationLabel: UILabel = {
-//        let label = UILabel()
-//        label.text = "Location"
-//        label.font = StyleManager.shared.comfortaaFont14
-//        label.tintColor = StyleManager.shared.secondaryText
-//        return label
-//    }()
-    
     lazy var messageLabel: UILabel = {
         let label = UILabel()
-        label.text = ""
+        label.text = "..."
         label.font = UIFont.systemFont(ofSize: 16)
         label.tintColor = StyleManager.shared.primaryText
         label.numberOfLines = 0
