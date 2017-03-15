@@ -161,7 +161,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                 }
                 DispatchQueue.main.async {
                     self.commentTextField.text = nil
-                    self.viewDidLoad()
                     self.commentTableView.reloadData()
                 }
             }
