@@ -34,6 +34,7 @@
 		A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */; };
 		A7D046821E6FB1CC002D2F24 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D046811E6FB1CC002D2F24 /* PostView.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
+		DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
 		DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */; };
@@ -88,6 +89,7 @@
 		A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailPostViewWithCommentsViewController.swift; path = "View Controllers/DetailPostViewWithCommentsViewController.swift"; sourceTree = "<group>"; };
 		A7D046811E6FB1CC002D2F24 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostView.swift; path = Views/PostView.swift; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommentsSectionHeaderView.swift; path = Views/CommentsSectionHeaderView.swift; sourceTree = "<group>"; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
 		DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				A75C0B811E6DD80600713C87 /* WanderSegmentedControl.swift */,
 				A7D046811E6FB1CC002D2F24 /* PostView.swift */,
 				A7A087A81E78A64600FF9BF9 /* Extension UIButton.swift */,
+				DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -440,6 +443,7 @@
 				A7686F861E67626E00402053 /* ProfileView.swift in Sources */,
 				DEA4EF2F1E7233EC0038E330 /* ProfileFriendTableViewCell.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
+				DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */,
