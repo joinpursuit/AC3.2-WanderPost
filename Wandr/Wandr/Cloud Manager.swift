@@ -14,9 +14,7 @@ import UIKit
 /*
  _friend requests
  _error handling - check with jason the best way to go about retriggering the call
- _list of the users for friends
  _searching for friends (by username?) - make usernames completely unique
- _make username node for querying. this is dumb.
  _personal post working? - basic implementation at least
  */
 
@@ -276,11 +274,12 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
-        let predicate = NSPredicate(format: "self contains %@", user)
+        let predicate = NSPredicate(format: "username BEGINSWITH %@", user)
         let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
         let fetchUserInfo = CKFetchRecordsOperation()
         
         publicDatabase.perform(usernameQuery, inZoneWith: nil) { (records, error) in
+            
             if error != nil {
                 completion(nil, error)
             }
@@ -484,6 +483,7 @@ class CloudManager {
                 commentRecord.setObject(comment.postID, forKey: "postID")
                 
                 let modifiedRecord = self.addValue(to: postRecord, key: "reactions", value: commentRecord.recordID.recordName)
+                
                 saveCommentRecords.recordsToSave = [modifiedRecord, commentRecord]
             }
         }

@@ -21,21 +21,15 @@ class LoadingViewController: UIViewController {
         configureConstraints()
         CloudManager.shared.getCurrentUser { (error) in
             //Error handling
-//            let usernameRecord = CKRecord(recordType: "username")
-//            usernameRecord.setObject(CloudManager.shared.currentUser!.username as CKRecordValue?, forKey: "username")
-//            
-//            CKContainer.default().publicCloudDatabase.save(usernameRecord, completionHandler: { (record, error) in
-//                dump(record)
-//            })
             
             CloudManager.shared.addSubscriptionToCurrentUser { (error) in
                 //Error handling
-//                CloudManager.shared.checkForPersonalPosts(completion: { (error) in
-                    //Error handling
+                CloudManager.shared.addSubscriptionForPersonalPosts(completion: { (error) in
                     DispatchQueue.main.async {
                         self.resetRootView()
                     }
-//                })
+
+                })
             }
         }
     }
