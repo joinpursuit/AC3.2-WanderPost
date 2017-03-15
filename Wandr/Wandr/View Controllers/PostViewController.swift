@@ -22,6 +22,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     var location: CLLocation!
     var newPostDelegate: AddNewWanderPostDelegate!
     var recipient: WanderUser? = nil
+    var potentialRecipients: [WanderUser] = [WanderUser]()
+    
     
     var dummyFriends = [1,2,3,4,5,6]
     
@@ -267,18 +269,23 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.dummyFriends.count
+        return self.potentialRecipients.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        
+        let recipient = self.potentialRecipients[indexPath.row]
         cell.addRemoveFriendButton.isHidden = true
-        cell.nameLabel.text = "\(self.dummyFriends[indexPath.row])"
+        cell.nameLabel.text = recipient.username
+        cell.profileImageView.image = UIImage(data: recipient.userImageData)
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.userTextField.text = "\(self.dummyFriends[indexPath.row])"
+        self.recipient = self.potentialRecipients[indexPath.row]
+        guard let validRecipient = self.recipient else { return }
+        self.userTextField.text = "\(validRecipient.username)"
         self.searchFriendTableView.isHidden = true
     }
     
@@ -292,7 +299,11 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             }
             if let validUsers = wanderUsers {
                 print(validUsers.count)
+                self.potentialRecipients = validUsers
                 self.recipient = validUsers[0]
+            }
+            DispatchQueue.main.async {
+                self.searchFriendTableView.reloadData()
             }
         }
         return true
@@ -408,6 +419,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     lazy var searchFriendTableView: UITableView = {
         let tableView = UITableView()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 150
         tableView.isHidden = true
         tableView.dataSource = self
         tableView.delegate = self
