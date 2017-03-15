@@ -14,7 +14,7 @@ protocol AddNewWanderPostDelegate {
     func addNewPost(post: WanderPost)
 }
 
-class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, TwicketSegmentedControlDelegate {
+class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, TwicketSegmentedControlDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
@@ -22,10 +22,15 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     var location: CLLocation!
     var newPostDelegate: AddNewWanderPostDelegate!
     var recipient: WanderUser? = nil
+    var potentialRecipients: [WanderUser] = [WanderUser]()
+    
+    
+    var dummyFriends = [1,2,3,4,5,6]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = StyleManager.shared.primaryDark
+        setupTableView()
         setupViewHierarchy()
         configureConstraints()
         configureTargets()
@@ -56,11 +61,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.postContainerView.addSubview(postTextView)
         self.postContainerView.addSubview(postButton)
         self.postContainerView.addSubview(dismissButton)
+        self.postContainerView.addSubview(searchFriendTableView)
         
         self.segmentedControlContainerView.addSubview(segmentedControl)
     }
     
     private func configureConstraints() {
+        
         postContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.trailing.equalToSuperview()
@@ -110,6 +117,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             button.top.equalTo(postTextView.snp.bottom).offset(8)
             button.trailing.equalToSuperview().inset(16)
         }
+        
+        searchFriendTableView.snp.makeConstraints { (view) in
+            view.top.equalTo(self.userTextField.snp.bottom)
+            view.leading.equalTo(self.userTextField.snp.leading)
+            view.trailing.equalTo(self.userTextField.snp.trailing)
+            view.bottom.equalTo(self.postButton.snp.bottom)
+        }
     }
     
     func configureTargets () {
@@ -120,6 +134,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     
     // MARK: - Actions
     func dismissButtonPressed(_ sender: UIButton) {
+        self.resignFirstResponder()
+        self.view.endEditing(true)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -243,6 +259,66 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.present(alert, animated: true, completion: nil)
     }
     
+    //MARK: - Setup TableView And TableView Delegate Methods
+    func setupTableView() {
+        self.searchFriendTableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.potentialRecipients.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        
+        let recipient = self.potentialRecipients[indexPath.row]
+        cell.addRemoveFriendButton.isHidden = true
+        cell.nameLabel.text = recipient.username
+        cell.profileImageView.image = UIImage(data: recipient.userImageData)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.recipient = self.potentialRecipients[indexPath.row]
+        guard let validRecipient = self.recipient else { return }
+        self.userTextField.text = "\(validRecipient.username)"
+        self.searchFriendTableView.isHidden = true
+    }
+    
+    //MARK: - TextField Delegate Methods
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        self.searchFriendTableView.isHidden = false
+        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            if let validUsers = wanderUsers {
+                print(validUsers.count)
+                self.potentialRecipients = validUsers
+                self.recipient = validUsers[0]
+            }
+            DispatchQueue.main.async {
+                self.searchFriendTableView.reloadData()
+            }
+        }
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.searchFriendTableView.isHidden = true
+    }
+    
+    
+    
     //MARK: - TextView Delegate Methods
     
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -250,19 +326,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             textView.text = nil
             textView.textColor = StyleManager.shared.primaryText
         }
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            if let validUsers = wanderUsers {
-                print(validUsers.count)
-                self.recipient = validUsers[0]
-            }
-        }
-        return true
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -278,10 +341,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         switch segmentIndex {
         case 0:
             toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
         case 1:
             toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
         case 2:
             toggleUserTextField(show: true)
+            self.searchFriendTableView.isHidden = true
         default:
             print("Can not make a decision")
         }
@@ -349,5 +415,15 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         button.setImage(UIImage(named: "cancel"), for: .normal)
         button.addTarget(self, action: #selector(dismissButtonPressed), for: .touchUpInside)
         return button
+    }()
+    
+    lazy var searchFriendTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 150
+        tableView.isHidden = true
+        tableView.dataSource = self
+        tableView.delegate = self
+        return tableView
     }()
 }

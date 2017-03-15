@@ -48,6 +48,10 @@ class StyleManager {
         return UIColor(hexString: "#C7C7CD")
     }
     
+    var sectionHeaderGray: UIColor {
+        return UIColor(hexString: "#E6E6E6")
+    }
+    
     var comfortaaFont12: UIFont {
         return UIFont.Comfortaa.regular(size: 12)!
     }

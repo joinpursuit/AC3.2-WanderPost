@@ -14,12 +14,15 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     var wanderPost: WanderPost!
     var wanderUser: WanderUser!
-    var reactions: [Reaction] = [Reaction]()
+    var reactions: [Reaction] = [Reaction]() {
+        didSet {
+            self.emptyState = reactions.isEmpty ? true : false
+        }
+    }
     
-    var dummyDataComments = [1,2,3,4,5,6,7]
-    
-    var mapHeaderFrameHeightMultiplier: CGFloat = 0.4
     let textFieldContainerHeight: CGFloat = 52
+    
+    var emptyState: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +72,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     // MARK: - Helper Functions
     
+    
     func toggleNoCommentsLabel(comments: [Reaction]) {
         if comments.isEmpty {
             noCommentsLabel.isHidden = false
@@ -78,7 +82,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             commentTableView.isScrollEnabled = true
         }
     }
-
 
     
     //MARK: - Actions
@@ -254,22 +257,16 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             button.trailing.bottom.equalToSuperview().inset(8.0)
         }
         
-//        noCommentsLabel.snp.makeConstraints { (view) in
-//            view.bottom.equalTo(self.commentTableView.snp.bottom)
-//            view.leading.trailing.equalToSuperview()
-//            
-//            let x = self.view.frame.height - (self.commentTableView.tableHeaderView?.frame.height)! - textFieldContainerHeight - (navigationController?.navigationBar.frame.height)! - (self.tabBarController?.tabBar.frame.height)!
-//            
-//            view.height.equalTo(x)
-//        }
-        
     }
+    
     // MARK: - TableView Cell and Header Customizations
     func setupTableView() {
         //TableViewCell
         self.commentTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
         self.commentTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
-
+        
+        self.commentTableView.register(CommentsSectionHeaderView.self, forHeaderFooterViewReuseIdentifier: CommentsSectionHeaderView.identifier)
+        
         //TableViewSectionHeader MKMapView
         self.tableHeaderContainerView.addSubview(self.mapView)
         
@@ -316,15 +313,26 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         return 2
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch section{
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
         case 1:
-            return "Comments"
+            return 30
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 1:
+            let commentHeader = self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsSectionHeaderView.identifier) as! CommentsSectionHeaderView
+            commentHeader.sectionNameLabel.text = self.emptyState ? "    no comments" : "    comments"
+            return commentHeader
         default:
             return nil
         }
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 1:
