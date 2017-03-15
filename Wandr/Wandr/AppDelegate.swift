@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let navigationBarAppearance = UINavigationBar.appearance()
         navigationBarAppearance.barTintColor = StyleManager.shared.primary
         navigationBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
-                                                      NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
+                                                       NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
         let barButtonAppearance = UIBarButtonItem.appearance()
         barButtonAppearance.tintColor = StyleManager.shared.accent
         
@@ -82,7 +82,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         tabController.viewControllers = [profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.tabBar.unselectedItemTintColor = UIColor.white
-            tabController.selectedIndex = 1
+        tabController.selectedIndex = 1
         
         return tabController
     }
@@ -155,6 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 database.fetch(withRecordID: queryNotification.recordID!, completionHandler: { (record: CKRecord?, error: Error?) -> Void in
                     guard error == nil else {
                         // Handle the error here
+                        print("notification error: \(error!.localizedDescription)")
                         return
                     }
                     
@@ -166,7 +167,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 })
             }
         }
-        
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -211,7 +211,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let queue = OperationQueue()
         queue.addOperations([userFetch, userSave], waitUntilFinished: false)
     }
-
+    
 }
 
 
