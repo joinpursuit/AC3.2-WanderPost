@@ -24,6 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //https://developer.apple.com/reference/foundation/nsusernotificationcenter
         //https://www.appcoda.com/push-notification-ios/
         
+        //Set the Badge to 0
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = LoadingViewController()
         self.window?.makeKeyAndVisible()
@@ -149,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 } else {
                     database = CKContainer.default().privateCloudDatabase
                 }
-                database.fetch(withRecordID: queryNotification.recordID!, completionHandler: { (record: CKRecord?, error: NSError?) -> Void in
+                database.fetch(withRecordID: queryNotification.recordID!, completionHandler: { (record: CKRecord?, error: Error?) -> Void in
                     guard error == nil else {
                         // Handle the error here
                         return
@@ -160,7 +163,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     } else {
                         // Use the information in the record object to create a new local object
                     }
-                } as! (CKRecord?, Error?) -> Void)
+                })
             }
         }
         
