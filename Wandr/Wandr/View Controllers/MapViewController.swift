@@ -410,19 +410,13 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
         switch segmentIndex {
         case 0:
-            print("Everyone")
             self.wanderposts = allValidWanderPosts
-            dump(self.wanderposts?.count)
         case 1:
-            print("Friends")
             let friends = allValidWanderPosts.filter{ $0.privacyLevel == .friends }
             let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message }
             self.wanderposts = friends + messages
-            dump(self.wanderposts?.count)
         case 2:
-            print("Message")
             self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message}
-            dump(self.wanderposts?.count)
         default:
             print("Can not make a decision")
         }
