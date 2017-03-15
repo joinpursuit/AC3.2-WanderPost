@@ -59,8 +59,14 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         let user = self.searchedFriends![indexPath.row]
         cell.nameLabel.text = "\(user.username)"
         cell.addRemoveFriendButton.tag = indexPath.row
-        cell.addRemoveFriendButton.addTarget(self, action: #selector(addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
+        let areWeFriends = CloudManager.shared.currentUser!.friends.contains(user.id)
+        let buttonTitle = areWeFriends ? "remove" : "add"
+        cell.addRemoveFriendButton.setTitle(buttonTitle, for: .normal)
+        
+        cell.addRemoveFriendButton.addTarget(self, action: #selector(self.addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
 
+        
+        
         cell.nameLabel.text = "Tom"
         
         return cell
@@ -88,6 +94,29 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     }
     
     func addOrRemoveFriend(_ sender: UIButton) {
+        let buttonTag = sender.tag
+        print(buttonTag)
+
+        let userToAdd = self.searchedFriends![buttonTag]
+        let areWeFriends = CloudManager.shared.currentUser!.friends.contains(userToAdd.id)
+        
+        if areWeFriends {
+            CloudManager.shared.delete(friend: userToAdd.id) { (error) in
+                print(error)
+                DispatchQueue.main.async {
+                    sender.setTitle("add", for: .normal)
+
+                }
+            }
+            
+        } else {
+            CloudManager.shared.add(friend: userToAdd.id) { (error) in
+                print(error)
+                DispatchQueue.main.async {
+                    sender.setTitle("remove", for: .normal)
+                }
+            }
+        }
         UIView.animate(withDuration: 0.1,
                        animations: {
                         sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
@@ -97,8 +126,5 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
                             sender.transform = CGAffineTransform.identity
                         }
         })
-        let buttonTag = sender.tag
-        print(buttonTag)
     }
-
 }
