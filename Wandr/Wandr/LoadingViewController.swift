@@ -24,11 +24,16 @@ class LoadingViewController: UIViewController {
         
         CloudManager.shared.getCurrentUser { (error) in
             //Error handling
-            CloudManager.shared.addSubscriptionToCurrentUser { (error) in
-                //Error handling
-                CloudManager.shared.addSubscriptionForPersonalPosts { (error) in
-                    DispatchQueue.main.async {
-                        self.resetRootView()
+            if error != nil {
+                //TODO: Handle errors
+                print(error)
+            } else {
+                CloudManager.shared.addSubscriptionToCurrentUser { (error) in
+                    //Error handling
+                    CloudManager.shared.addSubscriptionForPersonalPosts { (error) in
+                        DispatchQueue.main.async {
+                            self.resetRootView()
+                        }
                     }
                 }
             }
@@ -38,7 +43,7 @@ class LoadingViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         flipLogoFromFourToTwoToRight()
     }
-
+    
     func resetRootView() {
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             let rootVC = AppDelegate.setUpAppNavigation()
@@ -146,7 +151,7 @@ class LoadingViewController: UIViewController {
                 view.trailing.equalTo(self.logoContainerView.snp.centerX)
                 view.top.equalTo(self.logoContainerView.snp.centerY)
             })
-
+            
         }, completion: nil)
         UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo3.snp.remakeConstraints { (view) in
@@ -154,9 +159,9 @@ class LoadingViewController: UIViewController {
                 view.trailing.equalTo(self.logoContainerView.snp.centerX)
                 view.top.equalTo(self.logoContainerView.snp.centerY)
             }
-
+            
         }) { (completion: Bool) in
-          self.flipLogoFromTwoToFourToRight()
+            self.flipLogoFromTwoToFourToRight()
         }
     }
     
@@ -168,7 +173,7 @@ class LoadingViewController: UIViewController {
                 view.trailing.top.equalToSuperview()
                 view.bottom.equalTo(self.logoContainerView.snp.centerY)
             })
-
+            
         }, completion: nil)
         UIView.transition(with: self.logo3, duration: 0.5, options: flipTransitionOptions, animations: {
             self.logo3.snp.remakeConstraints({ (view) in
@@ -224,8 +229,8 @@ class LoadingViewController: UIViewController {
             view.trailing.top.equalToSuperview()
             view.bottom.equalTo(logoContainerView.snp.centerY)
         }
-
-
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -234,7 +239,7 @@ class LoadingViewController: UIViewController {
     }
     
     lazy var logoContainerView: UIView = {
-       let view = UIView()
+        let view = UIView()
         return view
     }()
     

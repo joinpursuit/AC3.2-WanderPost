@@ -471,7 +471,7 @@ class CloudManager {
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
         notificationInfo.alertBody = currentUsername + " has added you as a friend!"
-        notificationInfo.desiredKeys
+        //notificationInfo.desiredKeys
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
