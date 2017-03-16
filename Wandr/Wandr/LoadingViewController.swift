@@ -26,7 +26,7 @@ class LoadingViewController: UIViewController {
             //Error handling
             if error != nil {
                 //TODO: Handle errors
-                self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
+               // self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
                 
                 if let ckError = error as? CKError {
                     print(ckError.errorUserInfo)

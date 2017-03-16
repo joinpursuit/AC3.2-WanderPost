@@ -121,8 +121,8 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         logoImageView.snp.makeConstraints { (view) in
             view.top.equalTo(self.registerButton.snp.bottom).offset(8)
             view.centerX.equalToSuperview()
-            view.height.equalTo(75)
-            view.width.equalTo(75)
+            view.height.equalTo(200)
+            view.width.equalTo(200)
         }
         
         introLabel.snp.makeConstraints { (label) in
@@ -193,8 +193,8 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     lazy var logoImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.image = #imageLiteral(resourceName: "IconWhite")
-        imageView.frame.size = CGSize(width: 75.0, height: 75.0)
+        imageView.image = #imageLiteral(resourceName: "logo_primary")
+        imageView.frame.size = CGSize(width: 200.0, height: 200.0)
         imageView.isUserInteractionEnabled = false
         return imageView
     }()
@@ -202,8 +202,8 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     lazy var introLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.text = "Wanderpost uses your apple \n account to store your posts. \n Please add a username and profile picture."
-        label.textColor = UIColor.white
+        label.text = "Wanderpost uses your Apple iCloud \n account to store your posts. \n Please add a username and profile picture."
+        label.textColor = StyleManager.shared.primary
         label.textAlignment = .center
         return label
     }()
