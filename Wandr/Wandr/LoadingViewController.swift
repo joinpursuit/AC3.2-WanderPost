@@ -187,6 +187,8 @@ class LoadingViewController: UIViewController {
         self.logoContainerView.addSubview(logo2)
         self.logoContainerView.addSubview(logo3)
         self.logoContainerView.addSubview(logo4)
+        self.view.addSubview(appNameLabel)
+        self.view.addSubview(appTagLineLabel)
     }
     
     private func configureConstraints() {
@@ -220,6 +222,16 @@ class LoadingViewController: UIViewController {
             view.leading.equalTo(logoContainerView.snp.centerX)
             view.trailing.top.equalToSuperview()
             view.bottom.equalTo(logoContainerView.snp.centerY)
+        }
+        
+        appNameLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.logoContainerView.snp.bottom).offset(16)
+            label.centerX.equalToSuperview()
+        }
+        
+        appTagLineLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.appNameLabel.snp.bottom).offset(16)
+            label.centerX.equalToSuperview()
         }
 
 
@@ -259,6 +271,22 @@ class LoadingViewController: UIViewController {
         return imageView
     }()
     
+    
+    lazy var appNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = StyleManager.shared.comfortaaFont20
+        label.textColor = UIColor.white
+        label.text = "wanderpost"
+        return label
+    }()
+    
+    lazy var appTagLineLabel: UILabel = {
+        let label = UILabel()
+        label.font = StyleManager.shared.comfortaaFont16
+        label.textColor = UIColor.white
+        label.text = "Discover a world of hidden messages."
+        return label
+    }()
     
     /*
      // MARK: - Navigation
