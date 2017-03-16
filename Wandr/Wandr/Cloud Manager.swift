@@ -9,12 +9,13 @@ import Foundation
 import CloudKit
 import UIKit
 
-//TODO List
+//TODO: List
 
 /*
  _friend requests
  _error handling - check with jason the best way to go about retriggering the call
  _personal post working? - basic implementation at least
+ _personal website
  */
 
 enum PostContentType: NSString {
@@ -40,6 +41,9 @@ class CloudManager {
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
     private let container = CKContainer.default()
+    
+    
+    //This could be implicitly unwrapped, look into refactoring -- specifically in profileview controller there is a useless guard statement. Now is the time to look into handling the alert.
     
     var currentUser: WanderUser?
     
@@ -288,6 +292,7 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
+        //TODO: make all usernames lowercase
         let predicate = NSPredicate(format: "username BEGINSWITH %@", user)
         let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
         let fetchUserInfo = CKFetchRecordsOperation()
@@ -449,6 +454,7 @@ class CloudManager {
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
         notificationInfo.alertBody = currentUsername + " has added you as a friend!"
+        notificationInfo.desiredKeys
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         

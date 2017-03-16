@@ -19,6 +19,9 @@ class LoadingViewController: UIViewController {
         self.view.backgroundColor = StyleManager.shared.primary
         setupViewHierarchy()
         configureConstraints()
+        
+        //TODO: This needs to present an alert if you aren't signed into iCloud
+        
         CloudManager.shared.getCurrentUser { (error) in
             //Error handling
             CloudManager.shared.addSubscriptionToCurrentUser { (error) in
