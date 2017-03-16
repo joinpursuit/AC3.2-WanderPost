@@ -13,9 +13,9 @@ import UIKit
 
 /*
  _friend requests
- _error handling - check with jason the best way to go about retriggering the call
- _personal post working? - basic implementation at least
+ _error handling - check with jason the best way to go about retriggering the call/present alerts for when they fail with user appropriate descriptions of what happened.
  _personal website
+ _make the push notification trigger a notification with the correct data/rewrite the userinfo to have the right information before making the CKNotification
  */
 
 enum PostContentType: NSString {
@@ -226,22 +226,6 @@ class CloudManager {
             }
         }
         self.publicDatabase.add(currentUserFetch)
-    }
-    
-    func checkUser (completion: @escaping (Bool, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
-            if let error = error {
-                guard let ckError = error as? CKError else {
-                    print(error.localizedDescription)
-                    completion(false, error)
-                    return
-                }
-                dump(ckError.userInfo)
-            }
-            if let record = record {
-                completion(true, nil)
-            }
-        }
     }
     
     func checkUsernameAvailability (_ username: String, completion: @escaping (Bool, Error?) -> Void ) {
