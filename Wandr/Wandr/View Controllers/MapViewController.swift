@@ -68,15 +68,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.lastUpdatedLocation = locationManager.location!
         getWanderPosts(lastUpdatedLocation)
         self.segmentedControl.setSegmentItems(segmentTitles)
-        
-        CloudManager.shared.checkUser { (userExists, error) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            if !userExists {
-                self.present(OnBoardViewController(), animated: true, completion: nil)
-            }
-        }
     }
     
     
@@ -408,15 +399,25 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
 extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
+        let validFriends = CloudManager.shared.currentUser!.friends.map { $0.recordName }
+        print(validFriends)
+
+        
         switch segmentIndex {
         case 0:
             self.wanderposts = allValidWanderPosts
         case 1:
-            let friends = allValidWanderPosts.filter{ $0.privacyLevel == .friends }
-            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message }
+            let friends = allValidWanderPosts.filter{
+                print($0.user)
+                return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+            
+            }
+            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
+            
             self.wanderposts = friends + messages
         case 2:
-            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message}
+            
+            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser?.id.recordName }
         default:
             print("Can not make a decision")
         }

@@ -9,12 +9,13 @@ import Foundation
 import CloudKit
 import UIKit
 
-//TODO List
+//TODO: List
 
 /*
  _friend requests
- _error handling - check with jason the best way to go about retriggering the call
- _personal post working? - basic implementation at least
+ _error handling - check with jason the best way to go about retriggering the call/present alerts for when they fail with user appropriate descriptions of what happened.
+ _personal website
+ _make the push notification trigger a notification with the correct data/rewrite the userinfo to have the right information before making the CKNotification
  */
 
 enum PostContentType: NSString {
@@ -40,6 +41,9 @@ class CloudManager {
     private let publicDatabase = CKContainer.default().publicCloudDatabase
     private let privateDatabase = CKContainer.default().privateCloudDatabase
     private let container = CKContainer.default()
+    
+    
+    //This could be implicitly unwrapped, look into refactoring -- specifically in profileview controller there is a useless guard statement. Now is the time to look into handling the alert.
     
     var currentUser: WanderUser?
     
@@ -204,38 +208,24 @@ class CloudManager {
     //MARK: - Checking User existance and pulling current User
     
     //Refactor this into one functions that gets the current user, make it a Wanderuser. if that fails, present the error, if the error is no user found, present the onboard screen
-    func getCurrentUser(completion: @escaping (Error?)-> Void ) {
+    func getCurrentUser(completion: @escaping (Bool, Error?)-> Void ) {
         
         let currentUserFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
         currentUserFetch.fetchRecordsCompletionBlock = {(userRecord, error) in
             if error != nil {
-                completion(error)
+                completion(false, error)
             }
             if let validUserRecord = userRecord?.values,
                 let currentUser = validUserRecord.first {
                 
                 
                 self.currentUser = WanderUser(from: currentUser)
-                completion(nil)
+                completion(true, nil)
+            } else {
+                completion(false, nil)
             }
         }
         self.publicDatabase.add(currentUserFetch)
-    }
-    
-    func checkUser (completion: @escaping (Bool, Error?) -> Void) {
-        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (record, error) in
-            if let error = error {
-                guard let ckError = error as? CKError else {
-                    print(error.localizedDescription)
-                    completion(false, error)
-                    return
-                }
-                dump(ckError.userInfo)
-            }
-            if let record = record {
-                completion(true, nil)
-            }
-        }
     }
     
     func checkUsernameAvailability (_ username: String, completion: @escaping (Bool, Error?) -> Void ) {
@@ -288,6 +278,7 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
+        //TODO: make all usernames lowercase
         let predicate = NSPredicate(format: "username BEGINSWITH %@", user)
         let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
         let fetchUserInfo = CKFetchRecordsOperation()
@@ -359,6 +350,23 @@ class CloudManager {
             }
         }
     }
+    
+    func getInfo(forUsers users: [CKRecordID], completion: @escaping ([WanderUser]?, Error?) -> Void ) {
+        let fetchUsers = CKFetchRecordsOperation(recordIDs: users)
+        fetchUsers.fetchRecordsCompletionBlock = {(records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            if let fetchedUserRecords = records?.values {
+                let wanderUsers: [WanderUser] = fetchedUserRecords.map { WanderUser(from: $0)! }
+                completion(wanderUsers, nil)
+            }
+        }
+        publicDatabase.add(fetchUsers)
+    }
+    
+
+    
         
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
@@ -398,7 +406,6 @@ class CloudManager {
                 
                 for post in posts {
                     if let postReactions = reactions[post.postID] {
-                        
                         post.reactions = postReactions
                     }
                 }
@@ -449,7 +456,8 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = "\(currentUsername) has added you as a friend!"
+        notificationInfo.alertBody = currentUsername + " has added you as a friend!"
+        //notificationInfo.desiredKeys
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -466,8 +474,10 @@ class CloudManager {
         let personalPostSubscription = CKQuerySubscription(recordType: "post", predicate: predicate, subscriptionID: "personalPost", options: .firesOnRecordCreation)
         
         let notificationInfo = CKNotificationInfo()
+        
         let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = "\(currentUsername) has left you a message!"
+        notificationInfo.alertBody = currentUsername + " has left you a message!"
+        print(currentUsername)
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         

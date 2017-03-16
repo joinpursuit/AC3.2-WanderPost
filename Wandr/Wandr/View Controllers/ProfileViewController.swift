@@ -16,6 +16,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
     var friendFeedPosts = [WanderPost]()
+    var friendFeedLoading: Bool = true
     
     var personalPosts = [WanderPost]()
     
@@ -41,16 +42,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.navigationItem.rightBarButtonItem = searchFriendsButton
         
         guard let validWanderUser = CloudManager.shared.currentUser else { return }
-        self.wanderUser = validWanderUser
+        wanderUser = validWanderUser
         
         setupTableView()
         
         setupViewHierarchy()
         configureConstraints()
         
-        self.setUpUserHistory()
-        self.setUpFriendsFeed()
-        
+        setUpUserHistory()
+        setUpFriendsFeed()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -62,6 +62,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         //Able to change profile picture
         print("self.profileHeaderView.profileImageView")
         self.showImagePickerForSourceType(sourceType: .photoLibrary)
+    }
+    
+    func postsLabelTapped() {
+        segmentedControlCurrentIndex = 1
+        segmentedControl.move(to: segmentedControlCurrentIndex)
+        self.didSelect(segmentedControlCurrentIndex)
+        postTableView.reloadData()
+    }
+    
+    func friendsLabelTapped() {
+        friendsButtonTapped()
     }
     
     func friendsButtonTapped() {
@@ -136,13 +147,14 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch self.profileViewFilterType {
         case ProfileViewFilterType.posts:
             guard let posts = self.wanderPosts else { return 0 }
-            toggleNoPostsLabel(posts: posts)
+            
+            toggleNoPostsLabel(posts: posts, loading: false)
             return posts.count
         case ProfileViewFilterType.feed:
-            toggleNoPostsLabel(posts: self.friendFeedPosts)
+            toggleNoPostsLabel(posts: self.friendFeedPosts, loading: self.friendFeedLoading)
             return self.friendFeedPosts.count
         case ProfileViewFilterType.messages:
-            toggleNoPostsLabel(posts: self.personalPosts)
+            toggleNoPostsLabel(posts: self.personalPosts, loading: false)
             return self.personalPosts.count
         }
     }
@@ -207,7 +219,18 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: - Helper Functions
     
-    func toggleNoPostsLabel(posts: [WanderPost]) {
+    func toggleNoPostsLabel(posts: [WanderPost], loading: Bool) {
+        
+        if loading {
+            //activityIndicator
+            noPostsLabel.loading()
+            noPostsLabel.isHidden = false
+            postTableView.isScrollEnabled = false
+            return
+        } else {
+            noPostsLabel.stopLoading()
+        }
+        
         if posts.isEmpty {
             noPostsLabel.isHidden = false
             postTableView.isScrollEnabled = false
@@ -267,14 +290,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         return tableView
     }()
     
-    lazy var noPostsLabel: UILabel = {
-        let view = UILabel()
-        view.text = "No posts to display\n"
-        view.numberOfLines = 3
-        view.backgroundColor = StyleManager.shared.primaryLight
-        view.textColor = StyleManager.shared.primaryDark
-        view.font = StyleManager.shared.comfortaaFont16
-        view.textAlignment = .center
+    
+    lazy var noPostsLabel: EmptyStateView = {
+        let view = EmptyStateView()
+        view.textLabel.text = "no posts to display\n"
         view.isHidden = true
         
         let rightSwipeGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(updateSegmentedControl(gesture:)))
@@ -285,6 +304,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.addGestureRecognizer(leftSwipeGestureRecognizer)
         return view
     }()
+    
 
     
     func updateSegmentedControl(gesture: UISwipeGestureRecognizer) {
@@ -339,13 +359,20 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func setUpFriendsFeed() {
+        friendFeedLoading = wanderUser.friends.isEmpty ? false : true
         for friend in self.wanderUser.friends {
             CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
                 if error != nil {
                     print(error?.localizedDescription)
                 }
                 
-                guard let validWanderPosts = wanderPosts else { return }
+                guard let validWanderPosts = wanderPosts else {
+                    DispatchQueue.main.async {
+                        self.friendFeedLoading = false
+                        self.postTableView.reloadData()
+                    }
+                    return
+                }
                 
                 self.friendFeedPosts.append(contentsOf: validWanderPosts)
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
@@ -354,6 +381,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     print(error)
                     
                     DispatchQueue.main.async {
+                        self.friendFeedLoading = false
                         self.postTableView.reloadData()
                     }
                 })

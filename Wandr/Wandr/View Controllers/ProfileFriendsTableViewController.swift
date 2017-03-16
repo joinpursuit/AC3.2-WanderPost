@@ -7,23 +7,36 @@
 //
 
 import UIKit
+import CloudKit
+
+enum FriendSearchDisplayType {
+    case userFriends
+    case searchedFriends
+}
 
 class ProfileFriendsTableViewController: UITableViewController, UISearchBarDelegate {
     
-    var userFriends: [WanderUser]!
+    var userFriends: [WanderUser]?
     
     var searchedFriends: [WanderUser]?
-
-    var dummyData = [1,2,3,4,5,6,7,8]
+    
+    var friendDisplayType: FriendSearchDisplayType = .searchedFriends
+    
+    var emptyStateView: EmptyStateView = {
+        let view = EmptyStateView()
+        view.textLabel.text = "no users found"
+        return view
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
-
+        
         setUpSearchBar()        
         setUpTableView()
+        loadFriends()
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,7 +45,10 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     }
     
     func setUpSearchBar() {
-        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 100, height: 30))
+        let searchBar = UISearchBar(frame: CGRect(x: 0, y: 0, width: 100, height: 44))
+        searchBar.backgroundColor = StyleManager.shared.primary
+        searchBar.barTintColor = StyleManager.shared.primary
+        searchBar.autocapitalizationType = .none
         self.tableView.tableHeaderView = searchBar
         searchBar.delegate = self
     }
@@ -42,33 +58,47 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         self.tableView.estimatedRowHeight = 150
         self.tableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
     }
-
+    
+    func loadFriends() {
+        func getFriendsForUser(id: CKRecordID, completion: @escaping(Error?, [WanderUser]?) -> Void) {
+            
+        }
+    
+    }
+    
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.searchedFriends?.count ?? 0
+        
+        var rows: Int!
+        switch friendDisplayType {
+        case .userFriends:
+            rows = userFriends?.count ?? 0
+        case .searchedFriends:
+            rows = searchedFriends?.count ?? 0
+        }
+        tableView.backgroundView = rows == 0 ? emptyStateView : nil
+        tableView.isScrollEnabled = rows == 0 ? false : true
+        return rows
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
-        let user = self.searchedFriends![indexPath.row]
+        var user: WanderUser!
+        switch friendDisplayType {
+        case .userFriends:
+            user = userFriends![indexPath.row]
+        case .searchedFriends:
+            user = self.searchedFriends![indexPath.row]
+        }
         cell.nameLabel.text = "\(user.username)"
+        cell.profileImageView.image = UIImage(data: user.userImageData)
         cell.addRemoveFriendButton.tag = indexPath.row
         let areWeFriends = CloudManager.shared.currentUser!.friends.contains(user.id)
         let buttonTitle = areWeFriends ? "remove" : "add"
         cell.addRemoveFriendButton.setTitle(buttonTitle, for: .normal)
-        
         cell.addRemoveFriendButton.addTarget(self, action: #selector(self.addOrRemoveFriend(_:)), for: UIControlEvents.touchUpInside)
-
-        
-        
-        cell.nameLabel.text = "Tom"
-        
         return cell
     }
     
@@ -79,15 +109,22 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     // MARK: - Button Action
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        CloudManager.shared.search(for: searchText) { (wanderUsers, error) in
-            if error != nil {
-                //error handle
-            }
-            
-            if let validWanderUsers = wanderUsers {
-                self.searchedFriends = validWanderUsers
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
+        friendDisplayType = searchText.isEmpty ? .userFriends : .searchedFriends
+        switch friendDisplayType {
+        case .userFriends:
+            tableView.reloadData()
+            break
+        case .searchedFriends:
+            CloudManager.shared.search(for: searchText) { (wanderUsers, error) in
+                if error != nil {
+                    //error handle
+                }
+                
+                if let validWanderUsers = wanderUsers {
+                    self.searchedFriends = validWanderUsers
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
                 }
             }
         }
