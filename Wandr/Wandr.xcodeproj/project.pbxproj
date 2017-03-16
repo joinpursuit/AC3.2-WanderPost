@@ -35,6 +35,7 @@
 		A7D046821E6FB1CC002D2F24 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D046811E6FB1CC002D2F24 /* PostView.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */; };
+		DE1155AF1E7A2ABE00D5EA20 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1155AE1E7A2ABE00D5EA20 /* EmptyStateView.swift */; };
 		DE8BF0BE1E64CE0F007D2486 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */; };
 		DE8BF0C21E65FB5F007D2486 /* Comfortaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */; };
 		DE8BF0C31E65FB5F007D2486 /* Comfortaa-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */; };
@@ -90,6 +91,7 @@
 		A7D046811E6FB1CC002D2F24 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostView.swift; path = Views/PostView.swift; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommentsSectionHeaderView.swift; path = Views/CommentsSectionHeaderView.swift; sourceTree = "<group>"; };
+		DE1155AE1E7A2ABE00D5EA20 /* EmptyStateView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = Views/EmptyStateView.swift; sourceTree = "<group>"; };
 		DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
 		DE8BF0BF1E65FB5F007D2486 /* Comfortaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Bold.ttf"; sourceTree = "<group>"; };
 		DE8BF0C01E65FB5F007D2486 /* Comfortaa-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comfortaa-Light.ttf"; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				A7D046811E6FB1CC002D2F24 /* PostView.swift */,
 				A7A087A81E78A64600FF9BF9 /* Extension UIButton.swift */,
 				DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */,
+				DE1155AE1E7A2ABE00D5EA20 /* EmptyStateView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -430,6 +433,7 @@
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
 				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
+				DE1155AF1E7A2ABE00D5EA20 /* EmptyStateView.swift in Sources */,
 				A743DF091E6DF67400BB43B8 /* WanderProfileImageView.swift in Sources */,
 				DEA80B2F1E685D1D001E0747 /* ARAnnotation.swift in Sources */,
 				DEA80B331E685D1D001E0747 /* ARViewController.swift in Sources */,

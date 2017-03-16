@@ -50,7 +50,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         self.setUpUserHistory()
         self.setUpFriendsFeed()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -62,6 +61,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         //Able to change profile picture
         print("self.profileHeaderView.profileImageView")
         self.showImagePickerForSourceType(sourceType: .photoLibrary)
+    }
+    
+    func postsLabelTapped() {
+        segmentedControlCurrentIndex = 1
+        segmentedControl.move(to: segmentedControlCurrentIndex)
+        self.didSelect(segmentedControlCurrentIndex)
+        postTableView.reloadData()
+    }
+    
+    func friendsLabelTapped() {
+        friendsButtonTapped()
     }
     
     func friendsButtonTapped() {
@@ -269,7 +279,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     lazy var noPostsLabel: UILabel = {
         let view = UILabel()
-        view.text = "No posts to display\n"
+        view.text = "no posts to display\n"
         view.numberOfLines = 3
         view.backgroundColor = StyleManager.shared.primaryLight
         view.textColor = StyleManager.shared.primaryDark
