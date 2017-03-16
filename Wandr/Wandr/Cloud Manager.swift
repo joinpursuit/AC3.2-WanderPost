@@ -208,19 +208,21 @@ class CloudManager {
     //MARK: - Checking User existance and pulling current User
     
     //Refactor this into one functions that gets the current user, make it a Wanderuser. if that fails, present the error, if the error is no user found, present the onboard screen
-    func getCurrentUser(completion: @escaping (Error?)-> Void ) {
+    func getCurrentUser(completion: @escaping (Bool, Error?)-> Void ) {
         
         let currentUserFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
         currentUserFetch.fetchRecordsCompletionBlock = {(userRecord, error) in
             if error != nil {
-                completion(error)
+                completion(false, error)
             }
             if let validUserRecord = userRecord?.values,
                 let currentUser = validUserRecord.first {
                 
                 
                 self.currentUser = WanderUser(from: currentUser)
-                completion(nil)
+                completion(true, nil)
+            } else {
+                completion(false, nil)
             }
         }
         self.publicDatabase.add(currentUserFetch)

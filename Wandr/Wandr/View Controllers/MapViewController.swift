@@ -68,15 +68,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         self.lastUpdatedLocation = locationManager.location!
         getWanderPosts(lastUpdatedLocation)
         self.segmentedControl.setSegmentItems(segmentTitles)
-        
-        CloudManager.shared.checkUser { (userExists, error) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            if !userExists {
-                self.present(OnBoardViewController(), animated: true, completion: nil)
-            }
-        }
     }
     
     

@@ -22,12 +22,17 @@ class LoadingViewController: UIViewController {
         
         //TODO: This needs to present an alert if you aren't signed into iCloud
         
-        CloudManager.shared.getCurrentUser { (error) in
+        CloudManager.shared.getCurrentUser { (validWanderUser, error) in
             //Error handling
             if error != nil {
                 //TODO: Handle errors
+                self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
+                
+                if let ckError = error as? CKError {
+                    print(ckError.errorUserInfo)
+                }
                 print(error)
-            } else {
+            } else if validWanderUser {
                 CloudManager.shared.addSubscriptionToCurrentUser { (error) in
                     //Error handling
                     CloudManager.shared.addSubscriptionForPersonalPosts { (error) in
@@ -36,6 +41,8 @@ class LoadingViewController: UIViewController {
                         }
                     }
                 }
+            } else {
+                self.present(OnBoardViewController(), animated: true, completion: nil)
             }
         }
     }
@@ -186,9 +193,6 @@ class LoadingViewController: UIViewController {
         }
     }
     
-    
-    
-    
     private func setupViewHierarchy() {
         self.view.addSubview(logoContainerView)
         self.logoContainerView.addSubview(logo1)
@@ -233,10 +237,7 @@ class LoadingViewController: UIViewController {
         
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+    //MARK: Views
     
     lazy var logoContainerView: UIView = {
         let view = UIView()
@@ -267,15 +268,17 @@ class LoadingViewController: UIViewController {
         return imageView
     }()
     
+    //MARK: - Alert Helper Function
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
+    func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
+            if let completionAction = completion {
+                completionAction()
+            }
+        }
+        alert.addAction(okayAction)
+        self.present(alert, animated: true, completion: nil)
+    }
+
 }
