@@ -136,9 +136,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print("There's an \(error), usually of not able to register for remote notification because of the use of a simulator.")
     }
     
+    
+    //In here I should be able to change the username, im obviously getting the info. Maybe take that info and have it trigger a local notification instead of a real push notification?
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         //print("user info \(userInfo)")
         //completionHandler(.newData)
+        
+        
         
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
         
