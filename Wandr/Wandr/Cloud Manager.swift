@@ -364,6 +364,23 @@ class CloudManager {
             }
         }
     }
+    
+    func getInfo(forUsers users: [CKRecordID], completion: @escaping ([WanderUser]?, Error?) -> Void ) {
+        let fetchUsers = CKFetchRecordsOperation(recordIDs: users)
+        fetchUsers.fetchRecordsCompletionBlock = {(records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            if let fetchedUserRecords = records?.values {
+                let wanderUsers: [WanderUser] = fetchedUserRecords.map { WanderUser(from: $0)! }
+                completion(WanderUser, nil)
+            }
+        }
+        publicDatabase.add(fetchUsers)
+    }
+    
+
+    
         
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
