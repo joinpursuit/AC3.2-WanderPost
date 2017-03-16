@@ -22,6 +22,13 @@ class EmptyStateView: UIView {
         return view
     }()
     
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView()
+        view.color = StyleManager.shared.primaryDark
+        view.hidesWhenStopped = true
+        return view
+    }()
+    
     let view = UIView()
     
     // Only override draw() if you perform custom drawing.
@@ -30,6 +37,7 @@ class EmptyStateView: UIView {
         self.view.backgroundColor = StyleManager.shared.primaryLight
         self.addSubview(view)
         self.addSubview(textLabel)
+        self.addSubview(activityIndicator)
         view.snp.makeConstraints { (view) in
             view.leading.trailing.top.bottom.equalToSuperview()
         }
@@ -38,7 +46,22 @@ class EmptyStateView: UIView {
             view.leading.equalToSuperview().offset(11)
             view.trailing.equalToSuperview().inset(11)
         }
+        activityIndicator.snp.makeConstraints { (view) in
+            view.center.equalToSuperview()
+        }
     }
+    
+    func loading() {
+        self.textLabel.isHidden = true
+        self.activityIndicator.startAnimating()
+    }
+    
+    func stopLoading() {
+        self.textLabel.isHidden = false
+        self.activityIndicator.stopAnimating()
+    }
+    
+    
     
 
 }
