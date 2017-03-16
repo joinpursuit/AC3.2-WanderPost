@@ -373,7 +373,7 @@ class CloudManager {
             }
             if let fetchedUserRecords = records?.values {
                 let wanderUsers: [WanderUser] = fetchedUserRecords.map { WanderUser(from: $0)! }
-                completion(WanderUser, nil)
+                completion(wanderUser, nil)
             }
         }
         publicDatabase.add(fetchUsers)
