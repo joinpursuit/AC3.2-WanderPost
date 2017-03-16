@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UIApplication.shared.statusBarStyle = UIStatusBarStyle.lightContent
         
         let navigationBarAppearance = UINavigationBar.appearance()
+        navigationBarAppearance.isTranslucent = false
         navigationBarAppearance.barTintColor = StyleManager.shared.primary
         navigationBarAppearance.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white,
                                                        NSFontAttributeName: UIFont.Comfortaa.regular(size: 24)!]
@@ -60,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                                 NSFontAttributeName: UIFont.Comfortaa.regular(size: 10)!]
         let selectedAttributes = [NSForegroundColorAttributeName: StyleManager.shared.accent,
                                   NSFontAttributeName: UIFont.Comfortaa.regular(size: 10)!]
+        tabBarAppearance.isTranslucent = false
         tabBarItemAppearance.setTitleTextAttributes(normalAttributes, for: .normal)
         tabBarItemAppearance.setTitleTextAttributes(selectedAttributes, for: .selected)
         tabBarAppearance.tintColor = StyleManager.shared.accent

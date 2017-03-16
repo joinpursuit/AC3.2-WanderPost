@@ -12,6 +12,8 @@ import TwicketSegmentedControl
 
 protocol ProfileViewDelegate {
     func imageViewTapped()
+    func friendsLabelTapped()
+    func postsLabelTapped()
 }
 
 class ProfileView: UIView {
@@ -64,6 +66,14 @@ class ProfileView: UIView {
         //print("ImageViewTapped")
     }
     
+    func friendsLabelTapped() {
+        self.delegate?.friendsLabelTapped()
+    }
+    
+    func postsLabelTapped() {
+        self.delegate?.postsLabelTapped()
+    }
+    
     lazy var profileImageView: WanderProfileImageView = {
         let imageView = WanderProfileImageView(width: 150.0, height: 150.0, borderWidth: 3.0)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageViewTapped))
@@ -87,6 +97,9 @@ class ProfileView: UIView {
         label.textAlignment = .center
         label.font = StyleManager.shared.comfortaaFont14
         label.textColor = StyleManager.shared.primaryDark
+        let tapPostsGesture = UITapGestureRecognizer(target: self, action: #selector(postsLabelTapped))
+        label.addGestureRecognizer(tapPostsGesture)
+        label.isUserInteractionEnabled = true
         return label
     }()
     
@@ -97,6 +110,9 @@ class ProfileView: UIView {
         label.font = StyleManager.shared.comfortaaFont14
         label.textColor = StyleManager.shared.primaryDark
         label.textAlignment = .center
+        let tapFriendsGesture = UITapGestureRecognizer(target: self, action: #selector(friendsLabelTapped))
+        label.addGestureRecognizer(tapFriendsGesture)
+        label.isUserInteractionEnabled = true
         return label
     }()
     

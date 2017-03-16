@@ -292,7 +292,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     //MARK: - TextField Delegate Methods
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        self.searchFriendTableView.isHidden = false
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
                 print(error?.localizedDescription)
@@ -309,15 +308,13 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-
-    }
-    
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.searchFriendTableView.isHidden = true
     }
     
-    
+    func textFieldChanged(_ textField: UITextField) {
+        self.searchFriendTableView.isHidden = userTextField.text?.isEmpty ?? false
+    }
     
     //MARK: - TextView Delegate Methods
     
@@ -402,6 +399,9 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
         field.isHidden = true
+        
+        //Add target for editingChanged
+        field.addTarget(self, action: #selector(textFieldChanged), for: .editingChanged)
         return field
     }()
     
