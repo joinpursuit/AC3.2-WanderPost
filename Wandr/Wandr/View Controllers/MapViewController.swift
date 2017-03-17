@@ -21,17 +21,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var allWanderPosts: [WanderPost]? {
-        didSet {
-        }
-    }
+    var allWanderPosts: [WanderPost]?
     
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
-            DispatchQueue.main.async {
-                self.reloadMapView()
-            }
+            self.reloadMapView()
         }
     }
     
@@ -302,7 +297,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         return
                     }
                     DispatchQueue.main.async {
-                        self.wanderposts = posts
+                        self.didSelect(self.segmentedControl.selectedSegmentIndex)
                     }
                 }
 
