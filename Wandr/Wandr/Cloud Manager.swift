@@ -503,7 +503,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         
-        notificationInfo.alertBody = "__user__ has left you a message!"
+        notificationInfo.alertBody = "Someone has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
