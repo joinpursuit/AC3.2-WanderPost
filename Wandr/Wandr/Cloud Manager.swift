@@ -204,15 +204,11 @@ class CloudManager {
                         }
                         
                         saveUser.recordsToSave = [validUserRecord, usernameRecord]
-                        
                         self.publicDatabase.add(saveUser)
                     }
                 }
-                
             }
-            
         }
-        
     }
     
     //MARK: - Checking User existance and pulling current User
