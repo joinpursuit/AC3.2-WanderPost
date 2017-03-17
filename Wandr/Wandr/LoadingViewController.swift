@@ -235,7 +235,6 @@ class LoadingViewController: UIViewController {
             view.trailing.top.equalToSuperview()
             view.bottom.equalTo(logoContainerView.snp.centerY)
         }
-
         appNameLabel.snp.makeConstraints { (label) in
             label.top.equalTo(self.logoContainerView.snp.bottom).offset(16)
             label.centerX.equalToSuperview()
@@ -245,7 +244,6 @@ class LoadingViewController: UIViewController {
             label.top.equalTo(self.appNameLabel.snp.bottom).offset(16)
             label.centerX.equalToSuperview()
         }
-
     }
     
     //MARK: Views

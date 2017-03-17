@@ -17,6 +17,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     var reactions: [Reaction] = [Reaction]() {
         didSet {
             self.emptyState = reactions.isEmpty ? true : false
+            
         }
     }
     
@@ -34,6 +35,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         configureConstraints()
         
         self.wanderUser = CloudManager.shared.currentUser
+        
+        //TODO: Make the comments not take forever. 
         
         registerForNotifications()
         

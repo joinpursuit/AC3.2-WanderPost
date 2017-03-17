@@ -24,12 +24,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
-                
                 print(error)
-                
-                DispatchQueue.main.async {
-                    self.reloadMapView()
-                }
             }
         }
     }
@@ -296,8 +291,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
                 DispatchQueue.main.async {
-                    self.wanderposts = posts
                     self.allWanderPosts = posts
+                    self.wanderposts = posts
                 }
             }
         }
@@ -325,10 +320,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     //MARK: - Notification Delegate Methods
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        print(response)
-        
-        
         
         switch response.actionIdentifier {
         case UNNotificationDefaultActionIdentifier:
@@ -382,7 +373,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             switch level {
             case .friends:
                 if count > 1 {
-                    body = "\(count) of your friends have left messages here!"
+                    body = "Your friends have left \(count) messages here!"
                 } else {
                     fallthrough
                 }
@@ -399,31 +390,29 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
-    //HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo.
+    //TODO: HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo. -- post is marked read by appending the username to the readBy array maybe. marked as read as soon as you get into AR/its on your screen in AR.
 }
 
 extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
         let validFriends = CloudManager.shared.currentUser!.friends.map { $0.recordName }
-        print(validFriends)
+
+        let everyone = allValidWanderPosts.filter { $0.privacyLevel == .everyone }
         
+        let friends = allValidWanderPosts.filter{
+            return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+        }
+        
+        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
         
         switch segmentIndex {
         case 0:
-            self.wanderposts = allValidWanderPosts
+            self.wanderposts = everyone + friends
         case 1:
-            let friends = allValidWanderPosts.filter{
-                print($0.user)
-                return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
-                
-            }
-            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
-            
             self.wanderposts = friends + messages
         case 2:
-            
-            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser?.id.recordName }
+            self.wanderposts = messages
         default:
             print("Can not make a decision")
         }
