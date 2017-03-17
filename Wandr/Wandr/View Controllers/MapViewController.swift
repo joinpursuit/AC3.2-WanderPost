@@ -47,6 +47,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         self.navigationItem.title = "wanderpost"
         
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
+        self.navigationItem.rightBarButtonItem = refreshButton
+        
         mapView.delegate = self
         userNotificationCenter.delegate = self
         
@@ -222,6 +225,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         }
         })
         
+    }
+    
+    func refreshTapped() {
+        getWanderPosts(lastUpdatedLocation)
     }
     
     //MARK: - Lazy Vars
