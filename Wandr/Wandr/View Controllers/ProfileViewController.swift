@@ -51,6 +51,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         setUpUserHistory()
         setUpFriendsFeed()
+        setUpPrivateMessages()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -333,6 +334,19 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //CloudManager Methods
+    
+    func setUpPrivateMessages () {
+        CloudManager.shared.findPrivateMessages(for: self.wanderUser) { (privateMessages, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            
+            if let validPrivateMessages = privateMessages {
+                self.personalPosts = validPrivateMessages
+                dump(self.personalPosts)
+            }
+        }
+    }
     
     func setUpUserHistory() {
         CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
