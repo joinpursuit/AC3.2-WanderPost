@@ -315,10 +315,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        print(response)
-        
-        
-        
         switch response.actionIdentifier {
         case UNNotificationDefaultActionIdentifier:
             // the user swiped to unlock
@@ -371,7 +367,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             switch level {
             case .friends:
                 if count > 1 {
-                    body = "\(count) of your friends have left messages here!"
+                    body = "Your friends have left \(count) messages here!"
                 } else {
                     fallthrough
                 }
@@ -388,7 +384,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
     }
     
-    //HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo.
+    //TODO: HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo. -- post is marked read by appending the username to the readBy array maybe. marked as read as soon as you get into AR/its on your screen in AR.
 }
 
 extension MapViewController: TwicketSegmentedControlDelegate {
