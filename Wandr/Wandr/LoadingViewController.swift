@@ -25,7 +25,7 @@ class LoadingViewController: UIViewController {
         CloudManager.shared.getCurrentUser { (validWanderUser, error) in
             //Error handling
             if error != nil {
-                //TODO: Handle errors
+                //TODO: Work this out -- the error gets in the way of pushing the onboardingScreen.
                 self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
                 
                 if let ckError = error as? CKError {

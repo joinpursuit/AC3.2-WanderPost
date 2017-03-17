@@ -142,9 +142,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         //print("user info \(userInfo)")
         //completionHandler(.newData)
         
+        dump(userInfo)
+        
+        var customUserInfo = userInfo
+        
+        if var userInfoAPSDictionary = customUserInfo["aps"] as? [AnyHashable: Any],
+            var alertMessage = userInfoAPSDictionary["alert"] as? NSString,
+            let userInfoCKDictionary = userInfo["ck"] as? [AnyHashable: Any],
+            let userInfoQRYDictionary = userInfoCKDictionary["qry"] as? [AnyHashable: Any],
+            let postIDString = userInfoQRYDictionary["rid"] as? NSMutableString{
+            
+            userInfoAPSDictionary["alert"] = "foobar"
+            customUserInfo["aps"] = userInfoAPSDictionary
+            
+            var validUsername: String = ""
+            
+//            if (customUserInfo["aps"] as? NSMutableDictionary)?["alert"] != nil {
+//                ((customUserInfo["aps"] as? NSMutableDictionary)!["alert"] as! NSMutableString) = "hello"
+//            }
+            
+            print(customUserInfo)
+                //= alertMessage.replacingOccurrences(of: "__user__", with: validUsername)
+        }
         
         
-        let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
+        let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: customUserInfo as! [String : NSObject])
         
         if cloudKitNotification.notificationType == .query {
             let queryNotification = cloudKitNotification as! CKQueryNotification
@@ -180,6 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
         completionHandler(.alert)
     }
     

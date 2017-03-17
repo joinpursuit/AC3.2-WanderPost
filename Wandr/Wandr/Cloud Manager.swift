@@ -16,7 +16,7 @@ import UIKit
  _error handling - check with jason the best way to go about retriggering the call/present alerts for when they fail with user appropriate descriptions of what happened.
  _personal website
  _make the push notification trigger a notification with the correct data/rewrite the userinfo to have the right information before making the CKNotification
- */
+*/
 
 enum PostContentType: NSString {
     case audio, text, video
@@ -46,7 +46,6 @@ class CloudManager {
     //This could be implicitly unwrapped, look into refactoring -- specifically in profileview controller there is a useless guard statement. Now is the time to look into handling the alert.
     
     var currentUser: WanderUser?
-    
     
     //MARK: - Creating a Post and a User
     
@@ -243,7 +242,6 @@ class CloudManager {
                 completion(false, nil)
             }
         }
-
     }
     
     //MARK: - Search data base for users, posts
@@ -270,9 +268,7 @@ class CloudManager {
             }
             
             if let validLocalRecords = records {
-                
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
-                
             }
         }
     }
@@ -313,6 +309,11 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
+//        
+//        let fetchUsers = CKFetchRecordsOperation(recordIDs: ids)
+//        fetchUsers.fetchRecordsCompletionBlock = {
+//            
+//        }
         publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
@@ -365,9 +366,6 @@ class CloudManager {
         publicDatabase.add(fetchUsers)
     }
     
-
-    
-        
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
         var reactionIDs = [CKRecordID]()
@@ -475,9 +473,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         
-        let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = currentUsername + " has left you a message!"
-        print(currentUsername)
+        notificationInfo.alertBody = "__user__ has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         

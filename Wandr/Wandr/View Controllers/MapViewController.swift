@@ -24,12 +24,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var allWanderPosts: [WanderPost]? {
         didSet {
             CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
-                
                 print(error)
-                
-                DispatchQueue.main.async {
-                    self.reloadMapView()
-                }
             }
         }
     }
@@ -290,8 +285,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 print("Error fetching posts, \(error)")
             } else if let posts = posts {
                 DispatchQueue.main.async {
-                    self.wanderposts = posts
                     self.allWanderPosts = posts
+                    self.wanderposts = posts
                 }
             }
         }
@@ -400,24 +395,22 @@ extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
         let validFriends = CloudManager.shared.currentUser!.friends.map { $0.recordName }
-        print(validFriends)
 
+        let everyone = allValidWanderPosts.filter { $0.privacyLevel == .everyone }
+        
+        let friends = allValidWanderPosts.filter{
+            return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+        }
+        
+        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
         
         switch segmentIndex {
         case 0:
-            self.wanderposts = allValidWanderPosts
+            self.wanderposts = everyone + friends
         case 1:
-            let friends = allValidWanderPosts.filter{
-                print($0.user)
-                return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
-            
-            }
-            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
-            
             self.wanderposts = friends + messages
         case 2:
-            
-            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser?.id.recordName }
+            self.wanderposts = messages
         default:
             print("Can not make a decision")
         }
