@@ -47,6 +47,9 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         self.navigationItem.title = "wanderpost"
         
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
+        self.navigationItem.rightBarButtonItem = refreshButton
+        
         mapView.delegate = self
         userNotificationCenter.delegate = self
         
@@ -222,6 +225,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         }
         })
         
+    }
+    
+    func refreshTapped() {
+        getWanderPosts(lastUpdatedLocation)
     }
     
     //MARK: - Lazy Vars
@@ -409,7 +416,7 @@ extension MapViewController: TwicketSegmentedControlDelegate {
             return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
         }
         
-        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
+        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser!.id.recordName }
         
         switch segmentIndex {
         case 0:
