@@ -38,7 +38,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func registerButtonPressed() {
-        self.present(AppDelegate.setUpAppNavigation(), animated: false, completion: nil)
+        
 
         self.registerButton.isEnabled = false
         if let userName = self.userNameTextField.text,
@@ -48,8 +48,12 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
                 dump(error)
                 if error != nil {
                     // set up app tabbar and such
-                    self.setUpAppNavigation()
+                } else {
+                    DispatchQueue.main.async {
+                        self.present(LoadingViewController(), animated: false, completion: nil)
+                    }
                 }
+                
             }
         } else {
             //Present ALERT
