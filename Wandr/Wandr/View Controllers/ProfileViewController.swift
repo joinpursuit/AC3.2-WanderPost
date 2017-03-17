@@ -19,6 +19,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     var friendFeedLoading: Bool = true
     
     var personalPosts = [WanderPost]()
+    var personalPostsLoading: Bool = true
     
     var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
@@ -51,11 +52,11 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         setUpUserHistory()
         setUpFriendsFeed()
-        setUpPrivateMessages()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         self.postTableView.reloadData()
+        setUpPrivateMessages()
     }
     
     // MARK: - Actions
@@ -153,7 +154,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             toggleNoPostsLabel(posts: self.friendFeedPosts, loading: self.friendFeedLoading)
             return self.friendFeedPosts.count
         case ProfileViewFilterType.messages:
-            toggleNoPostsLabel(posts: self.personalPosts, loading: false)
+            toggleNoPostsLabel(posts: self.personalPosts, loading: self.personalPostsLoading)
             return self.personalPosts.count
         }
     }
@@ -192,7 +193,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             return cell
             
         case ProfileViewFilterType.messages:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
+            
+            let post = self.personalPosts[indexPath.row]
+            cell.messageLabel.text = "Left you a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            if let user = post.wanderUser {
+                cell.profileImageView.image = UIImage(data: user.userImageData)
+                cell.nameLabel.text = user.username
+                
+            }
             return cell
         }
     }
@@ -336,13 +346,19 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     //CloudManager Methods
     
     func setUpPrivateMessages () {
+        
+        personalPostsLoading = true
         CloudManager.shared.findPrivateMessages(for: self.wanderUser) { (privateMessages, error) in
             if error != nil {
                 print(error?.localizedDescription)
             }
             
             if let validPrivateMessages = privateMessages {
-                self.personalPosts = validPrivateMessages
+                DispatchQueue.main.async {
+                    self.personalPosts = validPrivateMessages
+                    self.personalPostsLoading = false
+                    self.postTableView.reloadData()
+                }
                 dump(self.personalPosts)
             }
         }
