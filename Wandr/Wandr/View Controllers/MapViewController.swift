@@ -23,9 +23,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var allWanderPosts: [WanderPost]? {
         didSet {
-            CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
-                print(error)
-            }
         }
     }
     
@@ -283,11 +280,19 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
             if let error = error {
                 print("Error fetching posts, \(error)")
+                return
             } else if let posts = posts {
-                DispatchQueue.main.async {
-                    self.allWanderPosts = posts
-                    self.wanderposts = posts
+                self.allWanderPosts = posts
+                CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
+                    if error != nil {
+                        print(error?.localizedDescription)
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        self.wanderposts = posts
+                    }
                 }
+
             }
         }
     }

@@ -304,7 +304,6 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
-        //TODO: make all usernames lowercase
         let predicate = NSPredicate(format: "username BEGINSWITH %@", user)
         let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
         let fetchUserInfo = CKFetchRecordsOperation()
@@ -332,6 +331,21 @@ class CloudManager {
                 self.publicDatabase.add(fetchUserInfo)
             } else {
                 completion(nil, nil)
+            }
+        }
+    }
+    
+    func findPrivateMessages (for user: WanderUser, completion: @escaping ([WanderPost]?, Error?)-> Void ) {
+        let privateMessagePredicate = NSPredicate(format: "recipient = %@", user.id.recordName)
+        let privateMessageQuery = CKQuery(recordType: "post", predicate: privateMessagePredicate)
+        //let privateMessageQueryOperation = CKQueryOperation(query: privateMessageQuery)
+        publicDatabase.perform(privateMessageQuery, inZoneWith: nil) { (records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            if let validPrivateMessageRecords = records {
+                let privateMessages = validPrivateMessageRecords.map { WanderPost(withCKRecord: $0)! }
+                completion(privateMessages, nil)
             }
         }
     }
@@ -485,7 +499,6 @@ class CloudManager {
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
         notificationInfo.alertBody = currentUsername + " has added you as a friend!"
-        //notificationInfo.desiredKeys
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -503,7 +516,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         
-        notificationInfo.alertBody = "__user__ has left you a message!"
+        notificationInfo.alertBody = "Somebody has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
