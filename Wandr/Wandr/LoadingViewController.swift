@@ -26,7 +26,7 @@ class LoadingViewController: UIViewController {
             //Error handling
             if error != nil {
                 //TODO: Handle errors
-                self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
+               // self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
                 
                 if let ckError = error as? CKError {
                     print(ckError.errorUserInfo)
@@ -199,6 +199,8 @@ class LoadingViewController: UIViewController {
         self.logoContainerView.addSubview(logo2)
         self.logoContainerView.addSubview(logo3)
         self.logoContainerView.addSubview(logo4)
+        self.view.addSubview(appNameLabel)
+        self.view.addSubview(appTagLineLabel)
     }
     
     private func configureConstraints() {
@@ -233,8 +235,17 @@ class LoadingViewController: UIViewController {
             view.trailing.top.equalToSuperview()
             view.bottom.equalTo(logoContainerView.snp.centerY)
         }
+
+        appNameLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.logoContainerView.snp.bottom).offset(16)
+            label.centerX.equalToSuperview()
+        }
         
-        
+        appTagLineLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.appNameLabel.snp.bottom).offset(16)
+            label.centerX.equalToSuperview()
+        }
+
     }
     
     //MARK: Views
@@ -270,6 +281,22 @@ class LoadingViewController: UIViewController {
     
     //MARK: - Alert Helper Function
     
+    lazy var appNameLabel: UILabel = {
+        let label = UILabel()
+        label.font = StyleManager.shared.comfortaaFont20
+        label.textColor = UIColor.white
+        label.text = "wanderpost"
+        return label
+    }()
+    
+    lazy var appTagLineLabel: UILabel = {
+        let label = UILabel()
+        label.font = StyleManager.shared.comfortaaFont16
+        label.textColor = UIColor.white
+        label.text = "Discover a world of hidden messages."
+        return label
+    }()
+
     func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in

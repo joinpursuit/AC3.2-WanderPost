@@ -218,6 +218,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         queue.addOperations([userFetch, userSave], waitUntilFinished: false)
     }
     
+    // MARK: - Launch Screen
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        return true
+    }
 }
 
 
