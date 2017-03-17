@@ -199,6 +199,7 @@ class CloudManager {
                         let saveUser = CKModifyRecordsOperation()
                         
                         saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+                            print(error)
                             completion(error)
                         }
                         
