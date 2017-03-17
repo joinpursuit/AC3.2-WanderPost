@@ -21,7 +21,8 @@ class WanderMapAnnotationView: MKAnnotationView {
     */
     
     var profileImageView: UIImageView = UIImageView()
-        
+    var animateDrop = false
+    
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
         self.image = UIImage(named: "wanderPin4")!

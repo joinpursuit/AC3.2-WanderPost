@@ -57,7 +57,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         mapView.delegate = self
         userNotificationCenter.delegate = self
-
+        
         //Make this more dynamic
         let nav = tabBarController?.viewControllers?.last as! UINavigationController
         self.arDelegate = nav.viewControllers.first! as! ARViewController
@@ -92,7 +92,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container
         
         self.edgesForExtendedLayout = []
-
+        
         mapContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.equalToSuperview()
@@ -135,8 +135,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - AddNewWanderPostDelegate
     
     func addNewPost(post: WanderPost) {
+        self.isNewMapAnnotation = true
         let myAnnotaton = PostAnnotation()
         myAnnotaton.wanderpost = post
+        
         guard let postLocation = post.location else { return }
         myAnnotaton.coordinate = postLocation.coordinate
         if let user = post.wanderUser {
@@ -144,7 +146,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         mapView.addAnnotation(myAnnotaton)
     }
-
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -190,7 +192,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             mapAnnotationView.profileImageView.image = nil
             mapAnnotationView.canShowCallout = true
             
-            let postAnnotation = annotation as! PostAnnotation            
+            let postAnnotation = annotation as! PostAnnotation
             if let thisUser = postAnnotation.wanderpost.wanderUser {
                 mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
             }
@@ -208,6 +210,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     view.frame = endFrame
                 })
             }
+            self.isNewMapAnnotation = false
         }
     }
     
@@ -390,7 +393,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     body = "\(post.wanderUser?.username ?? "Someone") left you a message!"
                 }
             case .everyone:
-               return
+                return
             }
             makeNotification(withBody: body)
         }
@@ -404,7 +407,7 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
         let validFriends = CloudManager.shared.currentUser!.friends.map { $0.recordName }
         print(validFriends)
-
+        
         
         switch segmentIndex {
         case 0:
@@ -413,7 +416,7 @@ extension MapViewController: TwicketSegmentedControlDelegate {
             let friends = allValidWanderPosts.filter{
                 print($0.user)
                 return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
-            
+                
             }
             let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient!.recordName == CloudManager.shared.currentUser!.id.recordName }
             
