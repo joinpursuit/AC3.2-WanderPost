@@ -10,7 +10,7 @@ import UIKit
 import SnapKit
 import AVKit
 
-class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     var imagePickerController: UIImagePickerController!
     var profileImageURL: URL?
@@ -38,7 +38,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func registerButtonPressed() {
-        self.present(AppDelegate.setUpAppNavigation(), animated: false, completion: nil)
+        
 
         self.registerButton.isEnabled = false
         if let userName = self.userNameTextField.text,
@@ -48,8 +48,12 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
                 dump(error)
                 if error != nil {
                     // set up app tabbar and such
-                    self.setUpAppNavigation()
+                } else {
+                    DispatchQueue.main.async {
+                        self.present(LoadingViewController(), animated: false, completion: nil)
+                    }
                 }
+                
             }
         } else {
             //Present ALERT
@@ -88,6 +92,18 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
             self.dismiss(animated: true, completion: nil)
         }
     }
+    // MARK: - UITextFieldDelegateMethod
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let validText = textField.text {
+            textField.text = (validText as NSString).replacingCharacters(in: range, with: string.lowercased())
+            if string == " " {
+                textField.text = (validText as NSString).replacingCharacters(in: range, with: "")
+            }
+            return false
+        }
+        return true
+    }
+    
     
     // MARK: - Layout
     private func setupViewHierarchy() {
@@ -96,6 +112,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         self.view.addSubview(registerButton)
         self.view.addSubview(logoImageView)
         self.view.addSubview(introLabel)
+        self.view.addSubview(usernameDirectionLabel)
     }
     
     private func configureConstraints() {
@@ -113,8 +130,14 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
             textField.trailing.equalToSuperview().inset(16)
         }
         
+        usernameDirectionLabel.snp.makeConstraints { (label) in
+            label.top.equalTo(self.userNameTextField.snp.bottom).offset(8)
+            label.leading.equalToSuperview().offset(16)
+            label.trailing.equalToSuperview().inset(16)
+        }
+        
         registerButton.snp.makeConstraints { (button) in
-            button.top.equalTo(self.userNameTextField.snp.bottom).offset(8)
+            button.top.equalTo(self.usernameDirectionLabel.snp.bottom).offset(8)
             button.centerX.equalToSuperview()
         }
         
@@ -182,6 +205,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     lazy var userNameTextField: WanderTextField = {
         let textField = WanderTextField()
         textField.border(placeHolder: "username")
+        textField.delegate = self
         return textField
     }()
     
@@ -208,4 +232,12 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         return label
     }()
     
+    lazy var usernameDirectionLabel : UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
+        label.text = "Usernames will be all lowercased without spaces"
+        label.font = StyleManager.shared.comfortaaFont12
+        label.textColor = StyleManager.shared.primary
+        return label
+    }()
 }

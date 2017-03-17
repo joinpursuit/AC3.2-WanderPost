@@ -41,7 +41,9 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         registerForNotifications()
         
         // check to see if the post belongs to the user to enable delete functionality
-        if CloudManager.shared.currentUser?.id == self.wanderPost?.user {
+        
+        if  self.wanderPost?.user.recordName == "__defaultOwner__" {
+            
             let deleteButton = UIBarButtonItem(image: UIImage(named: "trash_white")!, style: .done, target: self, action: #selector(deleteButtonTapped))
             self.navigationItem.rightBarButtonItem = deleteButton
             self.wanderPost?.wanderUser = CloudManager.shared.currentUser

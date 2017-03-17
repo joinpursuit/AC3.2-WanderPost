@@ -181,13 +181,13 @@ class CloudManager {
         let usernameRecord = CKRecord(recordType: "username")
         let validUsername = userName as NSString
         
-        let userIDFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
-        userIDFetch.fetchRecordsCompletionBlock = {(record, error) in
+        container.fetchUserRecordID {(record, error) in
+            
             if error != nil {
                 completion(error)
             }
-            if let userRecord = record?.values.first {
-                self.publicDatabase.fetch(withRecordID: userRecord.recordID) { (userRecord, error) in
+            if let userRecord = record {
+                self.publicDatabase.fetch(withRecordID: userRecord) { (userRecord, error) in
                     if error != nil {
                         completion(error)
                         print(error!.localizedDescription)
@@ -199,6 +199,7 @@ class CloudManager {
                         let saveUser = CKModifyRecordsOperation()
                         
                         saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+                            
                             completion(error)
                         }
                         
@@ -212,26 +213,6 @@ class CloudManager {
             
         }
         
-        
-        publicDatabase.fetch(withRecordID: self.currentUser!.id) { (userRecord, error) in
-            if error != nil {
-                print(error!.localizedDescription)
-            } else if let validUserRecord = userRecord {
-                usernameRecord["username"] = validUsername
-                validUserRecord["username"] = validUsername
-                validUserRecord["profileImage"] = imageAsset
-                
-                let saveUser = CKModifyRecordsOperation()
-                
-                saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
-                    completion(error)
-                }
-                
-                saveUser.recordsToSave = [validUserRecord, usernameRecord]
-                
-                self.publicDatabase.add(saveUser)
-            }
-        }
     }
     
     //MARK: - Checking User existance and pulling current User
@@ -244,11 +225,11 @@ class CloudManager {
             if error != nil {
                 completion(false, error)
             }
+            
             if let validUserRecord = userRecord?.values,
-                let currentUser = validUserRecord.first {
-                
-                
-                self.currentUser = WanderUser(from: currentUser)
+                let currentUser = validUserRecord.first,
+                let validUser = WanderUser(from: currentUser) {
+                self.currentUser = validUser
                 completion(true, nil)
             } else {
                 completion(false, nil)
@@ -304,7 +285,6 @@ class CloudManager {
     }
     
     func search(for user: String, completion: @escaping ([WanderUser]?, Error?) -> Void) {
-        //TODO: make all usernames lowercase
         let predicate = NSPredicate(format: "username BEGINSWITH %@", user)
         let usernameQuery = CKQuery(recordType: "username", predicate: predicate)
         let fetchUserInfo = CKFetchRecordsOperation()
@@ -332,6 +312,21 @@ class CloudManager {
                 self.publicDatabase.add(fetchUserInfo)
             } else {
                 completion(nil, nil)
+            }
+        }
+    }
+    
+    func findPrivateMessages (for user: WanderUser, completion: @escaping ([WanderPost]?, Error?)-> Void ) {
+        let privateMessagePredicate = NSPredicate(format: "recipient = %@", user.id.recordName)
+        let privateMessageQuery = CKQuery(recordType: "post", predicate: privateMessagePredicate)
+        //let privateMessageQueryOperation = CKQueryOperation(query: privateMessageQuery)
+        publicDatabase.perform(privateMessageQuery, inZoneWith: nil) { (records, error) in
+            if error != nil {
+                completion(nil, error)
+            }
+            if let validPrivateMessageRecords = records {
+                let privateMessages = validPrivateMessageRecords.map { WanderPost(withCKRecord: $0)! }
+                completion(privateMessages, nil)
             }
         }
     }
@@ -485,7 +480,6 @@ class CloudManager {
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
         notificationInfo.alertBody = currentUsername + " has added you as a friend!"
-        //notificationInfo.desiredKeys
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -503,7 +497,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         
-        notificationInfo.alertBody = "Someone has left you a message!"
+        notificationInfo.alertBody = "Somebody has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
