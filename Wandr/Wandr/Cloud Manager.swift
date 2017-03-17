@@ -47,7 +47,6 @@ class CloudManager {
     
     var currentUser: WanderUser?
     
-    
     //MARK: - Creating a Post and a User
     
     func createPost (post: WanderPost, to: WanderUser?,  completion: @escaping (CKRecord?, [Error]?) -> Void) {
@@ -176,19 +175,49 @@ class CloudManager {
         }
     }
     
-    func createUsername (userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
+    func createUsername(userName: String, profileImageFilePathURL: URL, completion: @escaping (Error?) -> Void) {
         
-        let validUsername = userName as NSString
-        let id = CKRecordID(recordName: currentUser!.id.recordName)
         let imageAsset = CKAsset(fileURL: profileImageFilePathURL)
-        
         let usernameRecord = CKRecord(recordType: "username")
-        usernameRecord.setObject(userName as CKRecordValue, forKey: "username")
+        let validUsername = userName as NSString
+        
+        let userIDFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
+        userIDFetch.fetchRecordsCompletionBlock = {(record, error) in
+            if error != nil {
+                completion(error)
+            }
+            if let userRecord = record?.values.first {
+                self.publicDatabase.fetch(withRecordID: userRecord.recordID) { (userRecord, error) in
+                    if error != nil {
+                        completion(error)
+                        print(error!.localizedDescription)
+                    } else if let validUserRecord = userRecord {
+                        usernameRecord["username"] = validUsername
+                        validUserRecord["username"] = validUsername
+                        validUserRecord["profileImage"] = imageAsset
+                        
+                        let saveUser = CKModifyRecordsOperation()
+                        
+                        saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
+                            completion(error)
+                        }
+                        
+                        saveUser.recordsToSave = [validUserRecord, usernameRecord]
+                        
+                        self.publicDatabase.add(saveUser)
+                    }
+                }
+                
+            }
+            
+        }
+        
         
         publicDatabase.fetch(withRecordID: self.currentUser!.id) { (userRecord, error) in
             if error != nil {
                 print(error!.localizedDescription)
             } else if let validUserRecord = userRecord {
+                usernameRecord["username"] = validUsername
                 validUserRecord["username"] = validUsername
                 validUserRecord["profileImage"] = imageAsset
                 
@@ -243,7 +272,6 @@ class CloudManager {
                 completion(false, nil)
             }
         }
-
     }
     
     //MARK: - Search data base for users, posts
@@ -270,9 +298,7 @@ class CloudManager {
             }
             
             if let validLocalRecords = records {
-                
                 completion(validLocalRecords.map{ WanderPost(withCKRecord: $0)! }, nil)
-                
             }
         }
     }
@@ -290,7 +316,7 @@ class CloudManager {
             }
             
             if let validRecords = records,
-                    validRecords.count > 0 {
+                validRecords.count > 0 {
                 let userRecordIDs: [CKRecordID] = validRecords.map { $0.creatorUserRecordID! }
                 
                 fetchUserInfo.recordIDs = userRecordIDs
@@ -313,6 +339,11 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
+        //
+        //        let fetchUsers = CKFetchRecordsOperation(recordIDs: ids)
+        //        fetchUsers.fetchRecordsCompletionBlock = {
+        //
+        //        }
         publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
@@ -365,9 +396,6 @@ class CloudManager {
         publicDatabase.add(fetchUsers)
     }
     
-
-    
-        
     func getInfo(forPosts posts: [WanderPost], completion: @escaping (Error?) -> Void ) {
         let users = Set<CKRecordID>(posts.map{ $0.user })
         var reactionIDs = [CKRecordID]()
@@ -475,9 +503,7 @@ class CloudManager {
         
         let notificationInfo = CKNotificationInfo()
         
-        let currentUsername = self.currentUser!.username
-        notificationInfo.alertBody = currentUsername + " has left you a message!"
-        print(currentUsername)
+        notificationInfo.alertBody = "Someone has left you a message!"
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -490,7 +516,7 @@ class CloudManager {
     
     //MARK:  - Adding a comment
     func addReaction(to post: WanderPost, comment: Reaction, completion: @escaping (Error?) -> Void) {
-
+        
         let commentRecord = CKRecord(recordType: "comment")
         
         commentRecord.setObject(comment.type.rawValue, forKey: "type")
