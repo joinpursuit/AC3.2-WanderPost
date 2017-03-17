@@ -7,4 +7,5 @@ target 'Wandr' do
 
   # Pods for Wandr
     pod 'SnapKit'
+    pod 'TwicketSegmentedControl'
 end
