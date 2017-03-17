@@ -48,6 +48,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var addPostViewShown = false
     var lastUpdatedLocation: CLLocation!
     let userNotificationCenter = UNUserNotificationCenter.current()
+    var isNewMapAnnotation = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -199,12 +200,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // MARK: - Map View Delegate Methods
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        for view in views {
-            let endFrame = view.frame
-            view.frame = endFrame.offsetBy(dx: 0, dy: -500)
-            UIView.animate(withDuration: 0.5, animations: { 
-                view.frame = endFrame
-            })
+        if isNewMapAnnotation {
+            for view in views {
+                let endFrame = view.frame
+                view.frame = endFrame.offsetBy(dx: 0, dy: -500)
+                UIView.animate(withDuration: 0.5, animations: {
+                    view.frame = endFrame
+                })
+            }
         }
     }
     
