@@ -117,10 +117,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.profileHeaderView = ProfileView(frame: profileViewFrame)
         self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
         guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
-        //Do not delete becase imageToDisplay will be the long term solution
         let imageToDisplay = validOriginalImage.fixRotatedImage()
-        let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-        self.profileHeaderView.profileImageView.image = tempRotateSolution
+        self.profileHeaderView.profileImageView.image = imageToDisplay
         self.profileHeaderView.userNameLabel.text = self.wanderUser.username
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self

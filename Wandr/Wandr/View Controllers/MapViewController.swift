@@ -40,6 +40,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var addPostViewShown = false
     var lastUpdatedLocation: CLLocation!
     let userNotificationCenter = UNUserNotificationCenter.current()
+    var isNewMapAnnotation = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +49,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         
         mapView.delegate = self
         userNotificationCenter.delegate = self
-
+        
         //Make this more dynamic
         let nav = tabBarController?.viewControllers?.last as! UINavigationController
         self.arDelegate = nav.viewControllers.first! as! ARViewController
@@ -83,7 +84,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container
         
         self.edgesForExtendedLayout = []
-
+        
         mapContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.equalToSuperview()
@@ -126,8 +127,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - AddNewWanderPostDelegate
     
     func addNewPost(post: WanderPost) {
+        self.isNewMapAnnotation = true
         let myAnnotaton = PostAnnotation()
         myAnnotaton.wanderpost = post
+        
         guard let postLocation = post.location else { return }
         myAnnotaton.coordinate = postLocation.coordinate
         if let user = post.wanderUser {
@@ -135,7 +138,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         mapView.addAnnotation(myAnnotaton)
     }
-
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -181,7 +184,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             mapAnnotationView.profileImageView.image = nil
             mapAnnotationView.canShowCallout = true
             
-            let postAnnotation = annotation as! PostAnnotation            
+            let postAnnotation = annotation as! PostAnnotation
             if let thisUser = postAnnotation.wanderpost.wanderUser {
                 mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
             }
@@ -191,12 +194,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // MARK: - Map View Delegate Methods
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        for view in views {
-            let endFrame = view.frame
-            view.frame = endFrame.offsetBy(dx: 0, dy: -500)
-            UIView.animate(withDuration: 0.5, animations: { 
-                view.frame = endFrame
-            })
+        if isNewMapAnnotation {
+            for view in views {
+                let endFrame = view.frame
+                view.frame = endFrame.offsetBy(dx: 0, dy: -500)
+                UIView.animate(withDuration: 0.5, animations: {
+                    view.frame = endFrame
+                })
+            }
+            self.isNewMapAnnotation = false
         }
     }
     
@@ -383,7 +389,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     body = "\(post.wanderUser?.username ?? "Someone") left you a message!"
                 }
             case .everyone:
-               return
+                return
             }
             makeNotification(withBody: body)
         }
