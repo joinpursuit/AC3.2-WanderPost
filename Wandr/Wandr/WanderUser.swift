@@ -16,6 +16,8 @@ class WanderUser {
     let friends: [CKRecordID]
     let posts: [CKRecordID]
     
+    var friendsAsWanderers: [WanderUser]? = nil
+    
     init (id: CKRecordID, username: String, userImageData: Data, friends: [CKRecordID], posts: [CKRecordID]) {
         self.id = id
         self.username = username

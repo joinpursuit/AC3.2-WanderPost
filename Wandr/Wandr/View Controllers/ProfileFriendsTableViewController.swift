@@ -36,7 +36,6 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         
         setUpSearchBar()        
         setUpTableView()
-        loadFriends()
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,12 +58,6 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         self.tableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
     }
     
-    func loadFriends() {
-        func getFriendsForUser(id: CKRecordID, completion: @escaping(Error?, [WanderUser]?) -> Void) {
-            
-        }
-    
-    }
     
     // MARK: - Table view data source
 
@@ -77,8 +70,7 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
         case .searchedFriends:
             rows = searchedFriends?.count ?? 0
         }
-        tableView.backgroundView = rows == 0 ? emptyStateView : nil
-        tableView.isScrollEnabled = rows == 0 ? false : true
+        handleEmptyStateFor(empty: rows == 0)
         return rows
     }
 
@@ -105,6 +97,15 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
+    // MARK: - Helper Functions
+    
+    func handleEmptyStateFor(empty: Bool) {
+        tableView.backgroundView = empty ? emptyStateView : nil
+        tableView.isScrollEnabled = empty ? false : true
+        tableView.separatorStyle = empty ? .none : .singleLine
+    }
+
     
     // MARK: - Button Action
     
@@ -133,23 +134,33 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     func addOrRemoveFriend(_ sender: UIButton) {
         let buttonTag = sender.tag
         print(buttonTag)
-
-        let userToAdd = self.searchedFriends![buttonTag]
-        let areWeFriends = CloudManager.shared.currentUser!.friends.contains(userToAdd.id)
         
+        
+        var userToAddOrRemove: WanderUser!
+        switch friendDisplayType {
+        case .userFriends:
+            userToAddOrRemove = userFriends![buttonTag]
+        case .searchedFriends:
+            userToAddOrRemove = searchedFriends![buttonTag]
+        }
+        let areWeFriends = CloudManager.shared.currentUser!.friends.contains(userToAddOrRemove.id)
         if areWeFriends {
-            CloudManager.shared.delete(friend: userToAdd.id) { (error) in
+            CloudManager.shared.delete(friend: userToAddOrRemove.id) { (error) in
                 print(error)
                 DispatchQueue.main.async {
+                    
+                    CloudManager.shared.currentUser!.friendsAsWanderers = CloudManager.shared.currentUser!.friendsAsWanderers?.filter { $0.id != userToAddOrRemove.id }
+                    self.userFriends = CloudManager.shared.currentUser!.friendsAsWanderers?.filter { $0.id != userToAddOrRemove.id }
                     sender.setTitle("add", for: .normal)
-
                 }
             }
-            
         } else {
-            CloudManager.shared.add(friend: userToAdd.id) { (error) in
+            CloudManager.shared.add(friend: userToAddOrRemove.id) { (error) in
                 print(error)
                 DispatchQueue.main.async {
+                    
+                    CloudManager.shared.currentUser!.friendsAsWanderers?.append(userToAddOrRemove)
+                    self.userFriends?.append(userToAddOrRemove)
                     sender.setTitle("remove", for: .normal)
                 }
             }

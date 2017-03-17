@@ -10,6 +10,7 @@ import UIKit
 import SnapKit
 import TwicketSegmentedControl
 import AVKit
+import CloudKit
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -22,6 +23,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var wanderUser: WanderUser!
     var wanderPosts: [WanderPost]?
+    
+    var userFriends: [WanderUser]?
     
     var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.feed
     
@@ -38,19 +41,19 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
         
-        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(friendsButtonTapped))
+        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(searchButtonTapped))
         self.navigationItem.rightBarButtonItem = searchFriendsButton
         
         guard let validWanderUser = CloudManager.shared.currentUser else { return }
         wanderUser = validWanderUser
         
         setupTableView()
-        
         setupViewHierarchy()
         configureConstraints()
-        
         setUpUserHistory()
         setUpFriendsFeed()
+        getUserFriends()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,11 +75,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func friendsLabelTapped() {
-        friendsButtonTapped()
+        goToFriendsVC(displayType: .userFriends)
     }
     
-    func friendsButtonTapped() {
+    func searchButtonTapped() {
+        goToFriendsVC(displayType: .searchedFriends)
+    }
+    
+    func goToFriendsVC(displayType: FriendSearchDisplayType) {
         let friendsVC = ProfileFriendsTableViewController()
+        friendsVC.friendDisplayType = displayType
+        friendsVC.userFriends = userFriends
         navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
         self.navigationController?.pushViewController(friendsVC, animated: true)
     }
@@ -220,9 +229,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     // MARK: - Helper Functions
     
     func toggleNoPostsLabel(posts: [WanderPost], loading: Bool) {
-        
         if loading {
-            //activityIndicator
             noPostsLabel.loading()
             noPostsLabel.isHidden = false
             postTableView.isScrollEnabled = false
@@ -360,7 +367,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func setUpFriendsFeed() {
         friendFeedLoading = wanderUser.friends.isEmpty ? false : true
-        for friend in self.wanderUser.friends {
+        
+        var friendIDs: [CKRecordID]!
+        if let friends = userFriends {
+            friendIDs = friends.map { $0.id }
+        } else {
+            friendIDs = self.wanderUser.friends
+        }
+        
+        for friend in friendIDs {
             CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
                 if error != nil {
                     print(error?.localizedDescription)
@@ -374,7 +389,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     return
                 }
                 
-                self.friendFeedPosts.append(contentsOf: validWanderPosts)
+                self.friendFeedPosts = validWanderPosts
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
@@ -385,6 +400,20 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                         self.postTableView.reloadData()
                     }
                 })
+            }
+        }
+    }
+    
+    func getUserFriends() {
+        CloudManager.shared.getInfo(forUsers: CloudManager.shared.currentUser!.friends) { (userFriends: [WanderUser]?, error: Error?) in
+            if let error = error {
+                print(error)
+            }
+            if let friends = userFriends {
+                DispatchQueue.main.async {
+                    self.userFriends = friends
+                    CloudManager.shared.currentUser?.friendsAsWanderers = friends
+                }
             }
         }
     }
