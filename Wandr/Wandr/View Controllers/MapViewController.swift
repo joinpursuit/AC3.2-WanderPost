@@ -17,7 +17,7 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate, RemovePostDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -136,6 +136,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         mapView.addAnnotation(myAnnotaton)
     }
+    
+    // MARK: - RemovePostDelegate Method
+    func deletePost(post: WanderPost) {
+        wanderposts = wanderposts!.filter { $0.postID != post.postID }
+        allWanderPosts = allWanderPosts!.filter { $0.postID != post.postID }
+        reloadMapView()
+    }
+
     
     
     // MARK: - CLLocationManagerDelegate Methods
