@@ -21,25 +21,12 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     var locationManager : CLLocationManager = CLLocationManager()
     
-    var allWanderPosts: [WanderPost]? {
-        didSet {
-            CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
-                
-                print(error)
-                
-                DispatchQueue.main.async {
-                    self.reloadMapView()
-                }
-            }
-        }
-    }
+    var allWanderPosts: [WanderPost]?
     
     var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
-            DispatchQueue.main.async {
-                self.reloadMapView()
-            }
+            self.reloadMapView()
         }
     }
     
@@ -48,15 +35,19 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     var addPostViewShown = false
     var lastUpdatedLocation: CLLocation!
     let userNotificationCenter = UNUserNotificationCenter.current()
+    var isNewMapAnnotation = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationItem.title = "wanderpost"
         
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
+        self.navigationItem.rightBarButtonItem = refreshButton
+        
         mapView.delegate = self
         userNotificationCenter.delegate = self
-
+        
         //Make this more dynamic
         let nav = tabBarController?.viewControllers?.last as! UINavigationController
         self.arDelegate = nav.viewControllers.first! as! ARViewController
@@ -91,7 +82,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         //Map Container
         
         self.edgesForExtendedLayout = []
-
+        
         mapContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.equalToSuperview()
@@ -134,8 +125,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     // MARK: - AddNewWanderPostDelegate
     
     func addNewPost(post: WanderPost) {
+        self.isNewMapAnnotation = true
         let myAnnotaton = PostAnnotation()
         myAnnotaton.wanderpost = post
+        
         guard let postLocation = post.location else { return }
         myAnnotaton.coordinate = postLocation.coordinate
         if let user = post.wanderUser {
@@ -143,7 +136,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         }
         mapView.addAnnotation(myAnnotaton)
     }
-
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -189,7 +182,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             mapAnnotationView.profileImageView.image = nil
             mapAnnotationView.canShowCallout = true
             
-            let postAnnotation = annotation as! PostAnnotation            
+            let postAnnotation = annotation as! PostAnnotation
             if let thisUser = postAnnotation.wanderpost.wanderUser {
                 mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
             }
@@ -199,12 +192,15 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     // MARK: - Map View Delegate Methods
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        for view in views {
-            let endFrame = view.frame
-            view.frame = endFrame.offsetBy(dx: 0, dy: -500)
-            UIView.animate(withDuration: 0.5, animations: { 
-                view.frame = endFrame
-            })
+        if isNewMapAnnotation {
+            for view in views {
+                let endFrame = view.frame
+                view.frame = endFrame.offsetBy(dx: 0, dy: -500)
+                UIView.animate(withDuration: 0.5, animations: {
+                    view.frame = endFrame
+                })
+            }
+            self.isNewMapAnnotation = false
         }
     }
     
@@ -224,6 +220,10 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         }
         })
         
+    }
+    
+    func refreshTapped() {
+        getWanderPosts(lastUpdatedLocation)
     }
     
     //MARK: - Lazy Vars
@@ -288,11 +288,19 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
             if let error = error {
                 print("Error fetching posts, \(error)")
+                return
             } else if let posts = posts {
-                DispatchQueue.main.async {
-                    self.wanderposts = posts
-                    self.allWanderPosts = posts
+                self.allWanderPosts = posts
+                CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
+                    if error != nil {
+                        print(error?.localizedDescription)
+                        return
+                    }
+                    DispatchQueue.main.async {
+                        self.didSelect(self.segmentedControl.selectedSegmentIndex)
+                    }
                 }
+
             }
         }
     }
@@ -319,10 +327,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     //MARK: - Notification Delegate Methods
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        print(response)
-        
-        
         
         switch response.actionIdentifier {
         case UNNotificationDefaultActionIdentifier:
@@ -376,7 +380,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             switch level {
             case .friends:
                 if count > 1 {
-                    body = "\(count) of your friends have left messages here!"
+                    body = "Your friends have left \(count) messages here!"
                 } else {
                     fallthrough
                 }
@@ -387,37 +391,35 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                     body = "\(post.wanderUser?.username ?? "Someone") left you a message!"
                 }
             case .everyone:
-               return
+                return
             }
             makeNotification(withBody: body)
         }
     }
     
-    //HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo.
+    //TODO: HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo. -- post is marked read by appending the username to the readBy array maybe. marked as read as soon as you get into AR/its on your screen in AR.
 }
 
 extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
         let validFriends = CloudManager.shared.currentUser!.friends.map { $0.recordName }
-        print(validFriends)
 
+        let everyone = allValidWanderPosts.filter { $0.privacyLevel == .everyone }
+        
+        let friends = allValidWanderPosts.filter{
+            return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+        }
+        
+        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser!.id.recordName }
         
         switch segmentIndex {
         case 0:
-            self.wanderposts = allValidWanderPosts
+            self.wanderposts = everyone + friends
         case 1:
-            let friends = allValidWanderPosts.filter{
-                print($0.user)
-                return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
-            
-            }
-            let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser?.id.recordName }
-            
             self.wanderposts = friends + messages
         case 2:
-            
-            self.wanderposts = allValidWanderPosts.filter{$0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser?.id.recordName }
+            self.wanderposts = messages
         default:
             print("Can not make a decision")
         }
