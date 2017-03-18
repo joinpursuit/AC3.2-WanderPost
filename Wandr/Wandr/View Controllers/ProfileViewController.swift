@@ -12,7 +12,7 @@ import TwicketSegmentedControl
 import AVKit
 import CloudKit
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RemovePostDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
@@ -102,6 +102,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.imagePickerController = imagePickerController
         self.present(imagePickerController, animated: true, completion: nil)
     }
+    
+    // MARK: - RemovePostDelegate Method
+    func deletePost(post: WanderPost) {
+        wanderPosts! = wanderPosts!.filter { $0.postID != post.postID }
+        postTableView.reloadData()
+    }
+    
     
     // MARK: - UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -223,6 +230,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
             detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
+            detailPostViewWithCommentsViewController.deletePostDelegate = self
             navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
             

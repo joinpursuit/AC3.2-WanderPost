@@ -10,6 +10,10 @@ import UIKit
 import MapKit
 import SnapKit
 
+protocol RemovePostDelegate {
+    func deletePost(post: WanderPost)
+}
+
 class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var wanderPost: WanderPost!
@@ -25,11 +29,14 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     var emptyState: Bool = true
     
+    var deletePostDelegate: RemovePostDelegate!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
+        
         setupTableView()
         setupViewHierarchy()
         configureConstraints()
@@ -144,6 +151,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                         print(error)
                     }
                     DispatchQueue.main.async {
+                        self.deletePostDelegate.deletePost(post: postToDelete)
                         self.navigationController?.popViewController(animated: true)
                     }
                 })
