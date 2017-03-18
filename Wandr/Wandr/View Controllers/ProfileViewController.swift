@@ -12,7 +12,7 @@ import TwicketSegmentedControl
 import AVKit
 import CloudKit
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RemovePostDelegate {
     
     let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
@@ -51,15 +51,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         setupTableView()
         setupViewHierarchy()
         configureConstraints()
-        setUpUserHistory()
-        setUpFriendsFeed()
-        getUserFriends()
         
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.postTableView.reloadData()
+        wanderUser = CloudManager.shared.currentUser!
+        setUpUserHistory()
+        setUpFriendsFeed()
+        getUserFriends()
         setUpPrivateMessages()
+        self.postTableView.reloadData()
     }
     
     // MARK: - Actions
@@ -102,6 +103,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.imagePickerController = imagePickerController
         self.present(imagePickerController, animated: true, completion: nil)
     }
+    
+    // MARK: - RemovePostDelegate Method
+    func deletePost(post: WanderPost) {
+        wanderPosts! = wanderPosts!.filter { $0.postID != post.postID }
+        postTableView.reloadData()
+    }
+    
     
     // MARK: - UIImagePickerControllerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -223,6 +231,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
             detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
+            detailPostViewWithCommentsViewController.deletePostFromProfileDelegate = self
             navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
             
@@ -379,8 +388,10 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             guard let validWanderPosts = wanderPosts else { return }
             self.wanderPosts = validWanderPosts.sorted(by: {$0.0.time > $0.1.time} )
-            self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
-            self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"
+            DispatchQueue.main.async {
+                self.profileHeaderView.postNumberLabel.text = "\(validWanderPosts.count) \n posts"
+                self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"                
+            }
             
             
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
@@ -395,15 +406,9 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func setUpFriendsFeed() {
         friendFeedLoading = wanderUser.friends.isEmpty ? false : true
+        friendFeedPosts = []
         
-        var friendIDs: [CKRecordID]!
-        if let friends = userFriends {
-            friendIDs = friends.map { $0.id }
-        } else {
-            friendIDs = self.wanderUser.friends
-        }
-        
-        for friend in friendIDs {
+        for friend in wanderUser.friends {
             CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
                 if error != nil {
                     print(error?.localizedDescription)
@@ -417,7 +422,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     return
                 }
                 
-                self.friendFeedPosts = validWanderPosts
+                self.friendFeedPosts += validWanderPosts
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in

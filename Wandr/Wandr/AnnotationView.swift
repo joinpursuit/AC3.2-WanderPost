@@ -68,14 +68,16 @@ class AnnotationView: ARAnnotationView {
         profileImageView?.layer.cornerRadius = 20
         self.addSubview(profileImageView!)
         
-        detailContainerView?.backgroundColor = UIColor(white: 0.3, alpha: 0.7)
+        detailContainerView?.backgroundColor = UIColor(white: 0.3, alpha: 0.6)
         detailContainerView?.clipsToBounds = true
         detailContainerView?.layer.cornerRadius = 10
+        detailContainerView?.layer.borderWidth = 2
+        detailContainerView?.layer.borderColor = StyleManager.shared.primary.cgColor
         self.addSubview(detailContainerView!)
         
         userLabel?.font = StyleManager.shared.comfortaaFont14
         userLabel?.numberOfLines = 1
-        userLabel?.textColor = StyleManager.shared.primaryDark
+        userLabel?.textColor = StyleManager.shared.accent
         userLabel?.textAlignment = .center
         detailContainerView?.addSubview(userLabel!)
         
