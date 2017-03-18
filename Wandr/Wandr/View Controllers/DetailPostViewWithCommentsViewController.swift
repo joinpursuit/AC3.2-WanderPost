@@ -29,13 +29,18 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
     
     var emptyState: Bool = true
     
-    var deletePostDelegate: RemovePostDelegate!
+    var deletePostFromProfileDelegate: RemovePostDelegate!
+    var deletePostFromMapDelegate: RemovePostDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.tintColor = StyleManager.shared.accent
         self.navigationItem.title = "wanderpost"
         self.view.backgroundColor = UIColor.white
+        
+        let nav = tabBarController?.viewControllers?[1] as! UINavigationController
+        self.deletePostFromMapDelegate = nav.viewControllers.first as! MapViewController
+
         
         setupTableView()
         setupViewHierarchy()
@@ -151,7 +156,8 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
                         print(error)
                     }
                     DispatchQueue.main.async {
-                        self.deletePostDelegate.deletePost(post: postToDelete)
+                        self.deletePostFromMapDelegate.deletePost(post: postToDelete)
+                        self.deletePostFromProfileDelegate.deletePost(post: postToDelete)
                         self.navigationController?.popViewController(animated: true)
                     }
                 })

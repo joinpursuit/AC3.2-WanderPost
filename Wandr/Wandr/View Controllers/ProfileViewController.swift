@@ -230,7 +230,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
             let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
             detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
-            detailPostViewWithCommentsViewController.deletePostDelegate = self
+            detailPostViewWithCommentsViewController.deletePostFromProfileDelegate = self
             navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
             self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
             
