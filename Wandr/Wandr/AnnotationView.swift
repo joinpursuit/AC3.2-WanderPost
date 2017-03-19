@@ -92,7 +92,6 @@ class AnnotationView: ARAnnotationView {
         timeLabel?.textColor = UIColor.white
         detailContainerView?.addSubview(timeLabel!)
         
-        
         distanceLabel?.font = UIFont.systemFont(ofSize: 8)
         distanceLabel?.numberOfLines = 1
         distanceLabel?.textColor = StyleManager.shared.accent

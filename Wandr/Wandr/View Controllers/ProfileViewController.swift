@@ -213,7 +213,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
             
             let post = self.personalPosts[indexPath.row]
-            cell.messageLabel.text = "Left you a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
+            cell.messageLabel.text = "Left you a wanderpost near \(self.personalPosts[indexPath.row].locationDescription)."
             cell.dateAndTimeLabel.text = post.dateAndTime
             if let user = post.wanderUser {
                 cell.profileImageView.image = UIImage(data: user.userImageData)
