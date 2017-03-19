@@ -370,12 +370,16 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             
             if let validPrivateMessages = privateMessages {
-                DispatchQueue.main.async {
-                    self.personalPosts = validPrivateMessages
-                    self.personalPostsLoading = false
-                    self.postTableView.reloadData()
-                }
-                dump(self.personalPosts)
+                
+                CloudManager.shared.getInfo(forPosts: validPrivateMessages, completion: { (error) in
+                    print(error)
+                    
+                    DispatchQueue.main.async {
+                        self.personalPosts = validPrivateMessages.sorted(by: {$0.0.time > $0.1.time} )
+                        self.personalPostsLoading = false
+                        self.postTableView.reloadData()
+                    }
+                })
             }
         }
     }
@@ -422,7 +426,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     return
                 }
                 
-                self.friendFeedPosts += validWanderPosts
+                self.friendFeedPosts += validWanderPosts.filter { $0.privacyLevel != .message }
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
