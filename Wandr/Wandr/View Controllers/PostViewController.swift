@@ -46,8 +46,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
             //Do not delete becase imageToDisplay will be the long term solution
             let imageToDisplay = validOriginalImage.fixRotatedImage()
-            let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-            self.profileImageView.image = tempRotateSolution
+            //let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+            self.profileImageView.image = imageToDisplay
         }
         
     }
