@@ -280,7 +280,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     lazy var segmentedControlContainerView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.yellow
+        view.backgroundColor = UIColor.clear
         return view
     }()
     
