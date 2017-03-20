@@ -1,9 +1,9 @@
 //
 //  AnnotationView.swift
-//  Places
+//  Wandr
 //
-//  Created by Tom Seymour on 3/1/17.
-//  Copyright © 2017 Razeware LLC. All rights reserved.
+//  Created by Tom Seymour on 3/9/17.
+//  Copyright © 2017 C4Q. All rights reserved.
 //
 
 import UIKit
@@ -66,16 +66,20 @@ class AnnotationView: ARAnnotationView {
         
         profileImageView?.clipsToBounds = true
         profileImageView?.layer.cornerRadius = 20
+        profileImageView?.layer.borderWidth = 2
+        profileImageView?.layer.borderColor = StyleManager.shared.accent.cgColor
         self.addSubview(profileImageView!)
         
-        detailContainerView?.backgroundColor = UIColor(white: 0.3, alpha: 0.7)
+        detailContainerView?.backgroundColor = UIColor(white: 0.3, alpha: 0.6)
         detailContainerView?.clipsToBounds = true
         detailContainerView?.layer.cornerRadius = 10
+        detailContainerView?.layer.borderWidth = 2
+        detailContainerView?.layer.borderColor = StyleManager.shared.primary.cgColor
         self.addSubview(detailContainerView!)
         
         userLabel?.font = StyleManager.shared.comfortaaFont14
         userLabel?.numberOfLines = 1
-        userLabel?.textColor = StyleManager.shared.primaryDark
+        userLabel?.textColor = StyleManager.shared.accent
         userLabel?.textAlignment = .center
         detailContainerView?.addSubview(userLabel!)
         
@@ -89,7 +93,6 @@ class AnnotationView: ARAnnotationView {
         timeLabel?.numberOfLines = 1
         timeLabel?.textColor = UIColor.white
         detailContainerView?.addSubview(timeLabel!)
-        
         
         distanceLabel?.font = UIFont.systemFont(ofSize: 8)
         distanceLabel?.numberOfLines = 1

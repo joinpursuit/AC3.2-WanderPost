@@ -46,8 +46,8 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
             //Do not delete becase imageToDisplay will be the long term solution
             let imageToDisplay = validOriginalImage.fixRotatedImage()
-            let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-            self.profileImageView.image = tempRotateSolution
+            //let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+            self.profileImageView.image = imageToDisplay
         }
         
     }
@@ -161,7 +161,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         let privacy = privacyLevelArray[segmentedControl.selectedSegmentIndex]
         
         switch privacy {
-        case .message:
+        case .personal:
             
             if self.recipient == nil {
                 print("you need to send this to someone yo")
@@ -182,7 +182,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
             if let marks = placemarks, let thisMark = marks.last {
                 let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
                 
-                if privacy == .message {
+                if privacy == .personal {
                     //add in recipient username as a string here.
                 }
                 

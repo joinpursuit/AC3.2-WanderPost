@@ -13,9 +13,9 @@ class WanderUser {
     let id: CKRecordID
     let username: String
     let userImageData: Data
-    let friends: [CKRecordID]
+    var friends: [CKRecordID]
     let posts: [CKRecordID]
-    
+        
     init (id: CKRecordID, username: String, userImageData: Data, friends: [CKRecordID], posts: [CKRecordID]) {
         self.id = id
         self.username = username

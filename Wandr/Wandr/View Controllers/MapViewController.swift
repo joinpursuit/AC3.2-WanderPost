@@ -17,7 +17,7 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate {
+class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate, RemovePostDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
     
@@ -137,6 +137,14 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         mapView.addAnnotation(myAnnotaton)
     }
     
+    // MARK: - RemovePostDelegate Method
+    func deletePost(post: WanderPost) {
+        wanderposts = wanderposts!.filter { $0.postID != post.postID }
+        allWanderPosts = allWanderPosts!.filter { $0.postID != post.postID }
+        reloadMapView()
+    }
+
+    
     
     // MARK: - CLLocationManagerDelegate Methods
     
@@ -161,7 +169,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             lastUpdatedLocation = location
             getWanderPosts(location)
             makeNotificationsFor(privacyLevel: .friends)
-            makeNotificationsFor(privacyLevel: .message)
+            makeNotificationsFor(privacyLevel: .personal)
             print("new location")
         }
     }
@@ -300,7 +308,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         self.didSelect(self.segmentedControl.selectedSegmentIndex)
                     }
                 }
-
             }
         }
     }
@@ -384,7 +391,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                 } else {
                     fallthrough
                 }
-            case .message:
+            case .personal:
                 print("hi!")
                 //I see this as not working. We'll see though.
                 for post in validWanderPosts where post.recipient == CloudManager.shared.currentUser?.id {
@@ -408,10 +415,10 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         let everyone = allValidWanderPosts.filter { $0.privacyLevel == .everyone }
         
         let friends = allValidWanderPosts.filter{
-            return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+            return validFriends.contains($0.user.recordName)
         }
         
-        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser!.id.recordName }
+        let messages = allValidWanderPosts.filter{ $0.privacyLevel == .personal && $0.recipient?.recordName == CloudManager.shared.currentUser!.id.recordName }
         
         switch segmentIndex {
         case 0:

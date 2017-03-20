@@ -1,3 +1,11 @@
+//
+//  ARAnnotation.swift
+//  HDAugmentedRealityDemo
+//
+//  Created by Danijel Huis on 23/04/15.
+//  Copyright (c) 2015 Danijel Huis. All rights reserved.
+//
+
 import CoreLocation
 import UIKit
 

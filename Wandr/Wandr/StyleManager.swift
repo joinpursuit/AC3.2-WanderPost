@@ -12,11 +12,11 @@ import UIKit
 class PrivacyLevelManager {
     static let shared = PrivacyLevelManager()
     let privacyLevelArray: [PrivacyLevel] = {
-        return [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+        return [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.personal]
     }()
     
     let privacyLevelStringArray: [String] = {
-        let privacyLevel =  [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.message]
+        let privacyLevel =  [PrivacyLevel.everyone, PrivacyLevel.friends, PrivacyLevel.personal]
         return privacyLevel.map{ ($0.rawValue as String) }
     }()
 }
