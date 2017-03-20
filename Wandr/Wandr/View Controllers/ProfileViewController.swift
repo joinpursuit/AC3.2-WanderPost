@@ -170,7 +170,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         case ProfileViewFilterType.feed:
             toggleNoPostsLabel(posts: self.friendFeedPosts, loading: self.friendFeedLoading)
             return self.friendFeedPosts.count
-        case ProfileViewFilterType.messages:
+        case ProfileViewFilterType.personal:
             toggleNoPostsLabel(posts: self.personalPosts, loading: self.personalPostsLoading)
             return self.personalPosts.count
         }
@@ -209,7 +209,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             return cell
             
-        case ProfileViewFilterType.messages:
+        case ProfileViewFilterType.personal:
             let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
             
             let post = self.personalPosts[indexPath.row]
@@ -237,8 +237,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
             
         case ProfileViewFilterType.feed:
             print(ProfileViewFilterType.feed.rawValue)
-        case ProfileViewFilterType.messages:
-            print(ProfileViewFilterType.messages.rawValue)
+        case ProfileViewFilterType.personal:
+            print(ProfileViewFilterType.personal.rawValue)
         }
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -426,7 +426,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                     return
                 }
                 
-                self.friendFeedPosts += validWanderPosts.filter { $0.privacyLevel != .message }
+                self.friendFeedPosts += validWanderPosts.filter { $0.privacyLevel != .personal }
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
@@ -466,7 +466,7 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
             self.profileViewFilterType = ProfileViewFilterType.posts
             self.postTableView.separatorInset = postCellSeparatorInsets
         case 2:
-            self.profileViewFilterType = ProfileViewFilterType.messages
+            self.profileViewFilterType = ProfileViewFilterType.personal
             self.postTableView.separatorInset = postCellSeparatorInsets
 
         default:
