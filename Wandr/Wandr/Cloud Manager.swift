@@ -25,7 +25,7 @@ enum PostContentType: NSString {
 }
 
 enum PrivacyLevel: NSString {
-    case message
+    case personal
     case friends
     case everyone
 }
@@ -33,7 +33,7 @@ enum PrivacyLevel: NSString {
 enum ProfileViewFilterType: String {
     case posts = "posts"
     case feed = "feed"
-    case messages = "messages"
+    case personal = "personal"
 }
 
 class CloudManager {
@@ -220,6 +220,7 @@ class CloudManager {
         
         let currentUserFetch = CKFetchRecordsOperation.fetchCurrentUserRecordOperation()
         currentUserFetch.fetchRecordsCompletionBlock = {(userRecord, error) in
+            
             if error != nil {
                 completion(false, error)
             }
