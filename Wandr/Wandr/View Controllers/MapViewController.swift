@@ -308,7 +308,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
                         self.didSelect(self.segmentedControl.selectedSegmentIndex)
                     }
                 }
-
             }
         }
     }
@@ -416,7 +415,7 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         let everyone = allValidWanderPosts.filter { $0.privacyLevel == .everyone }
         
         let friends = allValidWanderPosts.filter{
-            return $0.privacyLevel == .friends && validFriends.contains($0.user.recordName)
+            return validFriends.contains($0.user.recordName)
         }
         
         let messages = allValidWanderPosts.filter{ $0.privacyLevel == .message && $0.recipient?.recordName == CloudManager.shared.currentUser!.id.recordName }
