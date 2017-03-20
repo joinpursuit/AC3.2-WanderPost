@@ -7,5 +7,5 @@ target 'Wandr' do
 
   # Pods for Wandr
     pod 'SnapKit'
-    pod 'TwicketSegmentedControl'
+    pod 'TwicketSegmentedControl’, :git => 'https://github.com/anama118118/TwicketSegmentedControl.git'
 end
