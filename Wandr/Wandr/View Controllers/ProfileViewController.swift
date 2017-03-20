@@ -397,7 +397,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
                 self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"                
             }
             
-            
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
                 print(error)
                 
