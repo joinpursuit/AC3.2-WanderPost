@@ -18,6 +18,8 @@ import UIKit
  _make the push notification trigger a notification with the correct data/rewrite the userinfo to have the right information before making the CKNotification
  */
 
+//Update users when friends added
+
 enum PostContentType: NSString {
     case audio, text, video
 }
