@@ -38,10 +38,11 @@ ProfileViewControllerFeed
 
 <img src="https://github.com/C4Q/AC3.2-WanderPost/blob/feature-AM-OnBoardView/Media/ProfileViewControllerFeed.png" width="320" />
 
+ProfileViewControllerPost
+
+<img src="https://github.com/C4Q/AC3.2-WanderPost/blob/feature-AM-OnBoardView/Media/ProfileViewControllerPost.png" width="320" />
+
 ProfileViewControllerPersonal
 
 <img src="https://github.com/C4Q/AC3.2-WanderPost/blob/feature-AM-OnBoardView/Media/ProfileViewControllerPersonal.png" width="320" />
 
-ProfileViewControllerPost
-
-<img src="https://github.com/C4Q/AC3.2-WanderPost/blob/feature-AM-OnBoardView/Media/ProfileViewControllerPost.png" width="320" />
