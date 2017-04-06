@@ -17,6 +17,15 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
+//Protocol implementation into extensions, get rid of magic numbers, refactor views into their own files
+/*
+ - make scope a serious thing. assume the least mount of access and then increase as needed
+ - magic numbers are really ugly in code, protocols and enums make things a lot smoother and easier to read.
+ - NO COMPILE WARNINGS, that should be the first thing I should work on.
+ - ALWAYS WRITE CLEAN CODE DUDE, assume someone else who's an idiot is going to have to work on it. make it simple and clean for them
+ - 
+ */
+
 class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate, RemovePostDelegate {
     
     var locationManager : CLLocationManager = CLLocationManager()
@@ -235,6 +244,11 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     //MARK: - Lazy Vars
+    
+    //These vars aren't 'thinking' they are just set up so they should be hanging out in the view, the VC is only in charge of 'thinking' stuff.
+    
+    //This view controller doesn't care about the buttons, etc.
+    
     lazy var mapContainerView: UIView = {
         let view = UIView()
         return view
@@ -545,5 +559,3 @@ extension MapViewController: TwicketSegmentedControlDelegate {
 //        swipeDownGesture.direction = .down
 //         self.dragUpOrDownContainerView.addGestureRecognizer(swipeDownGesture)
 //    }
-
-
