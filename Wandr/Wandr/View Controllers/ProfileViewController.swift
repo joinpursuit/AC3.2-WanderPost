@@ -12,30 +12,30 @@ import TwicketSegmentedControl
 import AVKit
 import CloudKit
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ProfileViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RemovePostDelegate {
+class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDelegate {
     
-    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
-    var friendFeedPosts = [WanderPost]()
-    var friendFeedLoading: Bool = true
+    fileprivate var friendFeedPosts = [WanderPost]()
+    fileprivate var friendFeedLoading: Bool = true
     
-    var personalPosts = [WanderPost]()
-    var personalPostsLoading: Bool = true
+    fileprivate var personalPosts = [WanderPost]()
+    fileprivate var personalPostsLoading: Bool = true
     
-    var wanderUser: WanderUser!
-    var wanderPosts: [WanderPost]?
+    fileprivate var wanderUser: WanderUser!
+    fileprivate var wanderPosts: [WanderPost]?
     
-    var userFriends: [WanderUser]?
+    fileprivate var userFriends: [WanderUser]?
     
-    var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.feed
+    fileprivate var profileViewFilterType: ProfileViewFilterType = ProfileViewFilterType.feed
     
-    var imagePickerController: UIImagePickerController!
+    fileprivate var imagePickerController: UIImagePickerController!
     
-    var segmentedControlCurrentIndex = 0
+    fileprivate var segmentedControlCurrentIndex = 0
     
-    let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
-    let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-    private let heightForSectionHeader: CGFloat = 38
+    fileprivate let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
+    fileprivate let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    fileprivate let heightForSectionHeader: CGFloat = 38
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -110,17 +110,6 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         postTableView.reloadData()
     }
     
-    
-    // MARK: - UIImagePickerControllerDelegate
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            let imageToDisplay = originalImage.fixRotatedImage()
-            self.profileHeaderView.profileImageView.image = imageToDisplay
-        }
-        dump(info)
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     // MARK: - TableView Cell, Header and Section Customizations
     func setupTableView() {
         //TabelViewCell
@@ -142,110 +131,8 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.profileHeaderView.delegate = self
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let segmentedControlHeaderFooterView = (self.postTableView.dequeueReusableHeaderFooterView(withIdentifier: SegmentedControlHeaderFooterView.identifier) as? SegmentedControlHeaderFooterView)!
-        self.segmentedControl = segmentedControlHeaderFooterView.segmentedControl
-        self.segmentedControl.delegate = self
-        
-        return segmentedControlHeaderFooterView
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return self.heightForSectionHeader
-    }
-    
-    // MARK: - TableViewDelegate and TableViewDataSource Methods
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch self.profileViewFilterType {
-        case ProfileViewFilterType.posts:
-            guard let posts = self.wanderPosts else { return 0 }
-            
-            toggleNoPostsLabel(posts: posts, loading: false)
-            return posts.count
-        case ProfileViewFilterType.feed:
-            toggleNoPostsLabel(posts: self.friendFeedPosts, loading: self.friendFeedLoading)
-            return self.friendFeedPosts.count
-        case ProfileViewFilterType.personal:
-            toggleNoPostsLabel(posts: self.personalPosts, loading: self.personalPostsLoading)
-            return self.personalPosts.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch self.profileViewFilterType{
-        case ProfileViewFilterType.posts:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
-            guard let post = self.wanderPosts?[indexPath.row] else { return cell }
-            cell.locationLabel.text = post.locationDescription
-            cell.messageLabel.text = post.content as? String
-            cell.dateAndTimeLabel.text = post.dateAndTime
-            
-            let reactionsCount = post.reactions?.count ?? 0
-            if reactionsCount < 1 {
-                cell.commentCountLabel.text = "no comments"
-            } else if reactionsCount < 2 {
-                cell.commentCountLabel.text = "\(reactionsCount) comment"
-            } else {
-                cell.commentCountLabel.text = "\(reactionsCount) comments"
-            }
-        
-            return cell
-            
-        case ProfileViewFilterType.feed:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            
-            let post = self.friendFeedPosts[indexPath.row]
-            cell.messageLabel.text = "Left a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
-            cell.dateAndTimeLabel.text = post.dateAndTime
-            if let user = post.wanderUser {
-                cell.profileImageView.image = UIImage(data: user.userImageData)
-                cell.nameLabel.text = user.username
-                
-            }
-            return cell
-            
-        case ProfileViewFilterType.personal:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            
-            let post = self.personalPosts[indexPath.row]
-            cell.messageLabel.text = "Left you a wanderpost near \(self.personalPosts[indexPath.row].locationDescription)."
-            cell.dateAndTimeLabel.text = post.dateAndTime
-            if let user = post.wanderUser {
-                cell.profileImageView.image = UIImage(data: user.userImageData)
-                cell.nameLabel.text = user.username
-                
-            }
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch self.profileViewFilterType{
-        case ProfileViewFilterType.posts:
-            
-            guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
-            let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
-            detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
-            detailPostViewWithCommentsViewController.deletePostFromProfileDelegate = self
-            navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
-            self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
-            
-        case ProfileViewFilterType.feed:
-            print(ProfileViewFilterType.feed.rawValue)
-        case ProfileViewFilterType.personal:
-            print(ProfileViewFilterType.personal.rawValue)
-        }
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
     
     // MARK: - Helper Functions
-    
     func toggleNoPostsLabel(posts: [WanderPost], loading: Bool) {
         if loading {
             noPostsLabel.loading()
@@ -329,9 +216,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         view.addGestureRecognizer(leftSwipeGestureRecognizer)
         return view
     }()
-    
 
-    
     func updateSegmentedControl(gesture: UISwipeGestureRecognizer) {
         print("I've been Swiped!")
         switch gesture.direction {
@@ -454,6 +339,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
 }
 
+// MARK: - UIImagePickerControllerDelegate
+extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            let imageToDisplay = originalImage.fixRotatedImage()
+            self.profileHeaderView.profileImageView.image = imageToDisplay
+        }
+        dump(info)
+        self.dismiss(animated: true, completion: nil)
+    }
+}
 
 extension ProfileViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
@@ -474,4 +370,111 @@ extension ProfileViewController: TwicketSegmentedControlDelegate {
         self.postTableView.reloadData()
     }
     
+}
+
+// MARK: - TableViewDataSource Methods
+extension ProfileViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch self.profileViewFilterType {
+        case ProfileViewFilterType.posts:
+            guard let posts = self.wanderPosts else { return 0 }
+            
+            toggleNoPostsLabel(posts: posts, loading: false)
+            return posts.count
+        case ProfileViewFilterType.feed:
+            toggleNoPostsLabel(posts: self.friendFeedPosts, loading: self.friendFeedLoading)
+            return self.friendFeedPosts.count
+        case ProfileViewFilterType.personal:
+            toggleNoPostsLabel(posts: self.personalPosts, loading: self.personalPostsLoading)
+            return self.personalPosts.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch self.profileViewFilterType{
+        case ProfileViewFilterType.posts:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
+            guard let post = self.wanderPosts?[indexPath.row] else { return cell }
+            cell.locationLabel.text = post.locationDescription
+            cell.messageLabel.text = post.content as? String
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            
+            let reactionsCount = post.reactions?.count ?? 0
+            if reactionsCount < 1 {
+                cell.commentCountLabel.text = "no comments"
+            } else if reactionsCount < 2 {
+                cell.commentCountLabel.text = "\(reactionsCount) comment"
+            } else {
+                cell.commentCountLabel.text = "\(reactionsCount) comments"
+            }
+            
+            return cell
+            
+        case ProfileViewFilterType.feed:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
+            
+            let post = self.friendFeedPosts[indexPath.row]
+            cell.messageLabel.text = "Left a wanderpost near \(self.friendFeedPosts[indexPath.row].locationDescription)."
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            if let user = post.wanderUser {
+                cell.profileImageView.image = UIImage(data: user.userImageData)
+                cell.nameLabel.text = user.username
+                
+            }
+            return cell
+            
+        case ProfileViewFilterType.personal:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
+            
+            let post = self.personalPosts[indexPath.row]
+            cell.messageLabel.text = "Left you a wanderpost near \(self.personalPosts[indexPath.row].locationDescription)."
+            cell.dateAndTimeLabel.text = post.dateAndTime
+            if let user = post.wanderUser {
+                cell.profileImageView.image = UIImage(data: user.userImageData)
+                cell.nameLabel.text = user.username
+                
+            }
+            return cell
+        }
+    }
+}
+
+// MARK: - TableViewDelegate Methods
+extension ProfileViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let segmentedControlHeaderFooterView = (self.postTableView.dequeueReusableHeaderFooterView(withIdentifier: SegmentedControlHeaderFooterView.identifier) as? SegmentedControlHeaderFooterView)!
+        self.segmentedControl = segmentedControlHeaderFooterView.segmentedControl
+        self.segmentedControl.delegate = self
+        
+        return segmentedControlHeaderFooterView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return self.heightForSectionHeader
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch self.profileViewFilterType{
+        case ProfileViewFilterType.posts:
+            
+            guard let selectedWanderPost = self.wanderPosts?[indexPath.row] else { return }
+            let detailPostViewWithCommentsViewController = DetailPostViewWithCommentsViewController()
+            detailPostViewWithCommentsViewController.wanderPost = selectedWanderPost
+            detailPostViewWithCommentsViewController.deletePostFromProfileDelegate = self
+            navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
+            self.navigationController?.pushViewController(detailPostViewWithCommentsViewController, animated: true)
+            
+        case ProfileViewFilterType.feed:
+            print(ProfileViewFilterType.feed.rawValue)
+        case ProfileViewFilterType.personal:
+            print(ProfileViewFilterType.personal.rawValue)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
 }
