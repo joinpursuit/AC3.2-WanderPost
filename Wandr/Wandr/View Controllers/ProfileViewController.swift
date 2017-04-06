@@ -12,7 +12,7 @@ import TwicketSegmentedControl
 import AVKit
 import CloudKit
 
-class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDelegate {
+class ProfileViewController: UIViewController {
     
     fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
     
@@ -64,23 +64,6 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
     }
     
     // MARK: - Actions
-    func imageViewTapped() {
-        //Able to change profile picture
-        print("self.profileHeaderView.profileImageView")
-        self.showImagePickerForSourceType(sourceType: .photoLibrary)
-    }
-    
-    func postsLabelTapped() {
-        segmentedControlCurrentIndex = 1
-        segmentedControl.move(to: segmentedControlCurrentIndex)
-        self.didSelect(segmentedControlCurrentIndex)
-        postTableView.reloadData()
-    }
-    
-    func friendsLabelTapped() {
-        goToFriendsVC(displayType: .userFriends)
-    }
-    
     func searchButtonTapped() {
         goToFriendsVC(displayType: .searchedFriends)
     }
@@ -94,7 +77,7 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
     }
     
     // MARK: - PhotoPicker Methods
-    private func showImagePickerForSourceType(sourceType: UIImagePickerControllerSourceType) {
+    fileprivate func showImagePickerForSourceType(sourceType: UIImagePickerControllerSourceType) {
         let imagePickerController = UIImagePickerController()
         imagePickerController.modalPresentationStyle = .currentContext
         imagePickerController.sourceType = sourceType
@@ -102,12 +85,6 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
         imagePickerController.modalPresentationStyle = (sourceType == .camera) ? .fullScreen : .popover
         self.imagePickerController = imagePickerController
         self.present(imagePickerController, animated: true, completion: nil)
-    }
-    
-    // MARK: - RemovePostDelegate Method
-    func deletePost(post: WanderPost) {
-        wanderPosts! = wanderPosts!.filter { $0.postID != post.postID }
-        postTableView.reloadData()
     }
     
     // MARK: - TableView Cell, Header and Section Customizations
@@ -130,7 +107,6 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
         postTableView.tableHeaderView = self.profileHeaderView
         self.profileHeaderView.delegate = self
     }
-    
     
     // MARK: - Helper Functions
     func toggleNoPostsLabel(posts: [WanderPost], loading: Bool) {
@@ -202,7 +178,6 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
         return tableView
     }()
     
-    
     lazy var noPostsLabel: EmptyStateView = {
         let view = EmptyStateView()
         view.textLabel.text = "no posts to display\n"
@@ -245,9 +220,7 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
     }
     
     //CloudManager Methods
-    
     func setUpPrivateMessages () {
-        
         personalPostsLoading = true
         CloudManager.shared.findPrivateMessages(for: self.wanderUser) { (privateMessages, error) in
             if error != nil {
@@ -336,6 +309,34 @@ class ProfileViewController: UIViewController, ProfileViewDelegate, RemovePostDe
                 }
             }
         }
+    }
+}
+
+// MARK: - ProfileViewDelegate Method
+extension ProfileViewController: ProfileViewDelegate {
+    func imageViewTapped() {
+        //Able to change profile picture
+        print("self.profileHeaderView.profileImageView")
+        self.showImagePickerForSourceType(sourceType: .photoLibrary)
+    }
+    
+    func postsLabelTapped() {
+        segmentedControlCurrentIndex = 1
+        segmentedControl.move(to: segmentedControlCurrentIndex)
+        self.didSelect(segmentedControlCurrentIndex)
+        postTableView.reloadData()
+    }
+    
+    func friendsLabelTapped() {
+        goToFriendsVC(displayType: .userFriends)
+    }
+}
+
+// MARK: - RemovePostDelegate Method 
+extension ProfileViewController: RemovePostDelegate {
+    func deletePost(post: WanderPost) {
+        wanderPosts! = wanderPosts!.filter { $0.postID != post.postID }
+        postTableView.reloadData()
     }
 }
 

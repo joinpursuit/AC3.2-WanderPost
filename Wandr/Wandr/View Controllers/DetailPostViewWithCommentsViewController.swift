@@ -16,7 +16,7 @@ protocol RemovePostDelegate {
 
 class DetailPostViewWithCommentsViewController: UIViewController {
     
-    fileprivate var wanderPost: WanderPost!
+    internal var wanderPost: WanderPost!
     fileprivate var wanderUser: WanderUser!
     fileprivate var reactions: [Reaction] = [Reaction]() {
         didSet {
@@ -28,7 +28,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
     
     fileprivate var emptyState: Bool = true
     
-    fileprivate var deletePostFromProfileDelegate: RemovePostDelegate!
+    internal var deletePostFromProfileDelegate: RemovePostDelegate!
     fileprivate var deletePostFromMapDelegate: RemovePostDelegate!
     
     override func viewDidLoad() {
@@ -288,7 +288,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
         }
     }
     
-    // MARK: - Lazy Vars
+    //MARK: - Views
     lazy var commentTableView: UITableView = {
         //If it's UITableViewStyle.grouped, the section is black
        let tableView = UITableView(frame: CGRect.zero, style: UITableViewStyle.plain)
