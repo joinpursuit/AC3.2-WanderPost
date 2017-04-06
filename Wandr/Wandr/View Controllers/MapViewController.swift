@@ -17,25 +17,25 @@ protocol ARPostDelegate {
     var posts: [WanderPost] { get set }
 }
 
-class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate, UNUserNotificationCenterDelegate, AddNewWanderPostDelegate, RemovePostDelegate {
+class MapViewController: UIViewController {
     
-    var locationManager : CLLocationManager = CLLocationManager()
+    fileprivate var locationManager : CLLocationManager = CLLocationManager()
     
-    var allWanderPosts: [WanderPost]?
+    fileprivate var allWanderPosts: [WanderPost]?
     
-    var wanderposts: [WanderPost]? {
+    fileprivate var wanderposts: [WanderPost]? {
         didSet {
             self.arDelegate.posts = self.wanderposts!
             self.reloadMapView()
         }
     }
     
-    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
-    var arDelegate: ARPostDelegate!
-    var addPostViewShown = false
-    var lastUpdatedLocation: CLLocation!
-    let userNotificationCenter = UNUserNotificationCenter.current()
-    var isNewMapAnnotation = false
+    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    fileprivate var arDelegate: ARPostDelegate!
+    fileprivate var addPostViewShown = false
+    fileprivate var lastUpdatedLocation: CLLocation!
+    fileprivate let userNotificationCenter = UNUserNotificationCenter.current()
+    fileprivate var isNewMapAnnotation = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +63,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     
     // MARK: - Hierarchy
-    
     private func setupViewHierarchy() {
         //Map Container View
         self.view.addSubview(self.mapContainerView)
@@ -77,7 +76,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     
     
     // MARK: - Layout
-    
     private func configureConstraints() {
         //Map Container
         
@@ -112,7 +110,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }
     
     // MARK: - Setup
-    
     func setupLocationManager() {
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
@@ -121,65 +118,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         locationManager.startUpdatingLocation()
     }
     
-    
-    // MARK: - AddNewWanderPostDelegate
-    
-    func addNewPost(post: WanderPost) {
-        self.isNewMapAnnotation = true
-        let myAnnotaton = PostAnnotation()
-        myAnnotaton.wanderpost = post
-        
-        guard let postLocation = post.location else { return }
-        myAnnotaton.coordinate = postLocation.coordinate
-        if let user = post.wanderUser {
-            myAnnotaton.title = user.username
-        }
-        mapView.addAnnotation(myAnnotaton)
-    }
-    
-    // MARK: - RemovePostDelegate Method
-    func deletePost(post: WanderPost) {
-        wanderposts = wanderposts!.filter { $0.postID != post.postID }
-        allWanderPosts = allWanderPosts!.filter { $0.postID != post.postID }
-        reloadMapView()
-    }
-
-    
-    
-    // MARK: - CLLocationManagerDelegate Methods
-    
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse {
-            locationManager.requestLocation()
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
-        let span = MKCoordinateSpanMake(0.01, 0.01)
-        let region = MKCoordinateRegion(center: location.coordinate, span: span)
-        let location2D = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
-        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
-        mapCamera.altitude = 500 // example altitude
-        mapCamera.pitch = 5
-        mapView.camera = mapCamera
-        mapView.setRegion(region, animated: false)
-        
-        if lastUpdatedLocation.distance(from: location) > 100 {
-            lastUpdatedLocation = location
-            getWanderPosts(location)
-            makeNotificationsFor(privacyLevel: .friends)
-            makeNotificationsFor(privacyLevel: .personal)
-            print("new location")
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("error:: \(error)")
-    }
-    
     // MARK: - MKMapView
-    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         // this is to check to see if the annotation is for the users location, the else block sets the post pins
         if annotation is MKUserLocation {
@@ -197,21 +136,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             return mapAnnotationView
         }
     }
-    
-    // MARK: - Map View Delegate Methods
-    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
-        if isNewMapAnnotation {
-            for view in views {
-                let endFrame = view.frame
-                view.frame = endFrame.offsetBy(dx: 0, dy: -500)
-                UIView.animate(withDuration: 0.5, animations: {
-                    view.frame = endFrame
-                })
-            }
-            self.isNewMapAnnotation = false
-        }
-    }
-    
+
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
         UIView.animate(withDuration: 0.1,
@@ -234,7 +159,7 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         getWanderPosts(lastUpdatedLocation)
     }
     
-    //MARK: - Lazy Vars
+    //MARK: - Views
     lazy var mapContainerView: UIView = {
         let view = UIView()
         return view
@@ -291,7 +216,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     }()
     
     //MARK: - Helper Functions
-    
     func getWanderPosts(_ location: CLLocation) {
         CloudManager.shared.getWanderpostsForMap(location) { (posts, error) in
             if let error = error {
@@ -331,35 +255,8 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
             }
         }
     }
-    //MARK: - Notification Delegate Methods
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
-        switch response.actionIdentifier {
-        case UNNotificationDefaultActionIdentifier:
-            // the user swiped to unlock
-            print("Default identifier")
-            
-        case "show":
-            // the user tapped our "show more info…" button
-            print("Show more information…")
-            break
-            
-        default:
-            break
-        }
-        
-        // you must call the completion handler when you're done
-        completionHandler()
-        
-    }
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        
-        completionHandler(.alert)
-    }
     
     //MARK: - Helper Functions
-    
     func makeNotification(withBody body: String) {
         let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.01, repeats: false)
         let content = UNMutableNotificationContent()
@@ -376,7 +273,6 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
         let show = UNNotificationAction(identifier: "newData", title: "WOO", options: .foreground)
         let category = UNNotificationCategory(identifier: "newPost", actions: [show], intentIdentifiers: [])
         userNotificationCenter.setNotificationCategories([category])
-        
     }
     
     func makeNotificationsFor(privacyLevel level: PrivacyLevel) {
@@ -407,6 +303,110 @@ class MapViewController: UIViewController, CLLocationManagerDelegate, MKMapViewD
     //TODO: HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo. -- post is marked read by appending the username to the readBy array maybe. marked as read as soon as you get into AR/its on your screen in AR.
 }
 
+// MARK: - RemovePostDelegate Method
+extension MapViewController: RemovePostDelegate {
+    func deletePost(post: WanderPost) {
+        wanderposts = wanderposts!.filter { $0.postID != post.postID }
+        allWanderPosts = allWanderPosts!.filter { $0.postID != post.postID }
+        reloadMapView()
+    }
+}
+
+// MARK: - AddNewWanderPostDelegate Method
+extension MapViewController: AddNewWanderPostDelegate {
+    func addNewPost(post: WanderPost) {
+        self.isNewMapAnnotation = true
+        let myAnnotaton = PostAnnotation()
+        myAnnotaton.wanderpost = post
+        
+        guard let postLocation = post.location else { return }
+        myAnnotaton.coordinate = postLocation.coordinate
+        if let user = post.wanderUser {
+            myAnnotaton.title = user.username
+        }
+        mapView.addAnnotation(myAnnotaton)
+    }
+}
+
+// MARK: - UNUserNotificationCenterDelegate Methods
+extension MapViewController: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        switch response.actionIdentifier {
+        case UNNotificationDefaultActionIdentifier:
+            // the user swiped to unlock
+            print("Default identifier")
+            
+        case "show":
+            // the user tapped our "show more info…" button
+            print("Show more information…")
+            break
+            
+        default:
+            break
+        }
+        
+        // you must call the completion handler when you're done
+        completionHandler()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler(.alert)
+    }
+}
+
+// MARK: - MKMapViewDelegate Methods
+extension MapViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
+        if isNewMapAnnotation {
+            for view in views {
+                let endFrame = view.frame
+                view.frame = endFrame.offsetBy(dx: 0, dy: -500)
+                UIView.animate(withDuration: 0.5, animations: {
+                    view.frame = endFrame
+                })
+            }
+            self.isNewMapAnnotation = false
+        }
+    }
+}
+
+// MARK: - CLLocationManagerDelegate Methods
+extension MapViewController: CLLocationManagerDelegate{
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            locationManager.requestLocation()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        let span = MKCoordinateSpanMake(0.01, 0.01)
+        let region = MKCoordinateRegion(center: location.coordinate, span: span)
+        let location2D = CLLocationCoordinate2DMake(location.coordinate.latitude, location.coordinate.longitude)
+        let mapCamera = MKMapCamera(lookingAtCenter: location2D, fromEyeCoordinate: location2D, eyeAltitude: 40)
+        mapCamera.altitude = 500 // example altitude
+        mapCamera.pitch = 5
+        mapView.camera = mapCamera
+        mapView.setRegion(region, animated: false)
+        
+        if lastUpdatedLocation.distance(from: location) > 100 {
+            lastUpdatedLocation = location
+            getWanderPosts(location)
+            makeNotificationsFor(privacyLevel: .friends)
+            makeNotificationsFor(privacyLevel: .personal)
+            print("new location")
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("error:: \(error)")
+    }
+}
+
+
+// MARK: - TwicketSegmentedControlDelegate Method
 extension MapViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         guard let allValidWanderPosts = self.allWanderPosts else { return }
@@ -432,118 +432,4 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         }
     }
 }
-
-
-//MARK: - Commented Out Code
-
-//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
-//        switch sender.direction {
-//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        default:
-//            print("Not a recognized gesture")
-//        }
-//    }
-
-//    func togglePostView(_ sender: UISwipeGestureRecognizer) {
-//        switch sender.direction {
-//        case UISwipeGestureRecognizerDirection.up where self.addPostViewShown == false:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        case UISwipeGestureRecognizerDirection.down where self.addPostViewShown == true:
-//            animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//             self.addPostViewShown = !addPostViewShown
-//        default:
-//            print("Not a recognized gesture")
-//        }
-//    }
-
-//    func animatePostView() {
-//        animateSettingsMenu(showPost: self.addPostViewShown, duration: 1.0, dampening: 0.5, springVelocity: 5)
-//        self.addPostViewShown = !addPostViewShown
-//    }
-
-//    private func animateSettingsMenu(showPost: Bool, duration: TimeInterval, dampening: CGFloat = 0.005, springVelocity: CGFloat = 0.005) {
-//        switch self.addPostViewShown {
-//        case true:
-//            UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
-//
-//                self.dragUpOrDownContainerView.snp.remakeConstraints { (view) in
-//                    view.leading.equalToSuperview()
-//                    view.trailing.equalToSuperview()
-//                    view.height.equalToSuperview().multipliedBy(0.5)
-//                    view.width.equalToSuperview()
-//                }
-//
-//                self.cheveronButton.snp.remakeConstraints { (button) in
-//                    button.top.equalToSuperview()
-//                    button.trailing.equalToSuperview().inset(16)
-//                }
-//
-//                self.segmentedControlContainerView.snp.remakeConstraints { (view) in
-//                    view.top.equalTo(self.cheveronButton.snp.centerY)
-//                    view.leading.trailing.equalToSuperview()
-//                    view.height.equalToSuperview().multipliedBy(0.175)
-//                    view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-//                }
-//
-//                self.segmentedControl.snp.remakeConstraints { (control) in
-//                    control.top.leading.bottom.trailing.equalToSuperview()
-//                }
-//
-//                self.postContainerView.snp.remakeConstraints { (view) in
-//                    view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
-//                    view.leading.trailing.bottom.equalToSuperview()
-//                }
-//
-//            }, completion: nil)
-//
-//        case false:
-//           UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: dampening, initialSpringVelocity: springVelocity, options: .curveEaseOut, animations: {
-//            self.dragUpOrDownContainerView.snp.remakeConstraints({ (view) in
-//                view.leading.trailing.equalToSuperview()
-//                view.bottom.equalTo(self.bottomLayoutGuide.snp.top)
-//                view.height.equalToSuperview().multipliedBy(0.5)
-//                view.width.equalToSuperview()
-//            })
-//
-//            self.cheveronButton.snp.remakeConstraints { (button) in
-//                button.top.equalToSuperview()
-//                button.trailing.equalToSuperview().inset(16)
-//            }
-//
-//            self.segmentedControlContainerView.snp.remakeConstraints({ (view) in
-//                view.top.equalTo(self.cheveronButton.snp.centerY)
-//                view.leading.trailing.equalToSuperview()
-//                view.height.equalToSuperview().multipliedBy(0.175)
-//            })
-//
-//            self.segmentedControl.snp.remakeConstraints { (control) in
-//                control.top.leading.bottom.trailing.equalToSuperview()
-//            }
-//
-//            self.postContainerView.snp.remakeConstraints { (view) in
-//                view.top.equalTo(self.segmentedControlContainerView.snp.bottom)
-//                view.leading.trailing.bottom.equalToSuperview()
-//            }
-//
-//           }, completion: nil)
-//        }
-//    }
-
-// Mark: - Add Gestures
-//    private func setupGestures() {
-//        let swipeUpGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
-//        swipeUpGesture.direction = .up
-//        self.dragUpOrDownContainerView.addGestureRecognizer(swipeUpGesture)
-//
-//        let swipeDownGesture = UISwipeGestureRecognizer(target: self, action: #selector(togglePostView))
-//        swipeDownGesture.direction = .down
-//         self.dragUpOrDownContainerView.addGestureRecognizer(swipeDownGesture)
-//    }
-
 
