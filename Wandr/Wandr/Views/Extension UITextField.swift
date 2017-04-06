@@ -9,6 +9,8 @@
 import UIKit
 import SnapKit
 
+//I don't think these should be in an extension, it makes more sense to me to have them as a part of the class of WanderTextField, are we using a UItextfield in a context that it's not a wandertextfield?
+
 extension UITextField {
     
     func border(placeHolder: String = ""){
