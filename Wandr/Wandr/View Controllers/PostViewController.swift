@@ -140,6 +140,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     func postButtonPressed(_ sender: UIButton) {
+        
         UIView.animate(withDuration: 0.1,
                        animations: {
                         sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
@@ -167,6 +168,7 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
                 print("you need to send this to someone yo")
                 return
             }
+            
         default:
             self.recipient = nil
         }
