@@ -14,18 +14,15 @@ protocol AddNewWanderPostDelegate {
     func addNewPost(post: WanderPost)
 }
 
-class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UITableViewDelegate, UITableViewDataSource, TwicketSegmentedControlDelegate {
+class PostViewController: UIViewController {
     
-    let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
-    let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
+    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    fileprivate let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
     
-    var location: CLLocation!
-    var newPostDelegate: AddNewWanderPostDelegate!
-    var recipient: WanderUser? = nil
-    var potentialRecipients: [WanderUser] = [WanderUser]()
-    
-    
-    var dummyFriends = [1,2,3,4,5,6]
+    internal var location: CLLocation!
+    internal var newPostDelegate: AddNewWanderPostDelegate!
+    fileprivate var recipient: WanderUser? = nil
+    fileprivate var potentialRecipients: [WanderUser] = [WanderUser]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,8 +37,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         
         self.segmentedControl.backgroundColor = UIColor.clear
         self.segmentedControl.setSegmentItems(segmentTitles)
-        
-        
         
         if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
             //Do not delete becase imageToDisplay will be the long term solution
@@ -67,7 +62,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     private func configureConstraints() {
-        
         postContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(self.topLayoutGuide.snp.bottom)
             view.leading.trailing.equalToSuperview()
@@ -130,7 +124,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
         dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
     }
-    
     
     // MARK: - Actions
     func dismissButtonPressed(_ sender: UIButton) {
@@ -247,7 +240,6 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
     }
     
     // MARK: - Helper Fucntions
-    
     func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
@@ -259,99 +251,17 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         self.present(alert, animated: true, completion: nil)
     }
     
-    //MARK: - Setup TableView And TableView Delegate Methods
+    //MARK: - Setup TableView
     func setupTableView() {
         self.searchFriendTableView.register(ProfileFriendTableViewCell.self, forCellReuseIdentifier: ProfileFriendTableViewCell.identifier)
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.potentialRecipients.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
-        
-        let recipient = self.potentialRecipients[indexPath.row]
-        cell.addRemoveFriendButton.isHidden = true
-        cell.nameLabel.text = recipient.username
-        cell.profileImageView.image = UIImage(data: recipient.userImageData)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        self.recipient = self.potentialRecipients[indexPath.row]
-        guard let validRecipient = self.recipient else { return }
-        self.userTextField.text = "\(validRecipient.username)"
-        self.searchFriendTableView.isHidden = true
-    }
-    
-    //MARK: - TextField Delegate Methods
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
-            if error != nil {
-                print(error?.localizedDescription)
-            }
-            if let validUsers = wanderUsers {
-                print(validUsers.count)
-                self.potentialRecipients = validUsers
-                self.recipient = validUsers[0]
-            }
-            DispatchQueue.main.async {
-                self.searchFriendTableView.reloadData()
-            }
-        }
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.searchFriendTableView.isHidden = true
-    }
-    
+    //MARK: - TextField Action Methods
     func textFieldChanged(_ textField: UITextField) {
         self.searchFriendTableView.isHidden = userTextField.text?.isEmpty ?? false
     }
     
-    //MARK: - TextView Delegate Methods
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        if textView.textColor == StyleManager.shared.placeholderText {
-            textView.text = nil
-            textView.textColor = StyleManager.shared.primaryText
-        }
-    }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if textView.text.isEmpty {
-            textView.text = "write something to post..."
-            textView.textColor = StyleManager.shared.placeholderText
-        }
-    }
-    
-    // MARK: - TwicketSegmentControl
-    
-    func didSelect(_ segmentIndex: Int) {
-        switch segmentIndex {
-        case 0:
-            toggleUserTextField(show: false)
-            self.searchFriendTableView.isHidden = true
-        case 1:
-            toggleUserTextField(show: false)
-            self.searchFriendTableView.isHidden = true
-        case 2:
-            toggleUserTextField(show: true)
-            self.searchFriendTableView.isHidden = true
-        default:
-            print("Can not make a decision")
-        }
-    }
-    
     //MARK: - Views
-    
     lazy var postContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = StyleManager.shared.primaryLight
@@ -427,3 +337,91 @@ class PostViewController: UIViewController, UITextFieldDelegate, UITextViewDeleg
         return tableView
     }()
 }
+
+// MARK: - TwicketSegmentedControlDelegate Method
+extension PostViewController: TwicketSegmentedControlDelegate {
+    func didSelect(_ segmentIndex: Int) {
+        switch segmentIndex {
+        case 0:
+            toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
+        case 1:
+            toggleUserTextField(show: false)
+            self.searchFriendTableView.isHidden = true
+        case 2:
+            toggleUserTextField(show: true)
+            self.searchFriendTableView.isHidden = true
+        default:
+            print("Can not make a decision")
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource Methods
+extension PostViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.potentialRecipients.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ProfileFriendTableViewCell.identifier, for: indexPath) as! ProfileFriendTableViewCell
+        
+        let recipient = self.potentialRecipients[indexPath.row]
+        cell.addRemoveFriendButton.isHidden = true
+        cell.nameLabel.text = recipient.username
+        cell.profileImageView.image = UIImage(data: recipient.userImageData)
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Method
+extension PostViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.recipient = self.potentialRecipients[indexPath.row]
+        guard let validRecipient = self.recipient else { return }
+        self.userTextField.text = "\(validRecipient.username)"
+        self.searchFriendTableView.isHidden = true
+    }
+}
+
+// MARK: - UITextFieldDelegate Methods
+extension PostViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
+            if error != nil {
+                print(error?.localizedDescription)
+            }
+            if let validUsers = wanderUsers {
+                print(validUsers.count)
+                self.potentialRecipients = validUsers
+                self.recipient = validUsers[0]
+            }
+            DispatchQueue.main.async {
+                self.searchFriendTableView.reloadData()
+            }
+        }
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.searchFriendTableView.isHidden = true
+    }
+}
+
+// MARK: - UITextViewDelegate Methods
+extension PostViewController: UITextViewDelegate {
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == StyleManager.shared.placeholderText {
+            textView.text = nil
+            textView.textColor = StyleManager.shared.primaryText
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = "write something to post..."
+            textView.textColor = StyleManager.shared.placeholderText
+        }
+    }
+}
+

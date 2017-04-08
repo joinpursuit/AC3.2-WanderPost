@@ -10,10 +10,10 @@ import UIKit
 import SnapKit
 import AVKit
 
-class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class OnBoardViewController: UIViewController {
     
-    var imagePickerController: UIImagePickerController!
-    var profileImageURL: URL?
+    fileprivate var imagePickerController: UIImagePickerController!
+    fileprivate var profileImageURL: URL?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +38,6 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func registerButtonPressed() {
-        
-
         self.registerButton.isEnabled = false
         if let userName = self.userNameTextField.text,
             let imageURL = profileImageURL {
@@ -70,41 +68,7 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         self.imagePickerController = imagePickerController
         self.present(imagePickerController, animated: true, completion: nil)
     }
-    
-    // MARK: - UIImagePickerControllerDelegate
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage,
-            let imageURL = info[UIImagePickerControllerReferenceURL] as? URL {
-            self.profileImageView.image = image
-            
-            //As weird as it sounds, you need an filePath URL to make a CKAsset, not an asset URL, this is making a temp filePathURL and then storing it in the temp file which gets automatically cleaned when needed.
-            do {
-                let data = UIImagePNGRepresentation(image.fixRotatedImage())!
-                let fileType = ".\(imageURL.pathExtension)"
-                let fileName = ProcessInfo.processInfo.globallyUniqueString + fileType
-                let imageURL = NSURL.fileURL(withPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
-                try data.write(to: imageURL, options: .atomicWrite)
-                self.profileImageURL = imageURL
-                
-            } catch {
-                print(error.localizedDescription)
-            }
-            self.dismiss(animated: true, completion: nil)
-        }
-    }
-    // MARK: - UITextFieldDelegateMethod
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if let validText = textField.text {
-            textField.text = (validText as NSString).replacingCharacters(in: range, with: string.lowercased())
-            if string == " " {
-                textField.text = (validText as NSString).replacingCharacters(in: range, with: "")
-            }
-            return false
-        }
-        return true
-    }
-    
-    
+
     // MARK: - Layout
     private func setupViewHierarchy() {
         self.view.addSubview(profileImageView)
@@ -182,10 +146,9 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         tabController.viewControllers = [profileViewController, mapViewController, arViewController]
         tabController.tabBar.tintColor = StyleManager.shared.accent
         tabController.selectedIndex = 1
-
     }
     
-    
+    //MARK: - Views
     lazy var profileImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = #imageLiteral(resourceName: "default-placeholder")
@@ -240,4 +203,42 @@ class OnBoardViewController: UIViewController, UIImagePickerControllerDelegate, 
         label.textColor = StyleManager.shared.primary
         return label
     }()
+}
+
+// MARK: - UIImagePickerControllerDelegate Method
+extension OnBoardViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let image = info[UIImagePickerControllerOriginalImage] as? UIImage,
+            let imageURL = info[UIImagePickerControllerReferenceURL] as? URL {
+            self.profileImageView.image = image
+            
+            //As weird as it sounds, you need an filePath URL to make a CKAsset, not an asset URL, this is making a temp filePathURL and then storing it in the temp file which gets automatically cleaned when needed.
+            do {
+                let data = UIImagePNGRepresentation(image.fixRotatedImage())!
+                let fileType = ".\(imageURL.pathExtension)"
+                let fileName = ProcessInfo.processInfo.globallyUniqueString + fileType
+                let imageURL = NSURL.fileURL(withPath: NSTemporaryDirectory()).appendingPathComponent(fileName)
+                try data.write(to: imageURL, options: .atomicWrite)
+                self.profileImageURL = imageURL
+                
+            } catch {
+                print(error.localizedDescription)
+            }
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+}
+
+// MARK: - UITextFieldDelegate Method
+extension OnBoardViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if let validText = textField.text {
+            textField.text = (validText as NSString).replacingCharacters(in: range, with: string.lowercased())
+            if string == " " {
+                textField.text = (validText as NSString).replacingCharacters(in: range, with: "")
+            }
+            return false
+        }
+        return true
+    }
 }

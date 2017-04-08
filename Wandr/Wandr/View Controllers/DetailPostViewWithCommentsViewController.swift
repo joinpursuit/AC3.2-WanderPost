@@ -14,23 +14,22 @@ protocol RemovePostDelegate {
     func deletePost(post: WanderPost)
 }
 
-class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class DetailPostViewWithCommentsViewController: UIViewController {
     
-    var wanderPost: WanderPost!
-    var wanderUser: WanderUser!
-    var reactions: [Reaction] = [Reaction]() {
+    internal var wanderPost: WanderPost!
+    fileprivate var wanderUser: WanderUser!
+    fileprivate var reactions: [Reaction] = [Reaction]() {
         didSet {
             self.emptyState = reactions.isEmpty ? true : false
-            
         }
     }
     
-    let textFieldContainerHeight: CGFloat = 52
+    fileprivate let textFieldContainerHeight: CGFloat = 52
     
-    var emptyState: Bool = true
+    fileprivate var emptyState: Bool = true
     
-    var deletePostFromProfileDelegate: RemovePostDelegate!
-    var deletePostFromMapDelegate: RemovePostDelegate!
+    internal var deletePostFromProfileDelegate: RemovePostDelegate!
+    fileprivate var deletePostFromMapDelegate: RemovePostDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,29 +66,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
     }
 
-    // MARK: - MKMapView
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        
-        // this is to check to see if the annotation is for the users location, the else block sets the post pins
-        if annotation is MKUserLocation {
-            return nil
-        } else {
-            let annotationIdentifier = "AnnotationIdentifier"
-            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
-            mapAnnotationView.profileImageView.image = nil
-            let postAnnotation = annotation as! PostAnnotation
-            
-            if let thisUser = postAnnotation.wanderpost.wanderUser {
-                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
-            }
-            return mapAnnotationView
-        }
-    }
-    
     // MARK: - Helper Functions
-    
-    
     func toggleNoCommentsLabel(comments: [Reaction]) {
         if comments.isEmpty {
             noCommentsLabel.isHidden = false
@@ -99,7 +76,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             commentTableView.isScrollEnabled = true
         }
     }
-
     
     //MARK: - Actions
     func doneButtonPressed (sender: UIButton) {
@@ -172,21 +148,6 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
             })
         }
     }
-    
-    // MARK: - TextFieldDelegate
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        return true
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        self.view.endEditing(true)
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return true
-    }
-    
     
     // MARK: - Keyboard Notification
     private func registerForNotifications() {
@@ -327,73 +288,7 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         }
     }
     
-    // MARK: - UITableViewDelegate and UITableViewDataSource Methods
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        switch section {
-        case 1:
-            return 30
-        default:
-            return 0
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        switch section {
-        case 1:
-            let commentHeader = self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsSectionHeaderView.identifier) as! CommentsSectionHeaderView
-            commentHeader.sectionNameLabel.text = self.emptyState ? "    no comments" : "    comments"
-            return commentHeader
-        default:
-            return nil
-        }
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch section {
-        case 1:
-            return self.reactions.count
-        default:
-            return 1
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        switch indexPath.section {
-        case 1:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
-            let currentReaction = self.reactions[indexPath.row]
-            cell.messageLabel.text = currentReaction.content
-            cell.dateAndTimeLabel.text = currentReaction.dateAndTime
-            CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
-                guard let validUser = user else { return }
-                dump(validUser)
-                DispatchQueue.main.async {
-                    cell.nameLabel.text = validUser.username
-                    cell.profileImageView.image = UIImage(data: validUser.userImageData)
-                    print(validUser.username)
-                }
-            }
-            return cell
-        default:
-            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
-            cell.locationLabel.numberOfLines = 0
-            cell.locationLabel.text = self.wanderPost.locationDescription
-            cell.messageLabel.text = self.wanderPost.content as? String
-            cell.dateAndTimeLabel.text = self.wanderPost.dateAndTime
-            cell.commentCountLabel.text = ""
-            return cell
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    // MARK: - Lazy Vars
+    //MARK: - Views
     lazy var commentTableView: UITableView = {
         //If it's UITableViewStyle.grouped, the section is black
        let tableView = UITableView(frame: CGRect.zero, style: UITableViewStyle.plain)
@@ -452,6 +347,114 @@ class DetailPostViewWithCommentsViewController: UIViewController, MKMapViewDeleg
         view.isHidden = true
         return view
     }()
-
     
+}
+
+// MARK: - TextFieldDelegate
+extension DetailPostViewWithCommentsViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+}
+
+// MARK: - MKMapViewDelegate 
+extension DetailPostViewWithCommentsViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.profileImageView.image = nil
+            let postAnnotation = annotation as! PostAnnotation
+            
+            if let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
+            return mapAnnotationView
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension DetailPostViewWithCommentsViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 1:
+            return self.reactions.count
+        default:
+            return 1
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 1:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailFeedTableViewCell
+            let currentReaction = self.reactions[indexPath.row]
+            cell.messageLabel.text = currentReaction.content
+            cell.dateAndTimeLabel.text = currentReaction.dateAndTime
+            CloudManager.shared.getUserInfo(for: currentReaction.userID) { (user, error) in
+                guard let validUser = user else { return }
+                dump(validUser)
+                DispatchQueue.main.async {
+                    cell.nameLabel.text = validUser.username
+                    cell.profileImageView.image = UIImage(data: validUser.userImageData)
+                    print(validUser.username)
+                }
+            }
+            return cell
+        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier, for: indexPath) as! ProfileViewViewControllerDetailPostTableViewCell
+            cell.locationLabel.numberOfLines = 0
+            cell.locationLabel.text = self.wanderPost.locationDescription
+            cell.messageLabel.text = self.wanderPost.content as? String
+            cell.dateAndTimeLabel.text = self.wanderPost.dateAndTime
+            cell.commentCountLabel.text = ""
+            return cell
+        }
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension DetailPostViewWithCommentsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        switch section {
+        case 1:
+            return 30
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch section {
+        case 1:
+            let commentHeader = self.commentTableView.dequeueReusableHeaderFooterView(withIdentifier: CommentsSectionHeaderView.identifier) as! CommentsSectionHeaderView
+            commentHeader.sectionNameLabel.text = self.emptyState ? "    no comments" : "    comments"
+            return commentHeader
+        default:
+            return nil
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
 }
