@@ -81,25 +81,25 @@ class WanderPost: ARAnnotation {
     
     convenience init?(withCKRecord record: CKRecord) {
         
-        guard let content = record.object(forKey: "content"),
-            let location = record.object(forKey: "location") as? CLLocation,
+        guard let content = record.object(forKey: PostRecordKeyNames.content.rawValue),
+            let location = record.object(forKey: PostRecordKeyNames.location.rawValue) as? CLLocation,
             let user = record.creatorUserRecordID,
-            let contentTypeString = record.object(forKey: "contentType") as? NSString,
+            let contentTypeString = record.object(forKey: PostRecordKeyNames.contentType.rawValue) as? NSString,
             let contentType = PostContentType(rawValue: contentTypeString),
-            let privacyLevelString = record.object(forKey: "privacyLevel") as? NSString,
+            let privacyLevelString = record.object(forKey: PostRecordKeyNames.privacyLevel.rawValue) as? NSString,
             let privacyLevel = PrivacyLevel(rawValue: privacyLevelString),
             let time = record.creationDate,
-            let locationDescription = record.object(forKey: "locationDescription") as? String,
-            let read = record.object(forKey: "read") as? Bool
+            let locationDescription = record.object(forKey: PostRecordKeyNames.locationDescription.rawValue) as? String,
+            let read = record.object(forKey: PostRecordKeyNames.read.rawValue) as? Bool
         else { return nil }
         
         let postID = record.recordID
         
-        let reactionIDStrings = record.object(forKey: "reactions") as? [String] ?? []
+        let reactionIDStrings = record.object(forKey: PostRecordKeyNames.reactions.rawValue) as? [String] ?? []
         let reactionIDs = reactionIDStrings.map { CKRecordID(recordName: $0) }
         
         var recipient: CKRecordID? = nil
-        if let recipientID = record["recipient"] as? String {
+        if let recipientID = record.object(forKey: PostRecordKeyNames.recipient.rawValue) as? String {
             recipient = CKRecordID(recordName: recipientID)
         }
 

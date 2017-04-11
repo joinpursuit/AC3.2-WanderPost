@@ -429,4 +429,3 @@ extension MapViewController: TwicketSegmentedControlDelegate {
         }
     }
 }
-
