@@ -149,15 +149,8 @@ class ProfileViewController: UIViewController {
     }
     
     //MARK: - Views
-    lazy var profileHeaderView: ProfileView = {
-        let view = ProfileView()
-        return view
-    }()
-    
-    lazy var segmentedControl: TwicketSegmentedControl = {
-        let segmentedControl = TwicketSegmentedControl()
-        return segmentedControl
-    }()
+    var profileHeaderView = ProfileView()
+    var segmentedControl = TwicketSegmentedControl()
     
     lazy var postTableView: UITableView = {
         let tableView = UITableView()

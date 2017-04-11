@@ -315,10 +315,7 @@ class PostViewController: UIViewController {
         return field
     }()
     
-    lazy var postButton: WanderButton = {
-        let button = WanderButton(title: "post", spacing: 22)
-        return button
-    }()
+    let postButton = WanderButton(title: "post", spacing: 22)
     
     lazy var dismissButton: UIButton = {
         let button = UIButton()
