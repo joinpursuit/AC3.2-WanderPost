@@ -13,6 +13,10 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
 
     static let identifier = "profileViewControllerDetailPostTableViewCellIdentifier"
     
+    private let kTopBottomMargin = 11.0
+    private let kLeadingTrailingMargin = 16.0
+    private let kSpecialLeadingTrailingMargin = 8.0
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.locationLabel.accessibilityIdentifier = "locationLabel"
@@ -46,27 +50,27 @@ class ProfileViewViewControllerDetailPostTableViewCell: UITableViewCell {
     
     private func configureConstraints() {
         locationLabel.snp.makeConstraints { (label) in
-            label.top.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(8.0)
+            label.top.leading.equalToSuperview().offset(kLeadingTrailingMargin)
+            label.trailing.equalToSuperview().inset(kSpecialLeadingTrailingMargin)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.locationLabel.snp.bottom).offset(11.0)
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
+            label.top.equalTo(self.locationLabel.snp.bottom).offset(kTopBottomMargin)
+            label.leading.equalToSuperview().offset(kLeadingTrailingMargin)
+            label.trailing.equalToSuperview().inset(kLeadingTrailingMargin)
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(11.0)
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
+            label.top.equalTo(self.dateAndTimeLabel.snp.bottom).offset(kTopBottomMargin)
+            label.leading.equalToSuperview().offset(kLeadingTrailingMargin)
+            label.trailing.equalToSuperview().inset(kLeadingTrailingMargin)
         }
         
         commentCountLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.messageLabel.snp.bottom).offset(11)
-            label.leading.equalToSuperview().offset(16.0)
-            label.trailing.equalToSuperview().inset(16.0)
-            label.bottom.equalToSuperview().inset(11.0)
+            label.top.equalTo(self.messageLabel.snp.bottom).offset(kTopBottomMargin)
+            label.leading.equalToSuperview().offset(kLeadingTrailingMargin)
+            label.trailing.equalToSuperview().inset(kLeadingTrailingMargin)
+            label.bottom.equalToSuperview().inset(kTopBottomMargin)
         }
     }
     

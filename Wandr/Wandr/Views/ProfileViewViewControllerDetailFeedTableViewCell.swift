@@ -10,6 +10,12 @@ import UIKit
 
 class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     static let identifier = "profileViewControllerDetailFeedTableViewCellIdentifier"
+    private let kTopBottomMarginNarrow = 11.0
+    private let kTopBottomMargin = 16.0
+    private let kTopBottomMarginWide = 22.0
+    private let kLeadingTrailingMargin = 16.0
+    private let kLeadingTrailingMarginWide = 22.0
+    private let kProfileImageViewSide = 50.0
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -41,28 +47,28 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     
     private func configureConstraints() {
         profileImageView.snp.makeConstraints{ (view) in
-            view.top.equalToSuperview().offset(16.0)
-            view.leading.equalToSuperview().offset(22.0)
-            view.height.equalTo(50)
-            view.width.equalTo(50)
+            view.top.equalToSuperview().offset(kTopBottomMargin)
+            view.leading.equalToSuperview().offset(kLeadingTrailingMarginWide)
+            view.height.equalTo(kProfileImageViewSide)
+            view.width.equalTo(kProfileImageViewSide)
         }
         
         nameLabel.snp.makeConstraints { (label) in
-            label.top.equalToSuperview().offset(16.0)
-            label.leading.equalTo(self.profileImageView.snp.trailing).offset(22.0)
+            label.top.equalToSuperview().offset(kTopBottomMargin)
+            label.leading.equalTo(self.profileImageView.snp.trailing).offset(kLeadingTrailingMarginWide)
         }
         
         dateAndTimeLabel.snp.makeConstraints { (label) in
             label.bottom.equalTo(nameLabel.snp.bottom)
-            label.trailing.equalToSuperview().offset(-16)
+            label.trailing.equalToSuperview().inset(kLeadingTrailingMargin)
             
         }
         
         messageLabel.snp.makeConstraints { (label) in
-            label.top.equalTo(self.nameLabel.snp.bottom).offset(11.0)
+            label.top.equalTo(self.nameLabel.snp.bottom).offset(kTopBottomMarginNarrow)
             label.leading.equalTo(self.nameLabel.snp.leading)
-            label.trailing.equalToSuperview().inset(16.0)
-            label.bottom.equalToSuperview().offset(-22)
+            label.trailing.equalToSuperview().inset(kLeadingTrailingMargin)
+            label.bottom.equalToSuperview().inset(kTopBottomMarginWide)
         }
     }
     
@@ -90,7 +96,7 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     lazy var messageLabel: UILabel = {
         let label = UILabel()
         label.text = "..."
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = StyleManager.shared.comfortaaFont16
         label.tintColor = StyleManager.shared.primaryText
         label.numberOfLines = 0
         return label

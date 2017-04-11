@@ -14,15 +14,15 @@ enum FriendSearchDisplayType {
     case searchedFriends
 }
 
-class ProfileFriendsTableViewController: UITableViewController, UISearchBarDelegate {
+class ProfileFriendsTableViewController: UITableViewController {
     
-    var userFriends: [WanderUser]?
+    internal var userFriends: [WanderUser]?
     
-    var searchedFriends: [WanderUser]?
+    fileprivate var searchedFriends: [WanderUser]?
     
-    var friendDisplayType: FriendSearchDisplayType = .searchedFriends
+    internal var friendDisplayType: FriendSearchDisplayType = .searchedFriends
     
-    var emptyStateView: EmptyStateView = {
+    fileprivate var emptyStateView: EmptyStateView = {
         let view = EmptyStateView()
         view.textLabel.text = "no users found"
         return view
@@ -109,28 +109,6 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
     
     // MARK: - Button Action
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        friendDisplayType = searchText.isEmpty ? .userFriends : .searchedFriends
-        switch friendDisplayType {
-        case .userFriends:
-            tableView.reloadData()
-            break
-        case .searchedFriends:
-            CloudManager.shared.search(for: searchText) { (wanderUsers, error) in
-                if error != nil {
-                    //error handle
-                }
-                
-                if let validWanderUsers = wanderUsers {
-                    self.searchedFriends = validWanderUsers
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                }
-            }
-        }
-    }
-    
     func addOrRemoveFriend(_ sender: UIButton) {
         let buttonTag = sender.tag
         print(buttonTag)
@@ -174,5 +152,30 @@ class ProfileFriendsTableViewController: UITableViewController, UISearchBarDeleg
                             sender.transform = CGAffineTransform.identity
                         }
         })
+    }
+}
+
+// MARK: - UISearchBarDelegate Method
+extension ProfileFriendsTableViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        friendDisplayType = searchText.isEmpty ? .userFriends : .searchedFriends
+        switch friendDisplayType {
+        case .userFriends:
+            tableView.reloadData()
+            break
+        case .searchedFriends:
+            CloudManager.shared.search(for: searchText) { (wanderUsers, error) in
+                if error != nil {
+                    //error handle
+                }
+                
+                if let validWanderUsers = wanderUsers {
+                    self.searchedFriends = validWanderUsers
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+        }
     }
 }

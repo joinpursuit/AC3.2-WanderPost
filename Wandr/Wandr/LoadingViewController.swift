@@ -12,7 +12,7 @@ import CloudKit
 
 class LoadingViewController: UIViewController {
     
-    var animator: UIViewPropertyAnimator? = nil
+    fileprivate var animator: UIViewPropertyAnimator? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -247,8 +247,7 @@ class LoadingViewController: UIViewController {
         }
     }
     
-    //MARK: Views
-    
+    //MARK: - Views
     lazy var logoContainerView: UIView = {
         let view = UIView()
         return view
