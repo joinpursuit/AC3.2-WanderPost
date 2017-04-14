@@ -65,36 +65,37 @@ class AnnotationView: ARAnnotationView {
         profileImageView.layer.cornerRadius = profileFrame.width / 2
         profileImageView.layer.borderWidth = arViewBorderWidth
         profileImageView.layer.borderColor = StyleManager.shared.accent.cgColor
-        self.addSubview(profileImageView)
         
         detailContainerView.backgroundColor = detailContainerBackgroundColor
         detailContainerView.clipsToBounds = true
         detailContainerView.layer.cornerRadius = detailContainerFrame.width / 12
         detailContainerView.layer.borderWidth = arViewBorderWidth
         detailContainerView.layer.borderColor = StyleManager.shared.primary.cgColor
-        self.addSubview(detailContainerView)
         
         userLabel.font = StyleManager.shared.comfortaaFont14
         userLabel.numberOfLines = 1
         userLabel.textColor = StyleManager.shared.accent
         userLabel.textAlignment = .center
-        detailContainerView.addSubview(userLabel)
         
         messageLabel.font = StyleManager.shared.system12
         messageLabel.numberOfLines = 0
         messageLabel.textColor = UIColor.white
         messageLabel.clipsToBounds = true
-        detailContainerView.addSubview(messageLabel)
         
         timeLabel.font = StyleManager.shared.system8
         timeLabel.numberOfLines = 1
         timeLabel.textColor = UIColor.white
-        detailContainerView.addSubview(timeLabel)
         
         distanceLabel.font = StyleManager.shared.system8
         distanceLabel.numberOfLines = 1
         distanceLabel.textColor = StyleManager.shared.accent
-        detailContainerView.addSubview(distanceLabel!)
+        
+        self.addSubview(detailContainerView)
+        self.addSubview(profileImageView)
+        detailContainerView.addSubview(timeLabel)
+        detailContainerView.addSubview(messageLabel)
+        detailContainerView.addSubview(userLabel)
+        detailContainerView.addSubview(distanceLabel)
     }
     
     //4

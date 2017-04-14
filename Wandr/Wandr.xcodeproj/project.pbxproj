@@ -270,9 +270,9 @@
 				DEA80B2B1E685D1D001E0747 /* ARConfiguration.swift */,
 				DEA80B2A1E685D1D001E0747 /* ARAnnotationView.swift */,
 				DEA80B2C1E685D1D001E0747 /* ARTrackingManager.swift */,
-				DEA80B2D1E685D1D001E0747 /* ARViewController.swift */,
-				DEA80B281E685D1D001E0747 /* AnnotationView.swift */,
 				DE08FBBC1E9D278B0052409B /* ARViewDimensions.swift */,
+				DEA80B281E685D1D001E0747 /* AnnotationView.swift */,
+				DEA80B2D1E685D1D001E0747 /* ARViewController.swift */,
 			);
 			name = "Augmented Reality";
 			sourceTree = "<group>";
