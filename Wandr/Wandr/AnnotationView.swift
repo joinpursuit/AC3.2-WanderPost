@@ -17,31 +17,30 @@ protocol AnnotationViewDelegate {
 class AnnotationView: ARAnnotationView {
     //3
     
-    var profileImageView: UIImageView?
+    private let arViewBorderWidth: CGFloat = 2
+    private let detailContainerBackgroundColor = UIColor(white: 0.3, alpha: 0.6)
     
-    var detailContainerView: UIView?
-    var userLabel: UILabel?
-    var messageLabel: UILabel?
-    var timeLabel: UILabel?
-    var distanceLabel: UILabel?
+    private var profileImageView: UIImageView!
+    private var detailContainerView: UIView!
+    private var userLabel: UILabel!
+    private var messageLabel: UILabel!
+    private var timeLabel: UILabel!
+    private var distanceLabel: UILabel!
     
-//    private let viewBackgroundColor: UIColor = UIColor(white: 0.3, alpha: 0.7)
-    
-    private let profileFrame = CGRect(x: 40, y: 0, width: 40, height: 40)
-    private let detailContainerFrame = CGRect(x: 0, y: 44, width: 120, height: 120)
-    private let userFrame = CGRect(x: 4, y: 0, width: 112, height: 30)
-    private let messageFrame = CGRect(x: 4, y: 30, width: 112, height: 70)
-    private let timeFrame = CGRect(x: 4, y: 100, width: 72, height: 20)
-    private let distanceFrame = CGRect(x: 76, y: 100, width: 40, height: 20)
-    
+    private let profileFrame = ARViewDimensions.profileFrame
+    private let detailContainerFrame = ARViewDimensions.detailContainerFrame
+    private let userFrame = ARViewDimensions.userFrame
+    private let messageFrame = ARViewDimensions.messageFrame
+    private let timeFrame = ARViewDimensions.timeFrame
+    private let distanceFrame = ARViewDimensions.distanceFrame
     
     var delegate: AnnotationViewDelegate?
     
     override func didMoveToSuperview() {
         super.didMoveToSuperview()
-        
         self.backgroundColor = .clear
         setUpViews()
+        configureViews()
         loadUI()
     }
     
@@ -61,52 +60,52 @@ class AnnotationView: ARAnnotationView {
         distanceLabel = UILabel(frame: distanceFrame)
     }
     
+    func configureViews() {
+        profileImageView.clipsToBounds = true
+        profileImageView.layer.cornerRadius = profileFrame.width / 2
+        profileImageView.layer.borderWidth = arViewBorderWidth
+        profileImageView.layer.borderColor = StyleManager.shared.accent.cgColor
+        self.addSubview(profileImageView)
+        
+        detailContainerView.backgroundColor = detailContainerBackgroundColor
+        detailContainerView.clipsToBounds = true
+        detailContainerView.layer.cornerRadius = detailContainerFrame.width / 12
+        detailContainerView.layer.borderWidth = arViewBorderWidth
+        detailContainerView.layer.borderColor = StyleManager.shared.primary.cgColor
+        self.addSubview(detailContainerView)
+        
+        userLabel.font = StyleManager.shared.comfortaaFont14
+        userLabel.numberOfLines = 1
+        userLabel.textColor = StyleManager.shared.accent
+        userLabel.textAlignment = .center
+        detailContainerView.addSubview(userLabel)
+        
+        messageLabel.font = StyleManager.shared.system12
+        messageLabel.numberOfLines = 0
+        messageLabel.textColor = UIColor.white
+        messageLabel.clipsToBounds = true
+        detailContainerView.addSubview(messageLabel)
+        
+        timeLabel.font = StyleManager.shared.system8
+        timeLabel.numberOfLines = 1
+        timeLabel.textColor = UIColor.white
+        detailContainerView.addSubview(timeLabel)
+        
+        distanceLabel.font = StyleManager.shared.system8
+        distanceLabel.numberOfLines = 1
+        distanceLabel.textColor = StyleManager.shared.accent
+        detailContainerView.addSubview(distanceLabel!)
+    }
+    
     //4
     func loadUI() {
-        
-        profileImageView?.clipsToBounds = true
-        profileImageView?.layer.cornerRadius = 20
-        profileImageView?.layer.borderWidth = 2
-        profileImageView?.layer.borderColor = StyleManager.shared.accent.cgColor
-        self.addSubview(profileImageView!)
-        
-        detailContainerView?.backgroundColor = UIColor(white: 0.3, alpha: 0.6)
-        detailContainerView?.clipsToBounds = true
-        detailContainerView?.layer.cornerRadius = 10
-        detailContainerView?.layer.borderWidth = 2
-        detailContainerView?.layer.borderColor = StyleManager.shared.primary.cgColor
-        self.addSubview(detailContainerView!)
-        
-        userLabel?.font = StyleManager.shared.comfortaaFont14
-        userLabel?.numberOfLines = 1
-        userLabel?.textColor = StyleManager.shared.accent
-        userLabel?.textAlignment = .center
-        detailContainerView?.addSubview(userLabel!)
-        
-        messageLabel?.font = UIFont.systemFont(ofSize: 12)
-        messageLabel?.numberOfLines = 0
-        messageLabel?.textColor = UIColor.white
-        messageLabel?.clipsToBounds = true
-        detailContainerView?.addSubview(messageLabel!)
-        
-        timeLabel?.font = UIFont.systemFont(ofSize: 8)
-        timeLabel?.numberOfLines = 1
-        timeLabel?.textColor = UIColor.white
-        detailContainerView?.addSubview(timeLabel!)
-        
-        distanceLabel?.font = UIFont.systemFont(ofSize: 8)
-        distanceLabel?.numberOfLines = 1
-        distanceLabel?.textColor = StyleManager.shared.accent
-        detailContainerView?.addSubview(distanceLabel!)
-        
-        if let wanderPostForThisAnnotation = annotation as? WanderPost {
-            if let user = wanderPostForThisAnnotation.wanderUser {
-                profileImageView?.image = UIImage(data: user.userImageData)
-                userLabel?.text = user.username
-            }
-            messageLabel?.text = wanderPostForThisAnnotation.content as? String
-            distanceLabel?.text = String(format: "%.2f km", wanderPostForThisAnnotation.distanceFromUser / 1000)
-            timeLabel?.text = wanderPostForThisAnnotation.dateAndTime
+        if let wanderPostForThisAnnotation = annotation as? WanderPost,
+            let user = wanderPostForThisAnnotation.wanderUser {
+            profileImageView.image = UIImage(data: user.userImageData)
+            userLabel.text = user.username
+            messageLabel.text = wanderPostForThisAnnotation.content as? String
+            distanceLabel.text = String(format: "%.2f km", wanderPostForThisAnnotation.distanceFromUser / 1000)
+            timeLabel.text = wanderPostForThisAnnotation.dateAndTime
         }
     }
     
