@@ -32,7 +32,7 @@ struct ARViewDimensions {
     private static let timeDistanceHeight: CGFloat = ARViewDimensions.viewWidth / 6
     private static let messageHeight: CGFloat = ARViewDimensions.viewWidth - ARViewDimensions.userHeight - ARViewDimensions.timeDistanceHeight
     private static let distanceWidth: CGFloat = ARViewDimensions.contentWidth / 2.8
-    private static let timeWidth: CGFloat = ARViewDimensions.contentWidth - ARViewDimensions.timeWidth
+    private static let timeWidth: CGFloat = ARViewDimensions.contentWidth - ARViewDimensions.distanceWidth
     private static let timeDistanceYPos = ARViewDimensions.userHeight + ARViewDimensions.messageHeight
     private static let distanceXPos = ARViewDimensions.viewMargin + ARViewDimensions.timeWidth
     
