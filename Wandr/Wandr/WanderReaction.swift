@@ -13,7 +13,7 @@ enum ReactionType: NSString {
 import Foundation
 import CloudKit
 
-class Reaction {
+class WanderReaction {
     let type: ReactionType
     let id: CKRecordID
     let time: Date

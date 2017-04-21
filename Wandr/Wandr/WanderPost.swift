@@ -23,7 +23,7 @@ class WanderPost: ARAnnotation {
     let recipient: CKRecordID?
     
     var wanderUser: WanderUser?
-    var reactions: [Reaction]?
+    var reactions: [WanderReaction]?
     
     var dateAndTime: String {
         let formatter = DateFormatter()
