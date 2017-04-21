@@ -190,10 +190,7 @@ class MapViewController: UIViewController {
         return button
     }()
     
-    lazy var dragUpOrDownContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    let dragUpOrDownContainerView = UIView()
     
     lazy var cheveronButton: UIButton = {
         let button = UIButton()
