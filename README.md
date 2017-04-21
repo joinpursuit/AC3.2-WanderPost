@@ -38,22 +38,26 @@ See all friends
     - Added security
 - Integrating future technologies like Apple Watch and Google Glass to make the experience seamless.
 
+# Creators
+
 ## Tom Seymour - Design Lead, Developer
 
     He’s British, he’s not very skittish, he’s our design specialist
-    Email: tomseymour44@gmail.com
-    LinkedIn: http://www.linkedin.com/in/tomseymour44
-    GitHub: https://github.com/seymotom
+    [Email](tomseymour44@gmail.com)
+    [LinkedIn](http://www.linkedin.com/in/tomseymour44)
+    [GitHub](https://github.com/seymotom)
 
 ## Liam Kane - Tech Lead, Developer
 
     The weirdest, beardless database wizard
-    Email: liamdkane@gmail.com
-    LinkedIn: http://www.linkedin.com/in/liamdkane
-    Github: https://github.com//liam-kane
+    [Email](liamdkane@gmail.com)
+    [LinkedIn](http://www.linkedin.com/in/liamdkane)
+    [GitHub](https://github.com//liam-kane)
+
 
 ## Ana Ma - Project Manager, Developer
     The rowdiest, loudest, most structured PM since Churchill
-    Email: anama118118@gmail.com
-    LinkedIn: https://www.linkedin.com/in/anama118118
-    Github: https://github.com/anama118118
+    [Email](anama118118@gmail.com)
+    [LinkedIn](https://www.linkedin.com/in/anama118118)
+    [GitHub](https://github.com/anama118118)
+
