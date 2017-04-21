@@ -301,15 +301,8 @@ class DetailPostViewWithCommentsViewController: UIViewController {
         return tableView
     }()
     
-    lazy var tableHeaderContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    lazy var mapView: MKMapView = {
-        let mapView = MKMapView()
-        return mapView
-    }()
+    var tableHeaderContainerView = UIView()
+    var mapView: MKMapView = MKMapView()
     
     lazy var commentTextField: UITextField = {
         let textField = UITextField()
@@ -325,10 +318,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
         return button
     }()
     
-    lazy var textFieldContainerView: UIView = {
-       let view = UIView()
-        return view
-    }()
+    var textFieldContainerView: UIView = UIView()
     
     lazy var accentBarView: UIView = {
        let view = UIView()

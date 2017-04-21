@@ -12,20 +12,20 @@ import SnapKit
 
 class WanderMapAnnotationView: MKAnnotationView {
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
+    let profileImageHeightMultiplyer: CGFloat = 1.85
+    let profileImagViewBorderWidth: CGFloat = 1.5
+    let profileImageViewCenterOffset: CGFloat = -10
+    
+    var profileImageViewHeight: CGFloat!
+    let annotationImage = UIImage(named: "wanderPin4")!
     
     var profileImageView: UIImageView = UIImageView()
     var animateDrop = false
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        self.image = UIImage(named: "wanderPin4")!
+        image = annotationImage
+        profileImageViewHeight = frame.height / profileImageHeightMultiplyer
         setupView()
         setConstraints()
     }
@@ -35,48 +35,19 @@ class WanderMapAnnotationView: MKAnnotationView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
     func setupView() {
         self.addSubview(profileImageView)
         self.profileImageView.clipsToBounds = true
-        self.profileImageView.layer.cornerRadius = 16.5
-        self.profileImageView.layer.borderWidth = 1.5
+        self.profileImageView.layer.cornerRadius = profileImageViewHeight / 2
+        self.profileImageView.layer.borderWidth = profileImagViewBorderWidth
         self.profileImageView.layer.borderColor = StyleManager.shared.accent.cgColor
-
     }
     
     func setConstraints() {
         self.profileImageView.snp.makeConstraints { (view) in
             view.centerX.equalToSuperview()
-            view.centerY.equalToSuperview().offset(-10)
-            view.width.height.equalTo(33)
+            view.centerY.equalToSuperview().offset(profileImageViewCenterOffset)
+            view.width.height.equalTo(profileImageViewHeight)
         }
     }
-}
-
-extension UIImage {
-    
-    func maskWithColor(color: UIColor) -> UIImage? {
-        let maskImage = cgImage!
-        
-        let width = size.width
-        let height = size.height
-        let bounds = CGRect(x: 0, y: 0, width: width, height: height)
-        
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-        let context = CGContext(data: nil, width: Int(width), height: Int(height), bitsPerComponent: 8, bytesPerRow: 0, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)!
-        
-        context.clip(to: bounds, mask: maskImage)
-        context.setFillColor(color.cgColor)
-        context.fill(bounds)
-        
-        if let cgImage = context.makeImage() {
-            let coloredImage = UIImage(cgImage: cgImage)
-            return coloredImage
-        } else {
-            return nil
-        }
-    }
-    
 }

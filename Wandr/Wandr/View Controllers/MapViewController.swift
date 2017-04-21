@@ -118,6 +118,7 @@ class MapViewController: UIViewController {
         locationManager.startUpdatingLocation()
     }
     
+
     // MARK: - MKMapView
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         // this is to check to see if the annotation is for the users location, the else block sets the post pins
@@ -189,10 +190,7 @@ class MapViewController: UIViewController {
         return button
     }()
     
-    lazy var dragUpOrDownContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
+    let dragUpOrDownContainerView = UIView()
     
     lazy var cheveronButton: UIButton = {
         let button = UIButton()

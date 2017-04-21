@@ -71,8 +71,9 @@ class StyleManager {
     var comfortaaFont20: UIFont {
         return UIFont.Comfortaa.regular(size: 20)!
     }
-
     
+    let system8 = UIFont.systemFont(ofSize: 8)
+    let system12 = UIFont.systemFont(ofSize: 12)
 }
 
 extension UIColor {

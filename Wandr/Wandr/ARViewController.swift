@@ -316,7 +316,7 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
         let annotationView = AnnotationView()
         annotationView.annotation = viewForAnnotation
         annotationView.delegate = self
-        annotationView.frame = CGRect(x: 0, y: 0, width: 120, height: 164)
+        annotationView.frame = ARViewDimensions.arViewFrame
         return annotationView
     }
     
@@ -949,7 +949,8 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
         var error: NSError?
         var captureSession: AVCaptureSession?
         var backVideoDevice: AVCaptureDevice?
-        let videoDevices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
+//        let videoDevices = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
+        let videoDevices = AVCaptureDeviceDiscoverySession(deviceTypes: [.builtInDualCamera, .builtInWideAngleCamera], mediaType: AVMediaTypeVideo, position: .unspecified).devices
         
         // Get back video device
         if let videoDevices = videoDevices
@@ -958,7 +959,7 @@ open class ARViewController: UIViewController, ARTrackingManagerDelegate, ARPost
             {
                 if (captureDevice as AnyObject).position == AVCaptureDevicePosition.back
                 {
-                    backVideoDevice = captureDevice as? AVCaptureDevice
+                    backVideoDevice = captureDevice //as? AVCaptureDevice
                     break
                 }
             }

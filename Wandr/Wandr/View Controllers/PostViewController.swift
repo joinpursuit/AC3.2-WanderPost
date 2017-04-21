@@ -133,6 +133,7 @@ class PostViewController: UIViewController {
     }
     
     func postButtonPressed(_ sender: UIButton) {
+        
         UIView.animate(withDuration: 0.1,
                        animations: {
                         sender.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
@@ -160,6 +161,7 @@ class PostViewController: UIViewController {
                 print("you need to send this to someone yo")
                 return
             }
+            
         default:
             self.recipient = nil
         }
@@ -315,10 +317,7 @@ class PostViewController: UIViewController {
         return field
     }()
     
-    lazy var postButton: WanderButton = {
-        let button = WanderButton(title: "post", spacing: 22)
-        return button
-    }()
+    let postButton = WanderButton(title: "post", spacing: 22)
     
     lazy var dismissButton: UIButton = {
         let button = UIButton()
