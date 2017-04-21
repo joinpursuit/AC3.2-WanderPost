@@ -42,30 +42,26 @@ See all friends
 
 ## Tom Seymour - Design Lead, Developer
 
-    He’s British, he’s not very skittish, he’s our design specialist
+He’s British, he’s not very skittish, he’s our design specialist
 
-    [Email](tomseymour44@gmail.com)
-
-    [LinkedIn](http://www.linkedin.com/in/tomseymour44)
-
-    [GitHub](https://github.com/seymotom)
+[Email](tomseymour44@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/tomseymour44/)
+[GitHub](https://github.com/seymotom)
 
 ## Liam Kane - Tech Lead, Developer
 
-    The weirdest, beardless database wizard
+The weirdest, beardless database wizard
 
-    [Email](liamdkane@gmail.com)
-
-    [LinkedIn](http://www.linkedin.com/in/liamdkane)
-
-    [GitHub](https://github.com//liam-kane)
+[Email](liamdkane@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/liam-kane/)
+[GitHub](https://github.com//liam-kane)
 
 
 ## Ana Ma - Project Manager, Developer
-    The rowdiest, loudest, most structured PM since Churchill
-    [Email](anama118118@gmail.com)
 
-    [LinkedIn](https://www.linkedin.com/in/anama118118)
+The rowdiest, loudest, most structured PM since Churchill
 
-    [GitHub](https://github.com/anama118118)
+[Email](anama118118@gmail.com)
+[LinkedIn](https://www.linkedin.com/in/anama118118/)
+[GitHub](https://github.com/anama118118)
 
