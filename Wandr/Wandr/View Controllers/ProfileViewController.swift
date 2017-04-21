@@ -14,7 +14,7 @@ import CloudKit
 
 class ProfileViewController: UIViewController {
     
-    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    fileprivate let segmentTitles = PrivacyLevel.orderedStrings()
     
     fileprivate var friendFeedPosts = [WanderPost]()
     fileprivate var friendFeedLoading: Bool = true
