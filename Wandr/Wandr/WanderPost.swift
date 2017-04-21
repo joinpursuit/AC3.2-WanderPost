@@ -23,7 +23,7 @@ class WanderPost: ARAnnotation {
     let recipient: CKRecordID?
     
     var wanderUser: WanderUser?
-    var reactions: [Reaction]?
+    var reactions: [WanderReaction]?
     
     var dateAndTime: String {
         let formatter = DateFormatter()
@@ -81,28 +81,25 @@ class WanderPost: ARAnnotation {
     
     convenience init?(withCKRecord record: CKRecord) {
         
-        guard let content = record.object(forKey: PostRecordKeyNames.content.rawValue),
-            let location = record.object(forKey: PostRecordKeyNames.location.rawValue) as? CLLocation,
+        guard let content = record[PostRecordKeyNames.content.key],
+            let location = record[PostRecordKeyNames.location.key] as? CLLocation,
             let user = record.creatorUserRecordID,
-            let contentTypeString = record.object(forKey: PostRecordKeyNames.contentType.rawValue) as? NSString,
+            let contentTypeString = record[PostRecordKeyNames.contentType.key] as? String,
             let contentType = PostContentType(rawValue: contentTypeString),
-            let privacyLevelString = record.object(forKey: PostRecordKeyNames.privacyLevel.rawValue) as? NSString,
+            let privacyLevelString = record[PostRecordKeyNames.privacyLevel.key] as? String,
             let privacyLevel = PrivacyLevel(rawValue: privacyLevelString),
             let time = record.creationDate,
-            let locationDescription = record.object(forKey: PostRecordKeyNames.locationDescription.rawValue) as? String,
-            let read = record.object(forKey: PostRecordKeyNames.read.rawValue) as? Bool
+            let locationDescription = record[PostRecordKeyNames.locationDescription.key] as? String,
+            let read = record[PostRecordKeyNames.read.key] as? Bool
         else { return nil }
         
         let postID = record.recordID
         
-        let reactionIDStrings = record.object(forKey: PostRecordKeyNames.reactions.rawValue) as? [String] ?? []
-        let reactionIDs = reactionIDStrings.map { CKRecordID(recordName: $0) }
+        let reactionIDStrings = record[PostRecordKeyNames.reactions.key] as? [String] ?? []
+        let reactionIDs = reactionIDStrings.asCloudKitRecordIDs
         
-        var recipient: CKRecordID? = nil
-        if let recipientID = record.object(forKey: PostRecordKeyNames.recipient.rawValue) as? String {
-            recipient = CKRecordID(recordName: recipientID)
-        }
-
+        let recipientID = record[PostRecordKeyNames.recipient.key] as? String
+        let recipient: CKRecordID? = recipientID?.asCloudKitRecordID ?? nil
         
         self.init(location: location,
                   content: content as AnyObject,
@@ -116,24 +113,4 @@ class WanderPost: ARAnnotation {
                   read: read,
                   recipient: recipient)
     }
-    
-    static func descriptionForPlaceMark(_ mark: CLPlacemark) -> String {
-        var placeString = ""
-        if let street = mark.thoroughfare {
-            placeString += "\(street), "
-        }
-        if let boro = mark.subLocality {
-            placeString += "\(boro), "
-        }
-        if let city = mark.locality {
-            placeString += "\(city), "
-        }
-        if let zip = mark.postalCode {
-            placeString += "\(zip)"
-        }
-        print(placeString)
-        return placeString
-    }
-
-    
 }

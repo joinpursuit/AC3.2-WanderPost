@@ -30,7 +30,7 @@ class MapViewController: UIViewController {
         }
     }
     
-    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
+    fileprivate let segmentTitles = PrivacyLevel.orderedStrings()
     fileprivate var arDelegate: ARPostDelegate!
     fileprivate var addPostViewShown = false
     fileprivate var lastUpdatedLocation: CLLocation!

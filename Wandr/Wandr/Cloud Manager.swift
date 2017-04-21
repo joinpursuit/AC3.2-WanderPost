@@ -22,29 +22,47 @@ import UIKit
 
 //Consider putting this in the model for user, etc. so that i don't have to retype the calling of the functions
 
-enum RecordType: String {
-    case comment
-    case user
-    case post
-    case username
-}
 
-enum PostContentType: NSString {
-    case audio
-    case text
-    case video
-}
-
-enum PrivacyLevel: NSString {
+enum PrivacyLevel: String {
     case personal
     case friends
     case everyone
+    
+    static func ordered() -> [PrivacyLevel] {
+        return [.everyone, .friends, .personal]
+    }
+    
+    static func orderedStrings() -> [String] {
+        return ordered().map { return $0.rawValue }
+    }
 }
 
 enum ProfileViewFilterType: String {
     case posts
     case feed
     case personal
+    
+    func segmentIndex() -> Int {
+        return ProfileViewFilterType.order().index(of: self)!
+    }
+    
+    static func order() -> [ProfileViewFilterType] {
+        return [.posts, .feed, .personal]
+    }
+}
+
+enum RecordType: String {
+    case comment
+    case user
+    case post
+    case username
+    case users = "Users"
+}
+
+enum PostContentType: String {
+    case audio
+    case text
+    case video
 }
 
 protocol KeyNames {
@@ -84,6 +102,7 @@ enum CommentRecordKeyNames: String, KeyNames {
     case content
     case type
     case postID
+    case userID
     
     var key: String {
         return self.rawValue
@@ -119,36 +138,38 @@ class CloudManager {
         //init set the information of the record
         
         let postRecord = CKRecord(recordType: RecordType.post.rawValue)
+        
         switch post.contentType {
         case .text:
             guard let text = post.content as? NSString else {
                 return
             }
-            postRecord.setObject(text, forKey: PostRecordKeyNames.content.rawValue)
+            postRecord[PostRecordKeyNames.content.key] = text
             
         case .audio:
             guard let text = post.content as? CKAsset else {
                 print ("invalid content")
                 return
             }
-            postRecord.setObject(text, forKey: PostRecordKeyNames.content.rawValue)
+            postRecord[PostRecordKeyNames.content.key] = text
             
         case .video:
             guard let text = post.content as? NSString else {
                 print ("invalid content")
                 return
             }
-            postRecord.setObject(text, forKey: PostRecordKeyNames.content.rawValue)
+            postRecord[PostRecordKeyNames.content.key] = text
         }
         
-        postRecord.setObject(post.location, forKey: PostRecordKeyNames.location.rawValue)
-        postRecord.setObject(NSString(string: post.user.recordName), forKey: PostRecordKeyNames.userID.rawValue)
-        postRecord.setObject(post.contentType.rawValue, forKey: PostRecordKeyNames.contentType.rawValue)
-        postRecord.setObject(post.privacyLevel.rawValue, forKey: PostRecordKeyNames.privacyLevel.rawValue)
-        postRecord.setObject(post.locationDescription as CKRecordValue?, forKey: PostRecordKeyNames.locationDescription.rawValue)
-        postRecord.setObject(post.read as CKRecordValue?, forKey: PostRecordKeyNames.read.rawValue)
+        postRecord[PostRecordKeyNames.location.key] = post.location
+        postRecord[PostRecordKeyNames.userID.key] = post.user.recordName as CKRecordValue
+        postRecord[PostRecordKeyNames.contentType.key] = post.contentType.rawValue as CKRecordValue
+        postRecord[PostRecordKeyNames.privacyLevel.key] = post.privacyLevel.rawValue as CKRecordValue
+        postRecord[PostRecordKeyNames.locationDescription.key] = post.locationDescription as CKRecordValue
+        postRecord[PostRecordKeyNames.read.key] = post.read as CKRecordValue?
+        
         if let validRecipient = to {
-            postRecord.setObject(validRecipient.id.recordName as CKRecordValue?, forKey: PostRecordKeyNames.recipient.rawValue)
+            postRecord.setObject(validRecipient.id.recordName as CKRecordValue?, forKey: PostRecordKeyNames.recipient.key)
         }
         
         let privateUserFetch = CKFetchRecordsOperation(recordIDs: [post.user])
@@ -162,20 +183,20 @@ class CloudManager {
         publicUserFetch.database = self.publicDatabase
         publicPostsToSave.database = self.publicDatabase
         
+        
         privateUserFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
-                completionError?.append(error!)
                 if let ckError = error as? CKError  {
                     //TODO Add retry logic
-                } else {
-                    print(error!.localizedDescription)
+                    
                 }
+                completionError?.append(error!)
             }
             
             if let validRecord = record?.first {
                 //Fix this.
                 //Update the posts array
-                let userRecord = self.addValue(to: validRecord.value, key: PostRecordKeyNames.posts, value: postRecord.recordID.recordName)
+                let userRecord = self.updateValue(on: validRecord.value, for: PostRecordKeyNames.posts, value: postRecord.recordID.recordName)
                 //Save and post the record
                 privateUserSave.recordsToSave = [userRecord]
             }
@@ -186,13 +207,11 @@ class CloudManager {
                 completionError?.append(error!)
                 if let ckError = error as? CKError  {
                     //TODO Add retry logic
-                } else {
-                    print(error!.localizedDescription)
                 }
             }
             
             if let validRecord = record?.first {
-                let userRecord = self.addValue(to: validRecord.value, key: PostRecordKeyNames.posts, value: postRecord.recordID.recordName)
+                let userRecord = self.updateValue(on: validRecord.value, for: PostRecordKeyNames.posts, value: postRecord.recordID.recordName)
                 //Save and post the record
                 publicPostsToSave.recordsToSave = [userRecord, postRecord]
             }
@@ -229,8 +248,9 @@ class CloudManager {
         
         privateUserFetch.queuePriority = .veryHigh
         publicUserFetch.queuePriority = .veryHigh
-        
+
         let queue = OperationQueue.main
+        
         queue.addOperations([privateUserFetch, publicUserFetch, privateUserSave, publicPostsToSave], waitUntilFinished: false)
         queue.addOperation {
             completion(completionRecord, completionError)
@@ -252,16 +272,14 @@ class CloudManager {
                 self.publicDatabase.fetch(withRecordID: userRecord) { (userRecord, error) in
                     if error != nil {
                         completion(error)
-                        print(error!.localizedDescription)
                     } else if let validUserRecord = userRecord {
-                        usernameRecord["username"] = validUsername
-                        validUserRecord["username"] = validUsername
-                        validUserRecord["profileImage"] = imageAsset
+                        usernameRecord[UsernameRecordKeyNames.username.key] = validUsername
+                        validUserRecord[UserRecordKeyNames.username.key] = validUsername
+                        validUserRecord[UserRecordKeyNames.profileImage.key] = imageAsset
                         
                         let saveUser = CKModifyRecordsOperation()
                         
                         saveUser.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
-                            print(error)
                             completion(error)
                         }
                         
@@ -298,6 +316,7 @@ class CloudManager {
     }
     
     func checkUsernameAvailability (_ username: String, completion: @escaping (Bool, Error?) -> Void ) {
+        
         let predicate = NSPredicate(format: "username == %@", username)
         let usernameQuery = CKQuery(recordType: RecordType.username.rawValue, predicate: predicate)
         
@@ -326,12 +345,8 @@ class CloudManager {
             
             if error != nil {
                 if let ckError = error as? CKError {
-                    switch ckError.errorCode {
-                    default:
-                        break
-                    }
                     if let retryTime = ckError.retryAfterSeconds {
-                        
+            
                     }
                 }
                 completion(nil, error)
@@ -378,7 +393,6 @@ class CloudManager {
     func findPrivateMessages (for user: WanderUser, completion: @escaping ([WanderPost]?, Error?)-> Void ) {
         let privateMessagePredicate = NSPredicate(format: "recipient = %@", user.id.recordName)
         let privateMessageQuery = CKQuery(recordType: RecordType.post.rawValue, predicate: privateMessagePredicate)
-        //let privateMessageQueryOperation = CKQueryOperation(query: privateMessageQuery)
         publicDatabase.perform(privateMessageQuery, inZoneWith: nil) { (records, error) in
             if error != nil {
                 completion(nil, error)
@@ -393,17 +407,12 @@ class CloudManager {
     //MARK: - Get User Activity and Information
     
     func getUserPostActivity (for id: CKRecordID, completion: @escaping ([WanderPost]?, Error?) -> Void) {
-        //
-        //        let fetchUsers = CKFetchRecordsOperation(recordIDs: ids)
-        //        fetchUsers.fetchRecordsCompletionBlock = {
-        //
-        //        }
         publicDatabase.fetch(withRecordID: id) { (record, error) in
             if error != nil {
                 completion(nil, error)
             }
             if let validRecord = record,
-                let posts = validRecord["posts"] as? [String] {
+                let posts = validRecord[PostRecordKeyNames.posts.key] as? [String] {
                 let postRecordIDs = posts.map { CKRecordID(recordName: $0) }
                 let fetchPostsOperation = CKFetchRecordsOperation(recordIDs: postRecordIDs)
                 
@@ -476,10 +485,10 @@ class CloudManager {
                     }
                 }
                 
-                var reactions = [CKRecordID: [Reaction]]()
+                var reactions = [CKRecordID: [WanderReaction]]()
                 for reactionID in reactionIDs {
                     if let validReactionRecord = validRecords[reactionID],
-                        let reaction = Reaction(from: validReactionRecord) {
+                        let reaction = WanderReaction(from: validReactionRecord) {
                         
                         reactions[reaction.postID.recordID] = (reactions[reaction.postID.recordID] ?? []) + [reaction]
                     }
@@ -509,11 +518,11 @@ class CloudManager {
             if let validRecordDictionary = recordDict,
                 let currentUser = validRecordDictionary[self.currentUser!.id],
                 let friendAdded = validRecordDictionary[id] {
-                let friendRecordOne = self.addValue(to: currentUser,
-                                                    key: UserRecordKeyNames.friends,
+                let friendRecordOne = self.updateValue(on: currentUser,
+                                                       for: UserRecordKeyNames.friends,
                                                     value: id.recordName)
-                let friendRecordTwo = self.addValue(to: friendAdded,
-                                                    key: UserRecordKeyNames.friends,
+                let friendRecordTwo = self.updateValue(on: friendAdded,
+                                                       for: UserRecordKeyNames.friends,
                                                     value: self.currentUser!.id.recordName)
                 
                 saveFriendsToBothUsersOperation.recordsToSave = [friendRecordOne, friendRecordTwo]
@@ -533,7 +542,7 @@ class CloudManager {
     func addSubscriptionToCurrentUser(completion: @escaping (Error?) -> Void ) {
         let predicate = NSPredicate(format: "friends CONTAINS %@", currentUser!.id.recordName)
         
-        let friendAddedSubscription = CKQuerySubscription(recordType: "Users", predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordDeletion)
+        let friendAddedSubscription = CKQuerySubscription(recordType: RecordType.users.rawValue, predicate: predicate, subscriptionID: "friendAdded", options: .firesOnRecordDeletion)
         
         let notificationInfo = CKNotificationInfo()
         let currentUsername = self.currentUser!.username
@@ -567,13 +576,14 @@ class CloudManager {
     }
     
     //MARK:  - Adding a comment
-    func addReaction(to post: WanderPost, comment: Reaction, completion: @escaping (Error?) -> Void) {
+    func addReaction(to post: WanderPost, comment: WanderReaction, completion: @escaping (Error?) -> Void) {
         
-        let commentRecord = CKRecord(recordType: "comment")
+        let commentRecord = CKRecord(recordType: RecordType.comment.rawValue)
         
-        commentRecord.setObject(comment.type.rawValue, forKey: "type")
-        commentRecord.setObject(comment.content as NSString, forKey: CommentRecordKeyNames.content.rawValue)
-        commentRecord.setObject(comment.userID.recordName as NSString, forKey: "userID")
+        commentRecord[CommentRecordKeyNames.type.key] = comment.type.rawValue
+        commentRecord[CommentRecordKeyNames.content.key] = comment.content as CKRecordValue
+        commentRecord[CommentRecordKeyNames.userID.key] = comment.userID.recordName as CKRecordValue
+        commentRecord[CommentRecordKeyNames.postID.key] = comment.postID
         
         let postRecordFetch = CKFetchRecordsOperation(recordIDs: [post.postID])
         let saveCommentRecords = CKModifyRecordsOperation()
@@ -584,11 +594,9 @@ class CloudManager {
             }
             
             if let postRecord = record?[post.postID] {
-                commentRecord.setObject(comment.postID, forKey:  PostRecordKeyNames.postID.key)
-                
-                let modifiedRecord = self.addValue(to: postRecord,
-                                                   key: PostRecordKeyNames.reactions,
-                                                   value: commentRecord.recordID.recordName)
+                let modifiedRecord = self.updateValue(on: postRecord,
+                                                      for: PostRecordKeyNames.reactions,
+                                                      value: commentRecord.recordID.recordName)
                 
                 saveCommentRecords.recordsToSave = [modifiedRecord, commentRecord]
             }
@@ -604,15 +612,15 @@ class CloudManager {
     }
     
     //MARK: - Helper Functions
-    private func addValue(to record: CKRecord, key: KeyNames, value: String) -> CKRecord {
+    private func updateValue(on record: CKRecord, for key: KeyNames, value: String) -> CKRecord {
         let mutableRecord = record
-        var ids = mutableRecord[key.key] as? [NSString] ?? []
-        if !ids.contains(value as NSString) {
-            ids.append(value as NSString)
+        var valueToUpdate = mutableRecord[key.key] as? [NSString] ?? []
+        if !valueToUpdate.contains(value as NSString) {
+            valueToUpdate.append(value as NSString)
         } else {
             return record
         }
-        mutableRecord[key.key] = ids as CKRecordValue?
+        mutableRecord[key.key] = valueToUpdate as CKRecordValue?
         return mutableRecord
     }
     
@@ -631,13 +639,14 @@ class CloudManager {
                 let userOne = validUserRecords[validUserRecords.startIndex]
                 let userTwo = validUserRecords[validUserRecords.index(after: validUserRecords.startIndex)]
                 
-                if let userOneFriends = userOne["friends"] as? [String],
-                    let userTwoFriends = userTwo["friends"] as? [String] {
+                if let userOneFriends = userOne[UserRecordKeyNames.friends.key] as? [String],
+                    let userTwoFriends = userTwo[UserRecordKeyNames.friends.key] as? [String] {
+                    
                     let userOneUpdatedFriends = userOneFriends.filter { $0 != userTwo.recordID.recordName }
                     let userTwoUpdatedFriends = userTwoFriends.filter { $0 != userOne.recordID.recordName }
                     
-                    userOne["friends"] = userOneUpdatedFriends as CKRecordValue?
-                    userTwo["friends"] = userTwoUpdatedFriends as CKRecordValue?
+                    userOne[UserRecordKeyNames.friends.key] = userOneUpdatedFriends as CKRecordValue?
+                    userTwo[UserRecordKeyNames.friends.key] = userTwoUpdatedFriends as CKRecordValue?
                     
                     updateFriendsLists.recordsToSave = [userOne, userTwo]
                 }
@@ -667,15 +676,14 @@ class CloudManager {
             }
             
             if let record = records?.values.first {
-                guard let posts = record["posts"] as? [String],
+                guard let posts = record[PostRecordKeyNames.posts.key] as? [String],
                     posts.contains(post.postID.recordName) else {
                         completion(error)
                         return
                 }
                 
                 let updatedPosts = posts.filter{ $0 != post.postID.recordName }
-                print(updatedPosts)
-                record["posts"] = updatedPosts as CKRecordValue?
+                record[PostRecordKeyNames.posts.key] = updatedPosts as CKRecordValue?
                 database.recordsToSave = (database.recordsToSave ?? []) + [record]
             }
         }
@@ -704,11 +712,11 @@ class CloudManager {
         privateDatabase.add(deletePrivatePost)
     }
     
-    func delete(reaction: Reaction, completion: @escaping (Error?) -> Void ) {
+    func delete(reaction: WanderReaction, completion: @escaping (Error?) -> Void ) {
         let deleteReaction = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: [reaction.id])
         deleteReaction.modifyRecordsCompletionBlock = {(records, recordIDs, error) in
             completion(error)
         }
         publicDatabase.add(deleteReaction)
-    }
+    }    
 }

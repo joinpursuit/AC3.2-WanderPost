@@ -16,8 +16,8 @@ protocol AddNewWanderPostDelegate {
 
 class PostViewController: UIViewController {
     
-    fileprivate let segmentTitles = PrivacyLevelManager.shared.privacyLevelStringArray
-    fileprivate let privacyLevelArray = PrivacyLevelManager.shared.privacyLevelArray
+    fileprivate let segmentTitles = PrivacyLevel.orderedStrings()
+    fileprivate let privacyLevelArray = PrivacyLevel.ordered()
     
     internal var location: CLLocation!
     internal var newPostDelegate: AddNewWanderPostDelegate!
@@ -175,7 +175,7 @@ class PostViewController: UIViewController {
             }
             
             if let marks = placemarks, let thisMark = marks.last {
-                let locationDescription = WanderPost.descriptionForPlaceMark(thisMark)
+                let locationDescription = thisMark.readableDescription
                 
                 if privacy == .personal {
                     //add in recipient username as a string here.
@@ -209,7 +209,7 @@ class PostViewController: UIViewController {
     }
     
     func imageTapped() {
-        
+        //TODO: Add in image changing logic
     }
     
     func toggleUserTextField(show: Bool) {

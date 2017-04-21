@@ -12,9 +12,12 @@
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
 		81569D691E70855500FFC8F6 /* WanderUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81569D681E70855500FFC8F6 /* WanderUser.swift */; };
 		81569D6B1E723FE200FFC8F6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81569D6A1E723FE200FFC8F6 /* LoadingViewController.swift */; };
+		815CDB1A1EAA83EE00C937CA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB191EAA83EE00C937CA /* String.swift */; };
+		815CDB1C1EAA83FA00C937CA /* StringArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB1B1EAA83FA00C937CA /* StringArray.swift */; };
+		815CDB1E1EAA840A00C937CA /* CLPlacemark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */; };
 		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
 		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
-		8164460E1E65FB0800477FBD /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* Reaction.swift */; };
+		8164460E1E65FB0800477FBD /* WanderReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* WanderReaction.swift */; };
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
@@ -56,7 +59,6 @@
 		DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */; };
 		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
 		DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */; };
-		DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B431E6A0E58001E0747 /* APIManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,9 +70,12 @@
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81569D681E70855500FFC8F6 /* WanderUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderUser.swift; sourceTree = "<group>"; };
 		81569D6A1E723FE200FFC8F6 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
+		815CDB191EAA83EE00C937CA /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		815CDB1B1EAA83FA00C937CA /* StringArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringArray.swift; sourceTree = "<group>"; };
+		815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLPlacemark.swift; sourceTree = "<group>"; };
 		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
 		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
-		8164460D1E65FB0800477FBD /* Reaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
+		8164460D1E65FB0800477FBD /* WanderReaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderReaction.swift; sourceTree = "<group>"; };
 		81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wandr.entitlements; sourceTree = "<group>"; };
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
@@ -113,7 +118,6 @@
 		DEA80B3A1E686F58001E0747 /* hdar_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "hdar_close@3x.png"; sourceTree = "<group>"; };
 		DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostAnnotation.swift; sourceTree = "<group>"; };
 		DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderMapAnnotationView.swift; path = Views/WanderMapAnnotationView.swift; sourceTree = "<group>"; };
-		DEA80B431E6A0E58001E0747 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -159,6 +163,7 @@
 				8171C3D81E60DF54000C6DC5 /* Models */,
 				8171C3D71E60DF37000C6DC5 /* Supporting Files */,
 				812952941E60D08A0048199B /* LaunchScreen.storyboard */,
+				815CDB1F1EAA841000C937CA /* Extensions */,
 			);
 			path = Wandr;
 			sourceTree = "<group>";
@@ -171,6 +176,16 @@
 				BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		815CDB1F1EAA841000C937CA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				815CDB191EAA83EE00C937CA /* String.swift */,
+				815CDB1B1EAA83FA00C937CA /* StringArray.swift */,
+				815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		8171C3D71E60DF37000C6DC5 /* Supporting Files */ = {
@@ -191,7 +206,7 @@
 			children = (
 				8164460B1E65FA2600477FBD /* WanderPost.swift */,
 				81569D681E70855500FFC8F6 /* WanderUser.swift */,
-				8164460D1E65FB0800477FBD /* Reaction.swift */,
+				8164460D1E65FB0800477FBD /* WanderReaction.swift */,
 				DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */,
 			);
 			name = Models;
@@ -215,7 +230,6 @@
 		8171C3DA1E60DF61000C6DC5 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-				DEA80B431E6A0E58001E0747 /* APIManager.swift */,
 				DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */,
 				816446071E6478E500477FBD /* Cloud Manager.swift */,
 			);
@@ -318,7 +332,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = C4Q;
 				TargetAttributes = {
 					812952871E60D08A0048199B = {
@@ -432,7 +446,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEA80B441E6A0E58001E0747 /* APIManager.swift in Sources */,
+				815CDB1A1EAA83EE00C937CA /* String.swift in Sources */,
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
 				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
@@ -451,11 +465,13 @@
 				DEA4EF2F1E7233EC0038E330 /* ProfileFriendTableViewCell.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */,
+				815CDB1E1EAA840A00C937CA /* CLPlacemark.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */,
 				A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
+				815CDB1C1EAA83FA00C937CA /* StringArray.swift in Sources */,
 				DE08FBBD1E9D278B0052409B /* ARViewDimensions.swift in Sources */,
 				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
@@ -465,7 +481,7 @@
 				DEA4EF2D1E7230480038E330 /* ProfileFriendsTableViewController.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,
 				81569D6B1E723FE200FFC8F6 /* LoadingViewController.swift in Sources */,
-				8164460E1E65FB0800477FBD /* Reaction.swift in Sources */,
+				8164460E1E65FB0800477FBD /* WanderReaction.swift in Sources */,
 				A7686F841E67317000402053 /* ProfileViewViewControllerDetailPostTableViewCell.swift in Sources */,
 				A743DF0B1E6E0D2100BB43B8 /* ProfileViewViewControllerDetailFeedTableViewCell.swift in Sources */,
 				8129528C1E60D08A0048199B /* AppDelegate.swift in Sources */,
@@ -588,6 +604,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wandr/Wandr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
@@ -608,6 +625,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wandr/Wandr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

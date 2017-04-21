@@ -10,6 +10,8 @@ import UIKit
 import SnapKit
 
 class EmptyStateView: UIView {
+    
+    private let kTextLabelOffset = 11
 
     var textLabel: UILabel = {
         let view = UILabel()
@@ -22,14 +24,14 @@ class EmptyStateView: UIView {
         return view
     }()
     
-    lazy var activityIndicator: UIActivityIndicatorView = {
+    private var activityIndicator: UIActivityIndicatorView = {
         let view = UIActivityIndicatorView()
         view.color = StyleManager.shared.primaryDark
         view.hidesWhenStopped = true
         return view
     }()
     
-    let view = UIView()
+    private let view = UIView()
     
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
@@ -43,8 +45,8 @@ class EmptyStateView: UIView {
         }
         textLabel.snp.makeConstraints { (view) in
             view.top.bottom.equalToSuperview()
-            view.leading.equalToSuperview().offset(11)
-            view.trailing.equalToSuperview().inset(11)
+            view.leading.equalToSuperview().offset(kTextLabelOffset)
+            view.trailing.equalToSuperview().inset(kTextLabelOffset)
         }
         activityIndicator.snp.makeConstraints { (view) in
             view.center.equalToSuperview()
@@ -60,8 +62,4 @@ class EmptyStateView: UIView {
         self.textLabel.isHidden = false
         self.activityIndicator.stopAnimating()
     }
-    
-    
-    
-
 }

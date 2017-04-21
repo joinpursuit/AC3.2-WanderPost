@@ -18,7 +18,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
     
     internal var wanderPost: WanderPost!
     fileprivate var wanderUser: WanderUser!
-    fileprivate var reactions: [Reaction] = [Reaction]() {
+    fileprivate var reactions: [WanderReaction] = [WanderReaction]() {
         didSet {
             self.emptyState = reactions.isEmpty ? true : false
         }
@@ -67,7 +67,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
     }
 
     // MARK: - Helper Functions
-    func toggleNoCommentsLabel(comments: [Reaction]) {
+    func toggleNoCommentsLabel(comments: [WanderReaction]) {
         if comments.isEmpty {
             noCommentsLabel.isHidden = false
             commentTableView.isScrollEnabled = false
@@ -84,7 +84,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
             let post = self.wanderPost,
             content != "" {
             print("Content: \(content)")
-            let reaction = Reaction(type: .comment, content: content, postID: post.postID)
+            let reaction = WanderReaction(type: .comment, content: content, postID: post.postID)
             CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
                 //add fail alert
                 if error != nil {

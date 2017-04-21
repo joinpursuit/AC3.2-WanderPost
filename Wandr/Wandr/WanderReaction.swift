@@ -13,7 +13,7 @@ enum ReactionType: NSString {
 import Foundation
 import CloudKit
 
-class Reaction {
+class WanderReaction {
     let type: ReactionType
     let id: CKRecordID
     let time: Date
@@ -52,12 +52,12 @@ class Reaction {
     
     convenience init?(from record: CKRecord) {
         
-        guard let typeString = record["type"] as? NSString,
+        guard let typeString = record[CommentRecordKeyNames.type.key] as? NSString,
             let type = ReactionType(rawValue: typeString),
             let time = record.creationDate,
             let userID = record.creatorUserRecordID,
-            let postID = record["postID"] as? CKReference,
-            let content = record["content"] as? String else { return nil }
+            let postID = record[CommentRecordKeyNames.postID.key] as? CKReference,
+            let content = record[CommentRecordKeyNames.content.key] as? String else { return nil }
         let id = record.recordID
 
         self.init(type: type,
