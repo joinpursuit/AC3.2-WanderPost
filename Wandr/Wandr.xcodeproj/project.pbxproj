@@ -12,6 +12,9 @@
 		812952961E60D08A0048199B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 812952941E60D08A0048199B /* LaunchScreen.storyboard */; };
 		81569D691E70855500FFC8F6 /* WanderUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81569D681E70855500FFC8F6 /* WanderUser.swift */; };
 		81569D6B1E723FE200FFC8F6 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81569D6A1E723FE200FFC8F6 /* LoadingViewController.swift */; };
+		815CDB1A1EAA83EE00C937CA /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB191EAA83EE00C937CA /* String.swift */; };
+		815CDB1C1EAA83FA00C937CA /* StringArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB1B1EAA83FA00C937CA /* StringArray.swift */; };
+		815CDB1E1EAA840A00C937CA /* CLPlacemark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */; };
 		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
 		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
 		8164460E1E65FB0800477FBD /* WanderReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* WanderReaction.swift */; };
@@ -67,6 +70,9 @@
 		812952971E60D08A0048199B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		81569D681E70855500FFC8F6 /* WanderUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderUser.swift; sourceTree = "<group>"; };
 		81569D6A1E723FE200FFC8F6 /* LoadingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
+		815CDB191EAA83EE00C937CA /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		815CDB1B1EAA83FA00C937CA /* StringArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringArray.swift; sourceTree = "<group>"; };
+		815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CLPlacemark.swift; sourceTree = "<group>"; };
 		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
 		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
 		8164460D1E65FB0800477FBD /* WanderReaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderReaction.swift; sourceTree = "<group>"; };
@@ -157,6 +163,7 @@
 				8171C3D81E60DF54000C6DC5 /* Models */,
 				8171C3D71E60DF37000C6DC5 /* Supporting Files */,
 				812952941E60D08A0048199B /* LaunchScreen.storyboard */,
+				815CDB1F1EAA841000C937CA /* Extensions */,
 			);
 			path = Wandr;
 			sourceTree = "<group>";
@@ -169,6 +176,16 @@
 				BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		815CDB1F1EAA841000C937CA /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				815CDB191EAA83EE00C937CA /* String.swift */,
+				815CDB1B1EAA83FA00C937CA /* StringArray.swift */,
+				815CDB1D1EAA840A00C937CA /* CLPlacemark.swift */,
+			);
+			name = Extensions;
 			sourceTree = "<group>";
 		};
 		8171C3D71E60DF37000C6DC5 /* Supporting Files */ = {
@@ -315,7 +332,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = C4Q;
 				TargetAttributes = {
 					812952871E60D08A0048199B = {
@@ -429,6 +446,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				815CDB1A1EAA83EE00C937CA /* String.swift in Sources */,
 				816446081E6478E500477FBD /* Cloud Manager.swift in Sources */,
 				DEA80B321E685D1D001E0747 /* ARTrackingManager.swift in Sources */,
 				DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */,
@@ -447,11 +465,13 @@
 				DEA4EF2F1E7233EC0038E330 /* ProfileFriendTableViewCell.swift in Sources */,
 				A7686F821E66017800402053 /* PostViewController.swift in Sources */,
 				DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */,
+				815CDB1E1EAA840A00C937CA /* CLPlacemark.swift in Sources */,
 				DEA80B2E1E685D1D001E0747 /* AnnotationView.swift in Sources */,
 				A7686F7E1E65F26000402053 /* ProfileViewController.swift in Sources */,
 				DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */,
 				A7AF86011E68B11D0046487F /* OnBoardViewController.swift in Sources */,
 				A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */,
+				815CDB1C1EAA83FA00C937CA /* StringArray.swift in Sources */,
 				DE08FBBD1E9D278B0052409B /* ARViewDimensions.swift in Sources */,
 				A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */,
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
@@ -584,6 +604,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wandr/Wandr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: nyc.c4q.badfish.Wandr";
@@ -604,6 +625,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FA665083DA1D2023A5EF795E /* Pods-Wandr.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Wandr/Wandr.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";

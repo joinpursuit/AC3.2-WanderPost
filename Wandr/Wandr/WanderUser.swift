@@ -26,15 +26,15 @@ class WanderUser {
     
     convenience init?(from record: CKRecord) {
         
-        guard let username = record["username"] as? String,
-            let userImageAsset = record["profileImage"] as? CKAsset,
+        guard let username = record[UserRecordKeyNames.username.key] as? String,
+            let userImageAsset = record[UserRecordKeyNames.profileImage.key] as? CKAsset,
             let userImageData = try? Data(contentsOf: userImageAsset.fileURL) else { return nil }
         
-        let friendStrings = record["friends"] as? [String] ?? []
-        let friends = friendStrings.map { CKRecordID(recordName: $0) }
+        let friendStrings = record[UserRecordKeyNames.friends.key] as? [String] ?? []
+        let friends = friendStrings.asCloudKitRecordIDs
         
-        let postStrings = record["posts"] as? [String] ?? []
-        let posts = postStrings.map { CKRecordID(recordName: $0) }
+        let postStrings = record[UserRecordKeyNames.posts.key] as? [String] ?? []
+        let posts = postStrings.asCloudKitRecordIDs
         
         let id = record.recordID
         

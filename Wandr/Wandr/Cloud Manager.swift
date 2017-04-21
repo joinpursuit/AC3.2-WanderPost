@@ -22,6 +22,35 @@ import UIKit
 
 //Consider putting this in the model for user, etc. so that i don't have to retype the calling of the functions
 
+
+enum PrivacyLevel: String {
+    case personal
+    case friends
+    case everyone
+    
+    static func ordered() -> [PrivacyLevel] {
+        return [.everyone, .friends, .personal]
+    }
+    
+    static func orderedStrings() -> [String] {
+        return ordered().map { return $0.rawValue }
+    }
+}
+
+enum ProfileViewFilterType: String {
+    case posts
+    case feed
+    case personal
+    
+    func segmentIndex() -> Int {
+        return ProfileViewFilterType.order().index(of: self)!
+    }
+    
+    static func order() -> [ProfileViewFilterType] {
+        return [.posts, .feed, .personal]
+    }
+}
+
 enum RecordType: String {
     case comment
     case user
@@ -34,18 +63,6 @@ enum PostContentType: String {
     case audio
     case text
     case video
-}
-
-enum PrivacyLevel: String {
-    case personal
-    case friends
-    case everyone
-}
-
-enum ProfileViewFilterType: String {
-    case posts
-    case feed
-    case personal
 }
 
 protocol KeyNames {
