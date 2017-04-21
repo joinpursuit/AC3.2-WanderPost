@@ -45,7 +45,9 @@ See all friends
 He’s British, he’s not very skittish, he’s our design specialist
 
 [Email](tomseymour44@gmail.com)
+
 [LinkedIn](https://www.linkedin.com/in/tomseymour44/)
+
 [GitHub](https://github.com/seymotom)
 
 ## Liam Kane - Tech Lead, Developer
@@ -53,7 +55,9 @@ He’s British, he’s not very skittish, he’s our design specialist
 The weirdest, beardless database wizard
 
 [Email](liamdkane@gmail.com)
+
 [LinkedIn](https://www.linkedin.com/in/liam-kane/)
+
 [GitHub](https://github.com//liam-kane)
 
 
@@ -62,6 +66,8 @@ The weirdest, beardless database wizard
 The rowdiest, loudest, most structured PM since Churchill
 
 [Email](anama118118@gmail.com)
+
 [LinkedIn](https://www.linkedin.com/in/anama118118/)
+
 [GitHub](https://github.com/anama118118)
 
