@@ -2,7 +2,7 @@
 
 Unlike most social media apps, which encourage interaction from afar, WanderPost enables users to directly annotate their location for others to discover in augmented reality. I could use it to make an announcement for people to see at City Hall or to leave a post for my sister at the tree we spent the summer of 1999 climbing in case she wanders past. Let’s show what that looks like.
 
-## Open App and leave a personal post
+## Open app and leave a personal post
 
 When Wanderpost launches it opens up into a fixed map view that shows your location and any posts that have been left within a few hundred meters of you. You can filter these results to show either posts left by all users,  your friends or personal posts left just for you. Content of the posts can only be viewed in the AR environment and the user must be within this mapview range to see it.
 
