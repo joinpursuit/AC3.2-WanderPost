@@ -139,10 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     //In here I should be able to change the username, im obviously getting the info. Maybe take that info and have it trigger a local notification instead of a real push notification?
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        //print("user info \(userInfo)")
-        //completionHandler(.newData)
-        
-        
+                
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
         
         if cloudKitNotification.notificationType == .query {
@@ -152,7 +149,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else {
                 // If the record has been created or changed, we fetch the data from CloudKit
                 let database: CKDatabase
-                if queryNotification.isPublicDatabase {
+                if queryNotification.databaseScope == .public {
                     database = CKContainer.default().publicCloudDatabase
                 } else {
                     database = CKContainer.default().privateCloudDatabase

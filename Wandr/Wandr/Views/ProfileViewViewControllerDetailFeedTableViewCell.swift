@@ -73,7 +73,7 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     }
     
     lazy var profileImageView: WanderProfileImageView = {
-        let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
+        let imageView = WanderProfileImageView(width: self.kProfileImageViewSide, height: self.kProfileImageViewSide)
         return imageView
     }()
     

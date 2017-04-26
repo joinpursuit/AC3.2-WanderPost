@@ -388,7 +388,7 @@ extension PostViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
-                print(error?.localizedDescription)
+                self.showOKAlert(title: "Error", message: "Oops... something went wrong")
             }
             if let validUsers = wanderUsers {
                 print(validUsers.count)
