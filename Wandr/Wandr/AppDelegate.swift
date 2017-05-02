@@ -139,10 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     //In here I should be able to change the username, im obviously getting the info. Maybe take that info and have it trigger a local notification instead of a real push notification?
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        //print("user info \(userInfo)")
-        //completionHandler(.newData)
-        
-        
+                
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo as! [String : NSObject])
         
         if cloudKitNotification.notificationType == .query {
@@ -152,7 +149,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } else {
                 // If the record has been created or changed, we fetch the data from CloudKit
                 let database: CKDatabase
-                if queryNotification.isPublicDatabase {
+                if queryNotification.databaseScope == .public {
                     database = CKContainer.default().publicCloudDatabase
                 } else {
                     database = CKContainer.default().privateCloudDatabase
@@ -182,84 +179,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         completionHandler(.alert)
     }
-    
-    func fixPostCount() {
-        let userFetch = CKFetchRecordsOperation(recordIDs: [CloudManager.shared.currentUser!.id])
-        let userSave = CKModifyRecordsOperation()
-        
-        userFetch.fetchRecordsCompletionBlock = { (record, error) in
-            
-            
-            if error != nil {
-                if let ckError = error as? CKError  {
-                    //TODO Add retry logic
-                } else {
-                    print(error!.localizedDescription)
-                }
-            }
-            if let validRecord = record?.first {
-                
-                
-                //Fix this.
-                //Update the posts array
-                let userRecord = validRecord.value
-                var posts: [NSString] =  []
-                userRecord["posts"] = posts as CKRecordValue?
-                
-                //Save and post the record
-                userSave.recordsToSave = [userRecord]
-            }
-        }
-        
-        userSave.modifyRecordsCompletionBlock = {(records, recordIDs, errors) in
-        }
-        userSave.addDependency(userFetch)
-        let queue = OperationQueue()
-        queue.addOperations([userFetch, userSave], waitUntilFinished: false)
-    }
-    
-    // MARK: - Launch Screen
-    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
-        
-        return true
-    }
 }
-
-
-/*
- 
- //        let locationTrigger = UNLocationNotificationTrigger(region: <#T##CLRegion#>, repeats: <#T##Bool#>)
- //
- //        let notificationRequest = UNNotificationRequest.init(identifier: "newPosts", content: <#T##UNNotificationContent#>, trigger: <#T##UNNotificationTrigger?#>)
- //
- //        UNUserNotificationCenter.current().add(<#T##request: UNNotificationRequest##UNNotificationRequest#>, withCompletionHandler: <#T##((Error?) -> Void)?##((Error?) -> Void)?##(Error?) -> Void#>)
- 
- //        let authorizationOptions: UNAuthorizationOptions = [UNAuthorizationOptions.alert, UNAuthorizationOptions.badge, UNAuthorizationOptions.sound]
- //        UNUserNotificationCenter.current().requestAuthorization(options: authorizationOptions) { (success: Bool?, error: Error?) in
- //            // Enable or disable features based on authorization.
- //        }
- //
- //        UNUserNotificationCenter.current().getNotificationSettings(){ (settings) in
- //
- //            switch settings.soundSetting{
- //            case .enabled:
- //
- //                print("enabled sound setting")
- //
- //            case .disabled:
- //
- //                print("setting has been disabled")
- //
- //            case .notSupported:
- //                print("something vital went wrong here")
- //            }
- //        }
- //        application.registerForRemoteNotifications()
- 
- 
- //We can use UNLocationNotificationTrigger - Triggers the delivery of a notification when the user reaches the specified geographic location.
- 
- //If we use EventKit we can implement UNCalendarNotificationTrigger - Triggers a notification at the specified date and time.
- 
- //If we have media in our notification, we can use UNNotificationAttachment - Manages media content associated with a notification.
- */

@@ -26,13 +26,11 @@ class LoadingViewController: UIViewController {
             //Error handling
             
             if error != nil {
-                //TODO: Handle errors
-               // self.showOKAlert(title: "Uh-oh...", message: error!.localizedDescription)
                 
                 if let ckError = error as? CKError {
                     print(ckError.errorUserInfo)
                 }
-                print(error)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
             } else if validWanderUser {
                 CloudManager.shared.addSubscriptionToCurrentUser { (error) in
                     //Error handling
@@ -294,16 +292,4 @@ class LoadingViewController: UIViewController {
         label.text = "Discover a world of hidden messages."
         return label
     }()
-
-    func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
-            if let completionAction = completion {
-                completionAction()
-            }
-        }
-        alert.addAction(okayAction)
-        self.present(alert, animated: true, completion: nil)
-    }
-
 }

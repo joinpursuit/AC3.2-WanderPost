@@ -129,7 +129,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
                 CloudManager.shared.delete(wanderpost: postToDelete, completion: { (error) in
                     if error != nil {
                         //handle error
-                        print(error)
+                        AlertFactory.init(for: self).makeDefaultOKAlert()
                     }
                     DispatchQueue.main.async {
                         self.deletePostFromMapDelegate.deletePost(post: postToDelete)

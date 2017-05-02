@@ -147,7 +147,7 @@ class PostViewController: UIViewController {
         //init post, this is going to be a rough sketch of doing it
         guard self.postTextView.text!.characters.count > 0,
             postTextView.textColor != StyleManager.shared.placeholderText else {
-                showOKAlert(title: "No Content", message: "Please write something to post.")
+                AlertFactory.init(for: self).makeCustomOKAlert(title: "No Content", message: "Please write something to post.")
                 return
         }
         
@@ -239,18 +239,6 @@ class PostViewController: UIViewController {
         }
         animator.startAnimation()
         
-    }
-    
-    // MARK: - Helper Fucntions
-    func showOKAlert(title: String, message: String?, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let okayAction = UIAlertAction(title: "OK", style: .cancel) { (_) in
-            if let completionAction = completion {
-                completionAction()
-            }
-        }
-        alert.addAction(okayAction)
-        self.present(alert, animated: true, completion: nil)
     }
     
     //MARK: - Setup TableView
@@ -388,7 +376,7 @@ extension PostViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
-                print(error?.localizedDescription)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
             }
             if let validUsers = wanderUsers {
                 print(validUsers.count)

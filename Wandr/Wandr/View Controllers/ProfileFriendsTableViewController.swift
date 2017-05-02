@@ -127,7 +127,7 @@ class ProfileFriendsTableViewController: UITableViewController {
         if areWeFriends {
             CloudManager.shared.delete(friend: userToAddOrDelete.id) { (error) in
                 CloudManager.shared.currentUser?.friends = (CloudManager.shared.currentUser?.friends.filter { $0 != userToAddOrDelete.id })!
-                print(error)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
                 DispatchQueue.main.async {
                     sender.setTitle("add", for: .normal)
                     
@@ -136,7 +136,7 @@ class ProfileFriendsTableViewController: UITableViewController {
             
         } else {
             CloudManager.shared.add(friend: userToAddOrDelete.id) { (error) in
-                print(error)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
                 CloudManager.shared.currentUser?.friends.append(userToAddOrDelete.id)
                 DispatchQueue.main.async {
                     sender.setTitle("remove", for: .normal)
