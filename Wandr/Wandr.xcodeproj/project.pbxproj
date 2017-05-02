@@ -18,6 +18,7 @@
 		816446081E6478E500477FBD /* Cloud Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 816446071E6478E500477FBD /* Cloud Manager.swift */; };
 		8164460C1E65FA2600477FBD /* WanderPost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460B1E65FA2600477FBD /* WanderPost.swift */; };
 		8164460E1E65FB0800477FBD /* WanderReaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164460D1E65FB0800477FBD /* WanderReaction.swift */; };
+		81BE9AF21EB8D1EA003E7D32 /* AlertFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81BE9AF11EB8D1EA003E7D32 /* AlertFactory.swift */; };
 		81C2A0D41E60D5F800F43791 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81C2A0D31E60D5F800F43791 /* CloudKit.framework */; };
 		A70DF45C1E63DED4000C6421 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */; };
 		A70DF45E1E648684000C6421 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A70DF45D1E648684000C6421 /* MapViewController.swift */; };
@@ -76,6 +77,7 @@
 		816446071E6478E500477FBD /* Cloud Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Cloud Manager.swift"; sourceTree = "<group>"; };
 		8164460B1E65FA2600477FBD /* WanderPost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderPost.swift; sourceTree = "<group>"; };
 		8164460D1E65FB0800477FBD /* WanderReaction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WanderReaction.swift; sourceTree = "<group>"; };
+		81BE9AF11EB8D1EA003E7D32 /* AlertFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertFactory.swift; sourceTree = "<group>"; };
 		81C2A0D21E60D5EC00F43791 /* Wandr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Wandr.entitlements; sourceTree = "<group>"; };
 		81C2A0D31E60D5F800F43791 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		A70DF45B1E63DED4000C6421 /* NotificationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NotificationViewController.swift; path = "View Controllers/NotificationViewController.swift"; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			children = (
 				DE8BF0BD1E64CE0F007D2486 /* StyleManager.swift */,
 				816446071E6478E500477FBD /* Cloud Manager.swift */,
+				81BE9AF11EB8D1EA003E7D32 /* AlertFactory.swift */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
@@ -477,6 +480,7 @@
 				DEA80B311E685D1D001E0747 /* ARConfiguration.swift in Sources */,
 				A7A087991E7277DA00FF9BF9 /* Extension UIImage.swift in Sources */,
 				A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */,
+				81BE9AF21EB8D1EA003E7D32 /* AlertFactory.swift in Sources */,
 				A75C0B821E6DD80600713C87 /* WanderSegmentedControl.swift in Sources */,
 				DEA4EF2D1E7230480038E330 /* ProfileFriendsTableViewController.swift in Sources */,
 				DEA80B351E6863C0001E0747 /* DebugMapViewController.swift in Sources */,

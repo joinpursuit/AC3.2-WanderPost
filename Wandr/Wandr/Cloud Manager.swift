@@ -186,10 +186,6 @@ class CloudManager {
         
         privateUserFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
-                if let ckError = error as? CKError  {
-                    //TODO Add retry logic
-                    
-                }
                 completionError?.append(error!)
             }
             
@@ -205,9 +201,6 @@ class CloudManager {
         publicUserFetch.fetchRecordsCompletionBlock = { (record, error) in
             if error != nil {
                 completionError?.append(error!)
-                if let ckError = error as? CKError  {
-                    //TODO Add retry logic
-                }
             }
             
             if let validRecord = record?.first {
@@ -344,11 +337,6 @@ class CloudManager {
         publicDatabase.perform(query, inZoneWith: nil) { (records, error) in
             
             if error != nil {
-                if let ckError = error as? CKError {
-                    if let retryTime = ckError.retryAfterSeconds {
-            
-                    }
-                }
                 completion(nil, error)
             }
             

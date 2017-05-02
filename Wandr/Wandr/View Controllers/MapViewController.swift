@@ -223,7 +223,7 @@ class MapViewController: UIViewController {
                 self.allWanderPosts = posts
                 CloudManager.shared.getInfo(forPosts: self.allWanderPosts!) { (error) in
                     if error != nil {
-                        print(error?.localizedDescription)
+                        AlertFactory.init(for: self).makeDefaultOKAlert()
                         return
                     }
                     DispatchQueue.main.async {
@@ -265,8 +265,7 @@ class MapViewController: UIViewController {
         
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: notificationTrigger)
         userNotificationCenter.add(request) { (error) in
-            //Add in error handling
-            print(error)
+            AlertFactory.init(for: self).makeDefaultOKAlert()
         }
         let show = UNNotificationAction(identifier: "newData", title: "WOO", options: .foreground)
         let category = UNNotificationCategory(identifier: "newPost", actions: [show], intentIdentifiers: [])

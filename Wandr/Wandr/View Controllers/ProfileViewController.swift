@@ -217,13 +217,13 @@ class ProfileViewController: UIViewController {
         personalPostsLoading = true
         CloudManager.shared.findPrivateMessages(for: self.wanderUser) { (privateMessages, error) in
             if error != nil {
-                print(error?.localizedDescription)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
             }
             
             if let validPrivateMessages = privateMessages {
                 
                 CloudManager.shared.getInfo(forPosts: validPrivateMessages, completion: { (error) in
-                    print(error)
+                    AlertFactory.init(for: self).makeDefaultOKAlert()
                     
                     DispatchQueue.main.async {
                         self.personalPosts = validPrivateMessages.sorted(by: {$0.0.time > $0.1.time} )
@@ -238,7 +238,7 @@ class ProfileViewController: UIViewController {
     func setUpUserHistory() {
         CloudManager.shared.getUserPostActivity(for: self.wanderUser.id) { (wanderPosts:[WanderPost]?, error: Error?) in
             if error != nil {
-                print(error?.localizedDescription)
+                AlertFactory.init(for: self).makeDefaultOKAlert()
             }
             
             guard let validWanderPosts = wanderPosts else { return }
@@ -249,8 +249,9 @@ class ProfileViewController: UIViewController {
             }
             
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
-                print(error)
                 
+                AlertFactory.init(for: self).makeDefaultOKAlert()
+
                 DispatchQueue.main.async {
                     self.postTableView.reloadData()
                 }
@@ -265,7 +266,7 @@ class ProfileViewController: UIViewController {
         for friend in wanderUser.friends {
             CloudManager.shared.getUserPostActivity(for: friend) { (wanderPosts:[WanderPost]?, error: Error?) in
                 if error != nil {
-                    print(error?.localizedDescription)
+                    AlertFactory.init(for: self).makeDefaultOKAlert()
                 }
                 
                 guard let validWanderPosts = wanderPosts else {
@@ -280,8 +281,7 @@ class ProfileViewController: UIViewController {
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
-                    print(error)
-                    
+                    AlertFactory.init(for: self).makeDefaultOKAlert()
                     DispatchQueue.main.async {
                         self.friendFeedLoading = false
                         self.postTableView.reloadData()
