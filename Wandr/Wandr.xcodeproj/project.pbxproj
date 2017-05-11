@@ -37,6 +37,7 @@
 		A7AF86051E68D6B80046487F /* WanderButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7AF86041E68D6B80046487F /* WanderButton.swift */; };
 		A7D046801E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */; };
 		A7D046821E6FB1CC002D2F24 /* PostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7D046811E6FB1CC002D2F24 /* PostView.swift */; };
+		A7ECB14B1EC4A1FD00447987 /* WandrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7ECB14A1EC4A1FD00447987 /* WandrTests.swift */; };
 		B3A5BEA345293452482AA7C6 /* Pods_Wandr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */; };
 		DE08FBBD1E9D278B0052409B /* ARViewDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE08FBBC1E9D278B0052409B /* ARViewDimensions.swift */; };
 		DE1155AD1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */; };
@@ -61,6 +62,16 @@
 		DEA80B401E68C426001E0747 /* PostAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B3F1E68C426001E0747 /* PostAnnotation.swift */; };
 		DEA80B421E6A0276001E0747 /* WanderMapAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA80B411E6A0276001E0747 /* WanderMapAnnotationView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A7ECB14D1EC4A1FD00447987 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 812952801E60D08A0048199B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 812952871E60D08A0048199B;
+			remoteInfo = Wandr;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		3D9E66C9055426FC27EC6EDE /* Pods-Wandr.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wandr.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wandr/Pods-Wandr.debug.xcconfig"; sourceTree = "<group>"; };
@@ -97,6 +108,9 @@
 		A7AF86041E68D6B80046487F /* WanderButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WanderButton.swift; path = Views/WanderButton.swift; sourceTree = "<group>"; };
 		A7D0467F1E6F3B8D002D2F24 /* DetailPostViewWithCommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailPostViewWithCommentsViewController.swift; path = "View Controllers/DetailPostViewWithCommentsViewController.swift"; sourceTree = "<group>"; };
 		A7D046811E6FB1CC002D2F24 /* PostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PostView.swift; path = Views/PostView.swift; sourceTree = "<group>"; };
+		A7ECB1481EC4A1FD00447987 /* WandrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WandrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A7ECB14A1EC4A1FD00447987 /* WandrTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WandrTests.swift; sourceTree = "<group>"; };
+		A7ECB14C1EC4A1FD00447987 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BCC9871A55E4171FE8F709F1 /* Pods_Wandr.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Wandr.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE08FBBC1E9D278B0052409B /* ARViewDimensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARViewDimensions.swift; sourceTree = "<group>"; };
 		DE1155AC1E79B7DB00D5EA20 /* CommentsSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CommentsSectionHeaderView.swift; path = Views/CommentsSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -134,6 +148,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A7ECB1451EC4A1FD00447987 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -141,6 +162,7 @@
 			isa = PBXGroup;
 			children = (
 				8129528A1E60D08A0048199B /* Wandr */,
+				A7ECB1491EC4A1FD00447987 /* WandrTests */,
 				812952891E60D08A0048199B /* Products */,
 				8129529E1E60D0CF0048199B /* Frameworks */,
 				D563DB2966CE8FA61F2854C9 /* Pods */,
@@ -151,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				812952881E60D08A0048199B /* Wandr.app */,
+				A7ECB1481EC4A1FD00447987 /* WandrTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -260,6 +283,15 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		A7ECB1491EC4A1FD00447987 /* WandrTests */ = {
+			isa = PBXGroup;
+			children = (
+				A7ECB14A1EC4A1FD00447987 /* WandrTests.swift */,
+				A7ECB14C1EC4A1FD00447987 /* Info.plist */,
+			);
+			path = WandrTests;
+			sourceTree = "<group>";
+		};
 		D563DB2966CE8FA61F2854C9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -328,6 +360,24 @@
 			productReference = 812952881E60D08A0048199B /* Wandr.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A7ECB1471EC4A1FD00447987 /* WandrTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7ECB1511EC4A1FD00447987 /* Build configuration list for PBXNativeTarget "WandrTests" */;
+			buildPhases = (
+				A7ECB1441EC4A1FD00447987 /* Sources */,
+				A7ECB1451EC4A1FD00447987 /* Frameworks */,
+				A7ECB1461EC4A1FD00447987 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A7ECB14E1EC4A1FD00447987 /* PBXTargetDependency */,
+			);
+			name = WandrTests;
+			productName = WandrTests;
+			productReference = A7ECB1481EC4A1FD00447987 /* WandrTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -357,6 +407,12 @@
 							};
 						};
 					};
+					A7ECB1471EC4A1FD00447987 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = P29FUG645U;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 812952871E60D08A0048199B;
+					};
 				};
 			};
 			buildConfigurationList = 812952831E60D08A0048199B /* Build configuration list for PBXProject "Wandr" */;
@@ -373,6 +429,7 @@
 			projectRoot = "";
 			targets = (
 				812952871E60D08A0048199B /* Wandr */,
+				A7ECB1471EC4A1FD00447987 /* WandrTests */,
 			);
 		};
 /* End PBXProject section */
@@ -391,6 +448,13 @@
 				DEA80B3C1E686F58001E0747 /* hdar_close.png in Resources */,
 				DEA80B3E1E686F58001E0747 /* hdar_close@3x.png in Resources */,
 				DEA80B3B1E686F58001E0747 /* DebugMapViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A7ECB1461EC4A1FD00447987 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,7 +557,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A7ECB1441EC4A1FD00447987 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A7ECB14B1EC4A1FD00447987 /* WandrTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A7ECB14E1EC4A1FD00447987 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 812952871E60D08A0048199B /* Wandr */;
+			targetProxy = A7ECB14D1EC4A1FD00447987 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		812952941E60D08A0048199B /* LaunchScreen.storyboard */ = {
@@ -645,6 +725,36 @@
 			};
 			name = Release;
 		};
+		A7ECB14F1EC4A1FD00447987 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = P29FUG645U;
+				INFOPLIST_FILE = WandrTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = nyc.anama.developer.WandrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wandr.app/Wandr";
+			};
+			name = Debug;
+		};
+		A7ECB1501EC4A1FD00447987 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = P29FUG645U;
+				INFOPLIST_FILE = WandrTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = nyc.anama.developer.WandrTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Wandr.app/Wandr";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -665,6 +775,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		A7ECB1511EC4A1FD00447987 /* Build configuration list for PBXNativeTarget "WandrTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A7ECB14F1EC4A1FD00447987 /* Debug */,
+				A7ECB1501EC4A1FD00447987 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
