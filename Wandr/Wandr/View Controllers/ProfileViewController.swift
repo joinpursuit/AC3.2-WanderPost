@@ -223,7 +223,10 @@ class ProfileViewController: UIViewController {
             if let validPrivateMessages = privateMessages {
                 
                 CloudManager.shared.getInfo(forPosts: validPrivateMessages, completion: { (error) in
-                    AlertFactory.init(for: self).makeDefaultOKAlert()
+                    
+                    if error != nil {
+                        AlertFactory.init(for: self).makeDefaultOKAlert()
+                    }
                     
                     DispatchQueue.main.async {
                         self.personalPosts = validPrivateMessages.sorted(by: {$0.0.time > $0.1.time} )
@@ -250,7 +253,9 @@ class ProfileViewController: UIViewController {
             
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
                 
-                AlertFactory.init(for: self).makeDefaultOKAlert()
+                if error != nil {
+                    AlertFactory.init(for: self).makeDefaultOKAlert()
+                }
 
                 DispatchQueue.main.async {
                     self.postTableView.reloadData()
@@ -281,7 +286,9 @@ class ProfileViewController: UIViewController {
                 self.friendFeedPosts.sort(by: {$0.0.time > $0.1.time} )
                 
                 CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
-                    AlertFactory.init(for: self).makeDefaultOKAlert()
+                    if error != nil {
+                        AlertFactory.init(for: self).makeDefaultOKAlert()
+                    }
                     DispatchQueue.main.async {
                         self.friendFeedLoading = false
                         self.postTableView.reloadData()
@@ -293,8 +300,8 @@ class ProfileViewController: UIViewController {
     
     func getUserFriends() {
         CloudManager.shared.getInfo(forUsers: CloudManager.shared.currentUser!.friends) { (userFriends: [WanderUser]?, error: Error?) in
-            if let error = error {
-                print(error)
+            if error != nil {
+                AlertFactory.init(for: self).makeDefaultOKAlert()
             }
             if let friends = userFriends {
                 DispatchQueue.main.async {

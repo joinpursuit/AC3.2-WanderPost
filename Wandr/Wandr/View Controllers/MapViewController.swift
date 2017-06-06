@@ -19,7 +19,7 @@ protocol ARPostDelegate {
 
 class MapViewController: UIViewController {
     
-    fileprivate var locationManager : CLLocationManager = CLLocationManager()
+    fileprivate var locationManager = CLLocationManager()
     
     fileprivate var allWanderPosts: [WanderPost]?
     
