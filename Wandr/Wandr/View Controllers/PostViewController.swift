@@ -24,31 +24,23 @@ class PostViewController: UIViewController {
     fileprivate var recipient: WanderUser? = nil
     fileprivate var potentialRecipients: [WanderUser] = [WanderUser]()
     
+    private let standardMargin: CGFloat = 16
+    private let profileHeight: CGFloat = 50
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = StyleManager.shared.primaryDark
         setupTableView()
         setupViewHierarchy()
         configureConstraints()
-        configureTargets()
+        setProfileImage()
         
         userTextField.becomeFirstResponder()
         userTextField.delegate = self
-        
-        self.segmentedControl.backgroundColor = UIColor.clear
-        self.segmentedControl.setSegmentItems(segmentTitles)
-        
-        if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
-            //Do not delete becase imageToDisplay will be the long term solution
-            let imageToDisplay = validOriginalImage.fixRotatedImage()
-            //let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
-            self.profileImageView.image = imageToDisplay
-        }
-        
     }
     
     // MARK: - Layout
     private func setupViewHierarchy() {
+        self.view.backgroundColor = StyleManager.shared.primary
         self.view.addSubview(postContainerView)
         self.postContainerView.addSubview(profileImageView)
         self.postContainerView.addSubview(segmentedControlContainerView)
@@ -69,23 +61,23 @@ class PostViewController: UIViewController {
         }
         
         dismissButton.snp.makeConstraints { (button) in
-            button.top.equalToSuperview().offset(16)
-            button.trailing.equalToSuperview().offset(-16)
-            button.height.equalTo(50.0)
-            button.width.equalTo(50.0)
+            button.top.equalToSuperview().offset(standardMargin)
+            button.trailing.equalToSuperview().inset(standardMargin)
+            button.height.equalTo(profileHeight)
+            button.width.equalTo(profileHeight)
         }
         
         profileImageView.snp.makeConstraints { (view) in
-            view.top.equalToSuperview().offset(16)
-            view.leading.equalToSuperview().offset(16)
-            view.height.equalTo(50.0)
-            view.width.equalTo(50.0)
+            view.top.equalToSuperview().offset(standardMargin)
+            view.leading.equalToSuperview().offset(standardMargin)
+            view.height.equalTo(profileHeight)
+            view.width.equalTo(profileHeight)
         }
         
         segmentedControlContainerView.snp.makeConstraints { (view) in
             view.top.equalTo(profileImageView.snp.bottom).offset(8)
-            view.leading.equalToSuperview().offset(32.0)
-            view.trailing.equalToSuperview().inset(32.0)
+            view.leading.equalToSuperview().offset(standardMargin + 12)
+            view.trailing.equalToSuperview().inset(standardMargin + 12)
             view.height.equalTo(30)
         }
         
@@ -94,22 +86,22 @@ class PostViewController: UIViewController {
         }
         
         userTextField.snp.makeConstraints { (view) in
-            view.leading.equalToSuperview().offset(16.0)
-            view.top.equalTo(segmentedControl.snp.bottom).offset(16.0)
-            view.trailing.equalToSuperview().inset(16.0)
+            view.leading.equalToSuperview().offset(standardMargin)
+            view.top.equalTo(segmentedControl.snp.bottom).offset(standardMargin)
+            view.trailing.equalToSuperview().inset(standardMargin)
             view.height.equalTo(1)
         }
         
         postTextView.snp.makeConstraints { (view) in
-            view.top.equalTo(userTextField.snp.bottom).offset(16.0)
-            view.leading.equalToSuperview().offset(16.0)
-            view.trailing.equalToSuperview().inset(16.0)
+            view.top.equalTo(userTextField.snp.bottom).offset(standardMargin)
+            view.leading.equalToSuperview().offset(standardMargin)
+            view.trailing.equalToSuperview().inset(standardMargin)
             view.height.equalToSuperview().multipliedBy(0.25)
         }
         
         postButton.snp.makeConstraints { (button) in
             button.top.equalTo(postTextView.snp.bottom).offset(8)
-            button.trailing.equalToSuperview().inset(16)
+            button.trailing.equalToSuperview().inset(standardMargin)
         }
         
         searchFriendTableView.snp.makeConstraints { (view) in
@@ -120,9 +112,13 @@ class PostViewController: UIViewController {
         }
     }
     
-    func configureTargets () {
-        postButton.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
-        dismissButton.addTarget(self, action: #selector(dismissButtonPressed(_:)), for: .touchUpInside)
+    func setProfileImage() {
+        if let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) {
+            //Do not delete becase imageToDisplay will be the long term solution
+            let imageToDisplay = validOriginalImage.fixRotatedImage()
+            //let tempRotateSolution = UIImage(cgImage: validOriginalImage.cgImage!, scale: validOriginalImage.scale, orientation: UIImageOrientation.right)
+            self.profileImageView.image = imageToDisplay
+        }
     }
     
     // MARK: - Actions
@@ -156,17 +152,14 @@ class PostViewController: UIViewController {
         
         switch privacy {
         case .personal:
-            
             if self.recipient == nil {
-                print("you need to send this to someone yo")
+                AlertFactory.init(for: self).makeCustomOKAlert(title: "No User", message: "Please enter a recipient for this personal post.")
                 return
             }
-            
         default:
             self.recipient = nil
         }
         
-        self.dismiss(animated: true, completion: nil)
         let geocoder = CLGeocoder()
         geocoder.reverseGeocodeLocation(location, completionHandler: {
             placemarks, error in
@@ -176,10 +169,6 @@ class PostViewController: UIViewController {
             
             if let marks = placemarks, let thisMark = marks.last {
                 let locationDescription = thisMark.readableDescription
-                
-                if privacy == .personal {
-                    //add in recipient username as a string here.
-                }
                 
                 let post = WanderPost(location: self.location,
                                       content: content,
@@ -196,16 +185,14 @@ class PostViewController: UIViewController {
                     }
                     
                     if let validRecord = record, let thisPost = WanderPost(withCKRecord: validRecord) {
+                        // add this post to the mapViewController and animate drop
                         thisPost.wanderUser = CloudManager.shared.currentUser
                         self.newPostDelegate.addNewPost(post: thisPost)
                     }
-                    //DO SOMETHING WITH THE RECORD?
-                    //dump(record)
                 }
-                
-                self.dismiss(animated: true, completion: nil)
             }
         })
+        self.dismiss(animated: true, completion: nil)
     }
     
     func imageTapped() {
@@ -217,15 +204,15 @@ class PostViewController: UIViewController {
         let multipler = show ? 0.2 : 0.25
         let animator = UIViewPropertyAnimator(duration: 0.3, curve: .easeOut) {
             self.userTextField.snp.remakeConstraints { (view) in
-                view.leading.equalToSuperview().offset(16.0)
-                view.top.equalTo(self.segmentedControl.snp.bottom).offset(16.0)
-                view.trailing.equalToSuperview().inset(16.0)
+                view.leading.equalToSuperview().offset(self.standardMargin)
+                view.top.equalTo(self.segmentedControl.snp.bottom).offset(self.standardMargin)
+                view.trailing.equalToSuperview().inset(self.standardMargin)
                 view.height.equalTo(height)
             }
             self.postTextView.snp.remakeConstraints { (view) in
-                view.top.equalTo(self.userTextField.snp.bottom).offset(16.0)
-                view.leading.equalToSuperview().offset(16.0)
-                view.trailing.equalToSuperview().inset(16.0)
+                view.top.equalTo(self.userTextField.snp.bottom).offset(self.standardMargin)
+                view.leading.equalToSuperview().offset(self.standardMargin)
+                view.trailing.equalToSuperview().inset(self.standardMargin)
                 view.height.equalToSuperview().multipliedBy(multipler)
             }
             self.postContainerView.layoutIfNeeded()
@@ -259,7 +246,7 @@ class PostViewController: UIViewController {
     }()
     
     lazy var profileImageView: WanderProfileImageView = {
-        let imageView = WanderProfileImageView(width: 50.0, height: 50.0)
+        let imageView = WanderProfileImageView(width: self.profileHeight, height: self.profileHeight)
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
         imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
@@ -274,6 +261,8 @@ class PostViewController: UIViewController {
     lazy var segmentedControl: WanderSegmentedControl = {
         let control = WanderSegmentedControl()
         control.delegate = self
+        control.backgroundColor = UIColor.clear
+        control.setSegmentItems(self.segmentTitles)
         return control
     }()
     
@@ -305,7 +294,11 @@ class PostViewController: UIViewController {
         return field
     }()
     
-    let postButton = WanderButton(title: "post", spacing: 22)
+    lazy var postButton: WanderButton = {
+        let button = WanderButton(title: "post", spacing: 22)
+        button.addTarget(self, action: #selector(postButtonPressed(_:)), for: .touchUpInside)
+        return button
+    }()
     
     lazy var dismissButton: UIButton = {
         let button = UIButton()
@@ -329,18 +322,14 @@ class PostViewController: UIViewController {
 extension PostViewController: TwicketSegmentedControlDelegate {
     func didSelect(_ segmentIndex: Int) {
         switch segmentIndex {
-        case 0:
+        case 0, 1:
             toggleUserTextField(show: false)
-            self.searchFriendTableView.isHidden = true
-        case 1:
-            toggleUserTextField(show: false)
-            self.searchFriendTableView.isHidden = true
         case 2:
             toggleUserTextField(show: true)
-            self.searchFriendTableView.isHidden = true
         default:
             print("Can not make a decision")
         }
+        self.searchFriendTableView.isHidden = true
     }
 }
 
@@ -374,6 +363,7 @@ extension PostViewController: UITableViewDelegate {
 // MARK: - UITextFieldDelegate Methods
 extension PostViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
         CloudManager.shared.search(for: textField.text! + string) { (wanderUsers, error) in
             if error != nil {
                 AlertFactory.init(for: self).makeDefaultOKAlert()
@@ -392,6 +382,7 @@ extension PostViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         self.searchFriendTableView.isHidden = true
+        self.potentialRecipients = []
     }
 }
 

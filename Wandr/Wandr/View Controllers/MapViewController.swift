@@ -40,25 +40,24 @@ class MapViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.title = "wanderpost"
-        
-        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
-        self.navigationItem.rightBarButtonItem = refreshButton
-        
         mapView.delegate = self
         userNotificationCenter.delegate = self
         
-        //Make this more dynamic
+        //would like to make this more dynamic
         let nav = tabBarController?.viewControllers?.last as! UINavigationController
         self.arDelegate = nav.viewControllers.first! as! ARViewController
         
+        setupNavBar()
         setupViewHierarchy()
         configureConstraints()
         setupLocationManager()
-        //setupGestures()
-        self.lastUpdatedLocation = locationManager.location!
         getWanderPosts(lastUpdatedLocation)
-        self.segmentedControl.setSegmentItems(segmentTitles)
+    }
+    
+    private func setupNavBar() {
+        self.navigationItem.title = "wanderpost"
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(refreshTapped))
+        self.navigationItem.rightBarButtonItem = refreshButton
     }
     
     
@@ -116,28 +115,10 @@ class MapViewController: UIViewController {
         locationManager.distanceFilter = 1.0
         locationManager.delegate = self
         locationManager.startUpdatingLocation()
+        lastUpdatedLocation = locationManager.location!
     }
     
-
-    // MARK: - MKMapView
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        // this is to check to see if the annotation is for the users location, the else block sets the post pins
-        if annotation is MKUserLocation {
-            return nil
-        } else {
-            let annotationIdentifier = "AnnotationIdentifier"
-            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
-            mapAnnotationView.profileImageView.image = nil
-            mapAnnotationView.canShowCallout = true
-            
-            let postAnnotation = annotation as! PostAnnotation
-            if let thisUser = postAnnotation.wanderpost.wanderUser {
-                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
-            }
-            return mapAnnotationView
-        }
-    }
-
+    
     // MARK: - Actions
     func addPostButtonPressed(_ sender: UIButton) {
         UIView.animate(withDuration: 0.1,
@@ -159,59 +140,6 @@ class MapViewController: UIViewController {
     func refreshTapped() {
         getWanderPosts(lastUpdatedLocation)
     }
-    
-    //MARK: - Views
-    lazy var mapContainerView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    lazy var mapView: MKMapView = {
-        let mapView = MKMapView()
-        mapView.mapType = .standard
-        mapView.isScrollEnabled = false
-        mapView.isZoomEnabled = false
-        mapView.showsBuildings = false
-        mapView.showsUserLocation = true
-        mapView.tintColor = StyleManager.shared.accent
-        return mapView
-    }()
-    
-    lazy var addPostButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.addTarget(self, action: #selector(addPostButtonPressed), for: UIControlEvents.touchUpInside)
-        button.setImage(UIImage(named: "compose_white"), for: .normal)
-        button.backgroundColor = StyleManager.shared.accent
-        button.layer.cornerRadius = 26
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOpacity = 0.8
-        button.layer.shadowOffset = CGSize(width: 0, height: 2)
-        button.layer.shadowRadius = 4
-        return button
-    }()
-    
-    let dragUpOrDownContainerView = UIView()
-    
-    lazy var cheveronButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Up", for: .normal)
-        button.tintColor = UIColor.yellow
-        button.backgroundColor = UIColor.orange
-        //button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
-        return button
-    }()
-    
-    lazy var segmentedControlContainerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        return view
-    }()
-    
-    lazy var segmentedControl: WanderSegmentedControl = {
-        let control = WanderSegmentedControl()
-        control.delegate = self
-        return control
-    }()
     
     //MARK: - Helper Functions
     func getWanderPosts(_ location: CLLocation) {
@@ -240,7 +168,7 @@ class MapViewController: UIViewController {
             for post in posts {
                 let myAnnotaton = PostAnnotation()
                 myAnnotaton.wanderpost = post
-                guard let postLocation = post.location else { return }
+                guard let postLocation = post.location else { continue }
                 myAnnotaton.coordinate = postLocation.coordinate
                 if let user = post.wanderUser {
                     myAnnotaton.title = user.username
@@ -298,6 +226,61 @@ class MapViewController: UIViewController {
     }
     
     //TODO: HOW IS A POST GOING TO BE MARKED AS READ. Namely, when is it going to be marked as read -- different for private than not imo. -- post is marked read by appending the username to the readBy array maybe. marked as read as soon as you get into AR/its on your screen in AR.
+    
+    
+    //MARK: - Views
+    lazy var mapContainerView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    lazy var mapView: MKMapView = {
+        let mapView = MKMapView()
+        mapView.mapType = .standard
+        mapView.isScrollEnabled = false
+        mapView.isZoomEnabled = false
+        mapView.showsBuildings = false
+        mapView.showsUserLocation = true
+        mapView.tintColor = StyleManager.shared.accent
+        return mapView
+    }()
+    
+    lazy var addPostButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.addTarget(self, action: #selector(addPostButtonPressed), for: UIControlEvents.touchUpInside)
+        button.setImage(UIImage(named: "compose_white"), for: .normal)
+        button.backgroundColor = StyleManager.shared.accent
+        button.layer.cornerRadius = 26
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOpacity = 0.8
+        button.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.layer.shadowRadius = 4
+        return button
+    }()
+    
+    let dragUpOrDownContainerView = UIView()
+    
+    lazy var cheveronButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Up", for: .normal)
+        button.tintColor = UIColor.yellow
+        button.backgroundColor = UIColor.orange
+        //button.addTarget(self, action: #selector(animatePostView), for: .touchDragInside)
+        return button
+    }()
+    
+    lazy var segmentedControlContainerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.clear
+        return view
+    }()
+    
+    lazy var segmentedControl: WanderSegmentedControl = {
+        let control = WanderSegmentedControl()
+        control.delegate = self
+        control.setSegmentItems(self.segmentTitles)
+        return control
+    }()
 }
 
 // MARK: - RemovePostDelegate Method
@@ -355,6 +338,26 @@ extension MapViewController: UNUserNotificationCenterDelegate {
 
 // MARK: - MKMapViewDelegate Methods
 extension MapViewController: MKMapViewDelegate {
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // this is to check to see if the annotation is for the users location, the else block sets the post pins
+        if annotation is MKUserLocation {
+            return nil
+        } else {
+            let annotationIdentifier = "AnnotationIdentifier"
+            let mapAnnotationView = mapView.dequeueReusableAnnotationView(withIdentifier: annotationIdentifier) as? WanderMapAnnotationView ?? WanderMapAnnotationView(annotation: annotation, reuseIdentifier: annotationIdentifier)
+            mapAnnotationView.profileImageView.image = nil
+            mapAnnotationView.canShowCallout = true
+            
+            
+            if let postAnnotation = annotation as? PostAnnotation,
+                let thisUser = postAnnotation.wanderpost.wanderUser {
+                mapAnnotationView.profileImageView.image = UIImage(data: thisUser.userImageData)
+            }
+            return mapAnnotationView
+        }
+    }
+
     func mapView(_ mapView: MKMapView, didAdd views: [MKAnnotationView]) {
         if isNewMapAnnotation {
             for view in views {

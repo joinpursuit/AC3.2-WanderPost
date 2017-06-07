@@ -15,7 +15,7 @@ class ProfileViewViewControllerDetailFeedTableViewCell: UITableViewCell {
     private let kTopBottomMarginWide = 22.0
     private let kLeadingTrailingMargin = 16.0
     private let kLeadingTrailingMarginWide = 22.0
-    private let kProfileImageViewSide = 50.0
+    private let kProfileImageViewSide: CGFloat = 50.0
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
