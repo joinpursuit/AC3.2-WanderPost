@@ -36,31 +36,54 @@ class ProfileViewController: UIViewController {
     fileprivate let feedCellSeparatorInsets = UIEdgeInsets(top: 0, left: 94, bottom: 0, right: 16)
     fileprivate let postCellSeparatorInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     fileprivate let heightForSectionHeader: CGFloat = 38
+    fileprivate let profileViewHeight: CGFloat = 260
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "wanderpost"
-        self.view.backgroundColor = UIColor.white
         
-        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(searchButtonTapped))
-        self.navigationItem.rightBarButtonItem = searchFriendsButton
+        wanderUser = CloudManager.shared.currentUser!
         
-        guard let validWanderUser = CloudManager.shared.currentUser else { return }
-        wanderUser = validWanderUser
-        
+        setupNavBar()
         setupTableView()
         setupViewHierarchy()
         configureConstraints()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        wanderUser = CloudManager.shared.currentUser!
         setUpUserHistory()
         setUpFriendsFeed()
         getUserFriends()
         setUpPrivateMessages()
         self.postTableView.reloadData()
+    }
+    
+    // MARK: - TableView Cell, Header and Section Customizations
+    func setupNavBar() {
+        self.navigationItem.title = "wanderpost"
+        self.view.backgroundColor = UIColor.white
+        
+        let searchFriendsButton = UIBarButtonItem(image: UIImage(named: "search"), style: .done, target: self, action: #selector(searchButtonTapped))
+        self.navigationItem.rightBarButtonItem = searchFriendsButton
+    }
+    
+    func setupTableView() {
+        //TabelViewCell
+        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
+        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
+        
+        //TableViewHeader
+        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
+        
+        //TableViewSectionHeader
+        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: profileViewHeight)
+        self.profileHeaderView = ProfileView(frame: profileViewFrame)
+        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
+        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
+        let imageToDisplay = validOriginalImage.fixRotatedImage()
+        self.profileHeaderView.profileImageView.image = imageToDisplay
+        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
+        postTableView.tableHeaderView = self.profileHeaderView
+        self.profileHeaderView.delegate = self
     }
     
     // MARK: - Actions
@@ -87,26 +110,6 @@ class ProfileViewController: UIViewController {
         self.present(imagePickerController, animated: true, completion: nil)
     }
     
-    // MARK: - TableView Cell, Header and Section Customizations
-    func setupTableView() {
-        //TabelViewCell
-        self.postTableView.register(ProfileViewViewControllerDetailPostTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailPostTableViewCell.identifier)
-        self.postTableView.register(ProfileViewViewControllerDetailFeedTableViewCell.self, forCellReuseIdentifier: ProfileViewViewControllerDetailFeedTableViewCell.identifier)
-        
-        //TableViewHeader
-        self.postTableView.register(SegmentedControlHeaderFooterView.self, forHeaderFooterViewReuseIdentifier: SegmentedControlHeaderFooterView.identifier)
-        
-        //TableViewSectionHeader
-        let profileViewFrame = CGRect(x: 0, y: 0, width: postTableView.frame.size.width, height: 260.0)
-        self.profileHeaderView = ProfileView(frame: profileViewFrame)
-        self.profileHeaderView.backgroundColor = StyleManager.shared.primaryLight
-        guard let validOriginalImage = UIImage(data: CloudManager.shared.currentUser!.userImageData) else { return }
-        let imageToDisplay = validOriginalImage.fixRotatedImage()
-        self.profileHeaderView.profileImageView.image = imageToDisplay
-        self.profileHeaderView.userNameLabel.text = self.wanderUser.username
-        postTableView.tableHeaderView = self.profileHeaderView
-        self.profileHeaderView.delegate = self
-    }
     
     // MARK: - Helper Functions
     func toggleNoPostsLabel(posts: [WanderPost], loading: Bool) {
@@ -143,7 +146,9 @@ class ProfileViewController: UIViewController {
         }
         noPostsLabel.snp.makeConstraints { (view) in
             view.bottom.leading.trailing.equalToSuperview()
-            let height = self.view.frame.height - (self.profileHeaderView.frame.height + ((self.tabBarController?.tabBar.frame.height)! + (self.navigationController?.navigationBar.frame.height)! * 2) + self.heightForSectionHeader)
+            let heightToRemove = self.profileHeaderView.frame.height + ((self.tabBarController?.tabBar.frame.height)! + (self.navigationController?.navigationBar.frame.height)! * 1) + (self.heightForSectionHeader * 1.8)
+            
+            let height = self.view.frame.height - heightToRemove
             view.height.equalTo(height)
         }
     }
@@ -251,6 +256,8 @@ class ProfileViewController: UIViewController {
                 self.profileHeaderView.friendsNumberLabel.text = "\(self.wanderUser.friends.count) \n friends"                
             }
             
+            // get info gets the comments and other info in the posts
+            
             CloudManager.shared.getInfo(forPosts: validWanderPosts, completion: { (error) in
                 
                 if error != nil {
@@ -346,6 +353,7 @@ extension ProfileViewController: UIImagePickerControllerDelegate, UINavigationCo
         if let originalImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
             let imageToDisplay = originalImage.fixRotatedImage()
             self.profileHeaderView.profileImageView.image = imageToDisplay
+            // need to update image in database
         }
         dump(info)
         self.dismiss(animated: true, completion: nil)

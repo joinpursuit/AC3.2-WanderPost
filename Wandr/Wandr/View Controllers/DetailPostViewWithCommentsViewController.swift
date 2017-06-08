@@ -88,7 +88,7 @@ class DetailPostViewWithCommentsViewController: UIViewController {
             CloudManager.shared.addReaction(to: post, comment: reaction) { (error) in
                 //add fail alert
                 if error != nil {
-                    let errorAlertController = UIAlertController(title: "Opps!", message: "Error while posting", preferredStyle: .alert)
+                    let errorAlertController = UIAlertController(title: "Opps!", message: "Error while posting comment.", preferredStyle: .alert)
                     let okayAction = UIAlertAction(title: "Okay", style: UIAlertActionStyle.cancel, handler: nil)
                     errorAlertController.addAction(okayAction)
                     DispatchQueue.main.async {

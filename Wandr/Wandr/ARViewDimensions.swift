@@ -22,6 +22,7 @@ struct ARViewDimensions {
     
     static let arViewFrame = CGRect(x: 0, y: 0, width: ARViewDimensions.viewWidth, height: ARViewDimensions.viewHeight)
     static let profileFrame = CGRect(x: (ARViewDimensions.viewWidth / 2) - (ARViewDimensions.profileWidthHeight / 2 ), y: 0, width: ARViewDimensions.profileWidthHeight, height: ARViewDimensions.profileWidthHeight)
+    
     static let detailContainerFrame = CGRect(x: 0, y: ARViewDimensions.profileWidthHeight + ARViewDimensions.viewMargin, width: ARViewDimensions.viewWidth, height: ARViewDimensions.viewWidth)
     
     

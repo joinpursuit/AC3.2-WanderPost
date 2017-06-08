@@ -116,27 +116,28 @@ class ProfileView: UIView {
         return label
     }()
     
-    lazy var followersNumberLabel: UILabel = {
-        let label = UILabel()
-        label.text = "#Followers"
-        label.font = StyleManager.shared.comfortaaFont14
-        return label
-    }()
-    
-    lazy var followingNumberLabel: UILabel = {
-        let label = UILabel()
-        label.text = "#Following"
-        label.font = StyleManager.shared.comfortaaFont14
-        return label
-    }()
+//    lazy var followersNumberLabel: UILabel = {
+//        let label = UILabel()
+//        label.text = "#Followers"
+//        label.font = StyleManager.shared.comfortaaFont14
+//        return label
+//    }()
+//    
+//    lazy var followingNumberLabel: UILabel = {
+//        let label = UILabel()
+//        label.text = "#Following"
+//        label.font = StyleManager.shared.comfortaaFont14
+//        return label
+//    }()
     
 }
 
 class SegmentedControlHeaderFooterView: UITableViewHeaderFooterView {
     static let identifier = "segmentedControlHeaderFooterViewIdentifier"
     
-    let segmentTitles = [ProfileViewFilterType.feed.rawValue, ProfileViewFilterType.posts.rawValue, ProfileViewFilterType.personal.rawValue]
-    
+    let segmentTitles = ProfileViewFilterType.orderedStrings()
+        
+         
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func draw(_ rect: CGRect) {

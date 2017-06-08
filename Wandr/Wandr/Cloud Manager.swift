@@ -47,7 +47,10 @@ enum ProfileViewFilterType: String {
     }
     
     static func order() -> [ProfileViewFilterType] {
-        return [.posts, .feed, .personal]
+        return [.feed, .posts, .personal]
+    }
+    static func orderedStrings() -> [String] {
+        return order().map { return $0.rawValue }
     }
 }
 

@@ -185,7 +185,7 @@ class PostViewController: UIViewController {
                     }
                     
                     if let validRecord = record, let thisPost = WanderPost(withCKRecord: validRecord) {
-                        // add this post to the mapViewController and animate drop
+                        // adds this post to the mapViewController and animates pin drop
                         thisPost.wanderUser = CloudManager.shared.currentUser
                         self.newPostDelegate.addNewPost(post: thisPost)
                     }
@@ -193,10 +193,6 @@ class PostViewController: UIViewController {
             }
         })
         self.dismiss(animated: true, completion: nil)
-    }
-    
-    func imageTapped() {
-        //TODO: Add in image changing logic
     }
     
     func toggleUserTextField(show: Bool) {
@@ -247,9 +243,6 @@ class PostViewController: UIViewController {
     
     lazy var profileImageView: WanderProfileImageView = {
         let imageView = WanderProfileImageView(width: self.profileHeight, height: self.profileHeight)
-        let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(imageTapped))
-        imageView.addGestureRecognizer(tapImageGesture)
-        imageView.isUserInteractionEnabled = true
         return imageView
     }()
     
